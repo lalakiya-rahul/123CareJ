@@ -141,7 +141,7 @@ const ProductDetails = ({ navigation }) => {
         <View backgroundColor={Colors.white} style={{ height: height, width: width, }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '5%', }} >
                 <HStack alignItems={'center'} >
-                    <Pressable >
+                    <Pressable onPress={() => navigation.goBack()}>
                         <Image style={{ height: 30, width: 30 }}
                             alt={"Alternate Text"}
                             source={require('../assets/Images/arrow_back.png')} />

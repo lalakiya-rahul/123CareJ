@@ -37,7 +37,7 @@
     "react-native-screens": "^3.19.0",
     "react-native-select-dropdown": "^3.2.1",
     "react-native-share": "^8.1.0",
-    "react-native-splash-screen": "^3.3.0",
+    "react-native-splash-screen": "^3.0.6",
     "react-native-svg": "^12.5.0",
     "react-native-toast-message": "^2.1.5",
     "react-test-renderer": "18.0.0"

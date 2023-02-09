@@ -2,6 +2,8 @@ package com.care123j;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.swmansion.reanimated.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -12,6 +14,7 @@ import com.facebook.soloader.SoLoader;
 import com.care123j.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+            new SplashScreenReactPackage();
           return packages;
         }
 
