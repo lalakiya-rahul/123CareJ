@@ -49,8 +49,8 @@ export default function AddListing({ navigation }) {
                             </Text>
                         </HStack>
                         <VStack p={'3'} h={'80'} borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'} style={{ backgroundColor: '#FFF' }}>
-                            <HStack style={{ justifyContent: 'space-between', width: '100%' }}>
-                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
+                            <HStack style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black, }}>
                                     Category
                                     <Text style={{ color: Colors.error }}>⁕</Text>
                                 </Text>
@@ -69,7 +69,7 @@ export default function AddListing({ navigation }) {
                                 </Box>
                             </HStack>
 
-                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Title
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -96,7 +96,7 @@ export default function AddListing({ navigation }) {
 
                     <VStack style={[styles.card, { backgroundColor: Colors.white }]} mt={'5'}>
                         <VStack p={'3'}>
-                            <HStack space={2} style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <HStack space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Pictures
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -121,7 +121,7 @@ export default function AddListing({ navigation }) {
                                     Add up to 2 pictures. Use real pictures of your product, not catalogs.
                                 </Text>
                             </HStack>
-                            <HStack mt={'2'} space={2} style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <HStack mt={'2'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Location
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -141,7 +141,7 @@ export default function AddListing({ navigation }) {
                                 </Box>
                             </HStack>
 
-                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     City
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -161,7 +161,7 @@ export default function AddListing({ navigation }) {
                                 </Box>
                             </HStack>
 
-                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', }}>
+                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Tags
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -182,7 +182,7 @@ export default function AddListing({ navigation }) {
 
                         <VStack p={'3'} borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'} style={{ backgroundColor: '#FFF' }}>
 
-                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Your Name
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -192,7 +192,7 @@ export default function AddListing({ navigation }) {
                                 </Box>
                             </HStack>
 
-                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Phone no
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -224,7 +224,7 @@ export default function AddListing({ navigation }) {
                                 </Box>
                             </HStack>
 
-                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Email
                                     <Text style={{ color: Colors.error }}>⁕</Text>

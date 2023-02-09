@@ -127,7 +127,7 @@ const Tabs = () => {
                                 style={{ width: 30, height: 30, tintColor: focused ? Colors.white : Colors.grey2, alignSelf: 'center' }}
                             />
                             <Text style={{ color: focused ? Colors.white : Colors.grey2, fontSize: 12 }}
-                            > Menu </Text>
+                            > More </Text>
                         </View>
                     )
                 }}

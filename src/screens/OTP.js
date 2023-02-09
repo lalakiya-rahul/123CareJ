@@ -57,7 +57,7 @@ export default function OTP({ navigation }) {
 
                         <OTPTextInput
                             handleTextChange={(otp) => setOtpInput(otp)}
-                            inputCount={6}
+                            inputCount={4}
                             keyboardType="numeric"
                         />
                         {seconds === 0 ?

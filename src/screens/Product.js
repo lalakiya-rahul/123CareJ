@@ -185,36 +185,32 @@ const Product = ({ navigation }) => {
                                                     uri: item.image
                                                 }} alt="Alternate Text" size="md" />
                                                 <Image style={{
-                                                    width: 18,
-                                                    height: 18,
+                                                    width: 22,
+                                                    height: 22,
                                                     resizeMode: 'cover',
                                                     position: 'absolute',
                                                     bottom: 5,
                                                     right: 5,
-                                                    borderColor: Colors.white,
-                                                    borderWidth: 1,
-                                                    borderRadius: 18 / 1
-                                                }} borderRadius={'sm'} source={require('../assets/Images/groupLike.png')} alt="Alternate Text" size="md"></Image>
+
+                                                }} source={require('../assets/Images/fevorites.png')} alt="Alternate Text" size="md"></Image>
                                             </VStack>
 
                                             <VStack >
                                                 <Text style={[Styles.titleText, { marginTop: '3%', color: Colors.black }]}>{item.title}</Text>
-                                                <HStack lineHeight={'2.5'} h={'4'} style={{ justifyContent: 'flex-start', alignItems: 'center', }}>
-                                                    <Text style={[Styles.titleText, { fontSize: 11, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>4.7</Text>
-                                                    <Image style={{ height: 8, width: 40, marginLeft: '2%', }}
-                                                        alt={"Alternate Text"}
-                                                        source={require('../assets/Images/rating.png')} />
-                                                    <Text style={[Styles.titleText, { fontSize: 7, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>
-                                                </HStack>
                                                 <HStack h={'5'} alignItems={'center'} >
                                                     <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/pin1.png')} />
                                                     <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>Apple Sqaure, Surat, Gujarat</Text>
                                                 </HStack>
-                                                <Image style={{ height: 12, width: 65, marginTop: '1%' }}
-                                                    alt={"Alternate Text"}
-                                                    source={require('../assets/Images/quickResponce.png')} />
+                                                <HStack lineHeight={'2.5'} h={'4'} style={{ justifyContent: 'flex-start', alignItems: 'center', }}>
+                                                    <Image style={{ height: 8, width: 40, marginLeft: '2%', }}
+                                                        alt={"Alternate Text"}
+                                                        source={require('../assets/Images/rating.png')} />
+                                                    <Text style={[Styles.titleText, { fontSize: 7, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>
+                                                </HStack>
+
+
                                                 <HStack alignItems={'center'} space={1} mt={'3'}>
                                                     <Image style={{ height: 21, width: 80, }}
                                                         alt={"Alternate Text"}

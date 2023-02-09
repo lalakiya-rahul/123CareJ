@@ -11,7 +11,7 @@ function App() {
   React.useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide()
-    }, 3000);
+    }, 1000);
   });
   return (
     <>

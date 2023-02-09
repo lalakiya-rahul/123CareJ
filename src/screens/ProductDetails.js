@@ -2,101 +2,17 @@ import React, { useCallback, useState } from 'react';
 import { StyleSheet, View, ScrollView, Pressable, Dimensions, } from 'react-native';
 
 import Colors from '../constants/colors';
-import { HStack, Image, Text, VStack, FlatList, Input, Divider } from 'native-base';
+import { HStack, Image, Text, VStack, FlatList, Input, Divider, Stack } from 'native-base';
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
 import Share from 'react-native-share';
+import { map } from 'lodash'
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 
 const ProductDetails = ({ navigation }) => {
-
-    const [textShown, setTextShown] = useState(false); //To show ur remaining Text
-    const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
-    const toggleNumberOfLines = () => { //To toggle the show text or hide it
-        setTextShown(!textShown);
-    }
-
-    const onTextLayout = useCallback(e => {
-        setLengthMore(e.nativeEvent.lines.length >= 3); //to check the text is more than 4 lines or not
-        // console.log(e.nativeEvent);
-    }, []);
-
-    const data = [
-        {
-            'id': 1,
-            'title': 'oxygen1',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-
-        },
-        {
-            'id': 2,
-            'title': 'oxygen2',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 3,
-            'title': 'oxygen3',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 4,
-            'title': 'oxygen4',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 5,
-            'title': 'oxygen5',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 6,
-            'title': 'oxygen6',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 7,
-            'title': 'oxygen7',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 8,
-            'title': 'oxygen8',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 9,
-            'title': 'oxygen9',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg"
-        },
-        {
-            'id': 10,
-            'title': 'oxygen10',
-            'image': "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
-        },
-        {
-            'id': 11,
-            'title': 'oxygen11',
-            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-        },
-        {
-            'id': 12,
-            'title': 'oxygen12',
-            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-        },
-        {
-            'id': 13,
-            'title': 'oxygen13',
-            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-        },
-        {
-            'id': 14,
-            'title': 'oxygen14',
-            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-        },
-    ]
 
     const share = () => {
         Share.open({
@@ -187,7 +103,11 @@ const ProductDetails = ({ navigation }) => {
                         <VStack mt={'5'} >
                             <HStack justifyContent={'space-between'}>
                                 <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 25, }]}>Test image</Text>
-                                <Image style={styles.imageStyle} source={require('../assets/Images/FAVOURITESQUARE.jpg')} alt="Alternate Text" size="md" />
+                                <HStack style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Image style={[styles.imageStyle, { height: 36, width: 36 }]} source={require('../assets/Images/fevorites.png')} alt="Alternate Text" />
+                                    <Image style={[styles.imageStyle, { height: 30, width: 30, marginLeft: 5 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
+                                </HStack>
+
                             </HStack>
                             <HStack h={'5'} alignItems={'center'} space={1}>
                                 <Image style={{ height: 20, width: 20, marginLeft: '-1%' }}
@@ -214,7 +134,7 @@ const ProductDetails = ({ navigation }) => {
                                 <Text style={{ fontSize: 9, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }}>Pay</Text>
                             </HStack > */}
 
-                            <HStack mt={'5'} justifyContent={'space-between'}>
+                            <HStack mt={'5'} justifyContent={'space-between'} alignItems={'center'}>
                                 <VStack alignItems={'center'}>
                                     <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
                                         alt={"Alternate Text"}
@@ -237,15 +157,49 @@ const ProductDetails = ({ navigation }) => {
                                 </VStack>
 
                                 <VStack alignItems={'center'}>
-                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
+                                    <Image style={{ height: 50, width: 50, }}
                                         alt={"Alternate Text"}
-                                        source={require('../assets/Images/blackShare.png')} />
-                                    <Text style={styles.callText}>Share</Text>
+                                        source={require('../assets/Images/web.png')} />
+                                    <Text style={[styles.callText, { marginTop: '1%', }]}>Global</Text>
                                 </VStack>
                             </HStack>
                         </VStack>
 
                     </View>
+                    <Divider mt={'2'} />
+
+                    <Stack p={'3'}>
+                        <VStack>
+                            <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 15, color: Colors.black, }}>Additional Detalis</Text>
+                        </VStack>
+                        <HStack>
+                            <FlatList
+                                contentContainerStyle={{ width: '100%', marginTop: 15 }}
+                                data={additionalData}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <HStack style={{ justifyContent: 'flex-start', marginBottom: 5 }}>
+                                            <VStack style={{ justifyContent: 'flex-start', width: '30%' }}>
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.primaryColor, }}>{item.title}</Text>
+                                            </VStack>
+                                            <VStack style={{ justifyContent: "flex-end", }}>
+                                                <HStack style={{ alignItems: "flex-start", }}>
+                                                    {map(item.innerData, i => {
+                                                        return (
+                                                            <HStack style={{ width: '35%' }}>
+                                                                <Image mr={2} style={{ height: 10, width: 15, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                                                    alt={"Alternate Text"}
+                                                                    source={require('../assets/Images/true.png')} />
+                                                                <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.black, }}>{i.type}</Text>
+                                                            </HStack>)
+                                                    })}
+                                                </HStack>
+                                            </VStack>
+                                        </HStack>
+                                    )
+                                }} />
+                        </HStack>
+                    </Stack>
                     <Divider mt={'2'} />
                     <View style={{ padding: 10, }}>
                         <VStack>

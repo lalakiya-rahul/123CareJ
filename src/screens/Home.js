@@ -2,13 +2,12 @@ import React, { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Avatar, Box, Button, HStack, Image, Input, Text, VStack, Modal, FormControl } from 'native-base';
+import { Avatar, Box, Button, HStack, Image, Input, Text, VStack, Modal, CheckBox, Checkbox, Radio, Stack } from 'native-base';
 import fonts from '../constants/fonts';
 import CommonHeader from '../components/Header';
 import SelectDropdown from 'react-native-select-dropdown';
 import Styles from '../constants/styles';
 import CommonButton from '../components/Button';
-
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
@@ -274,7 +273,32 @@ const data2 = [
 
 export default function Home({ navigation }) {
     const [isModalVisible, setModalVisible] = React.useState(false);
+    const [groupValues, setGroupValues] = React.useState([]);
+    // const [checkboxValue, setCheckboxValue] = React.useState([
+    //     { label: 'Customer', value: 'customer', checked: false },
+    //     { label: 'Merchant', value: 'merchant', checked: false },
+    //     { label: 'None', value: 'none', checked: false },
+    // ])
     const countries = ['IND', 'U.K', 'A.E.D']
+
+    // const checkboxHandler = (value, index) => {
+    //     const newValue = checkboxValue.map((checkbox, i) => {
+    //         if (i !== index)
+    //             return {
+    //                 ...checkbox,
+    //                 checked: false,
+    //             }
+    //         if (i === index) {
+    //             const item = {
+    //                 ...checkbox,
+    //                 checked: !checkbox.checked,
+    //             }
+    //             return item
+    //         }
+    //         return checkbox
+    //     })
+    //     setCheckboxValue(newValue)
+    // }
     return (
         <View style={{ marginBottom: '20%', backgroundColor: Colors.white }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
@@ -327,12 +351,11 @@ export default function Home({ navigation }) {
                                 data={data2}
                                 contentContainerStyle={{ alignSelf: 'center', }}
                                 numColumns={Math.ceil(data2.length / 4)}
-                                renderItem={({ item }) => {
+                                renderItem={({ item, index }) => {
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
                                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
-                                                onPress={() => navigation.navigate('Product')} >
-
+                                                onPress={() => item.id === 1 ? setModalVisible(true) : navigation.navigate('Product')} >
                                                 <Image
                                                     style={{ height: 30, width: 30, resizeMode: 'stretch' }}
                                                     borderColor={Colors.secondaryPrimaryColor}
@@ -411,19 +434,19 @@ export default function Home({ navigation }) {
 
                                                 <HStack style={{ alignItems: 'center', justifyContent: 'space-evenly', width: '30%' }} >
                                                     <VStack >
-                                                        <Image size={7}
+                                                        <Image size={9}
                                                             alt={"Alternate Text"}
-                                                            source={require('../assets/Images/FAVOURITESQUARE.jpg')} />
+                                                            source={require('../assets/Images/fevorites.png')} />
                                                     </VStack>
                                                     <VStack >
                                                         <Image size={7}
                                                             alt={"Alternate Text"}
-                                                            source={require('../assets/Images/CALLUSSQUARE.jpg')} />
+                                                            source={require('../assets/Images/call.png')} />
                                                     </VStack>
                                                     <VStack >
                                                         <Image size={7}
                                                             alt={"Alternate Text"}
-                                                            source={require('../assets/Images/WHATSAPPSQUARE.jpg')} />
+                                                            source={require('../assets/Images/greenWp.png')} />
                                                     </VStack>
                                                 </HStack>
                                             </HStack>
@@ -506,8 +529,115 @@ export default function Home({ navigation }) {
 
                 </View>
             </ScrollView >
+            {
+                isModalVisible ?
+                    <Modal isOpen={isModalVisible} onClose={() => setModalVisible(false)} avoidKeyboard justifyContent="center" size="lg">
+                        <Modal.Content>
+                            <Modal.CloseButton />
+                            <Modal.Header>Insurance Network Finder</Modal.Header>
+                            <Modal.Body>
+                                <Box w={'full'}>
+                                    <SelectDropdown
+                                        defaultButtonText='Select Insurance Company  ▼'
+                                        buttonStyle={{
+                                            backgroundColor: Colors.white, height: 50, width: '100%',
+                                            borderColor: Colors.secondaryPrimaryColor, borderWidth: 2, borderRadius: 30
+                                        }}
+                                        buttonTextStyle={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.smallText }}
+                                        data={countries}
+                                        onSelect={(selectedItem, index) => {
+                                            console.log(selectedItem, index)
+                                        }}
+                                        buttonTextAfterSelection={(selectedItem, index) => {
+                                            return selectedItem
+                                        }}
+                                        rowTextForSelection={(item, index) => {
+                                            return item
+                                        }}
+                                    />
+                                </Box>
 
-        </View>
+                                <Box mt={'2.5'}>
+                                    <SelectDropdown
+                                        defaultButtonText='Select Network  ▼'
+                                        buttonStyle={{
+                                            backgroundColor: Colors.white, height: 50, width: '100%',
+                                            borderColor: Colors.secondaryPrimaryColor, borderWidth: 2, borderRadius: 30
+                                        }}
+                                        buttonTextStyle={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.smallText }}
+                                        data={countries}
+                                        onSelect={(selectedItem, index) => {
+                                            console.log(selectedItem, index)
+                                        }}
+                                        buttonTextAfterSelection={(selectedItem, index) => {
+                                            return selectedItem
+                                        }}
+                                        rowTextForSelection={(item, index) => {
+                                            return item
+                                        }}
+                                    />
+                                </Box>
+
+                                <Box w={'full'} mt={'2.5'}>
+                                    <SelectDropdown
+                                        defaultButtonText='Select Near me  ▼'
+                                        buttonStyle={{
+                                            backgroundColor: Colors.white, height: 50, width: '100%',
+                                            borderColor: Colors.secondaryPrimaryColor, borderWidth: 2, borderRadius: 30
+                                        }}
+                                        buttonTextStyle={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.smallText }}
+                                        data={countries}
+                                        onSelect={(selectedItem, index) => {
+                                            console.log(selectedItem, index)
+                                        }}
+                                        buttonTextAfterSelection={(selectedItem, index) => {
+                                            return selectedItem
+                                        }}
+                                        rowTextForSelection={(item, index) => {
+                                            return item
+                                        }}
+                                    />
+                                </Box>
+
+                                <Box w={'full'} mt={'3.5'}>
+                                    <Text textAlign={'left'} style={[Styles.titleText, { fontSize: 16 }]}>Select Vendor</Text>
+                                    <Radio.Group name="exampleGroup" defaultValue="1" accessibilityLabel="pick a size">
+                                        <Stack direction={{
+                                            base: "row",
+                                            md: "row"
+                                        }} alignItems={{
+                                            base: "flex-start",
+                                            md: "center"
+                                        }} space={4} w="75%" mt={'2.5'} maxW="300px">
+                                            <Radio value="1" size="sm" my={1} >
+                                                <Text style={[Styles.titleText, { fontSize: 12, color: Colors.black }]}>Pharmacy</Text>
+                                            </Radio>
+                                            <Radio value="2" size="sm" my={1}>
+                                                <Text style={[Styles.titleText, { fontSize: 12, color: Colors.black }]}>Hospitals</Text>
+                                            </Radio>
+                                            <Radio value="3" size="sm" my={1}>
+                                                <Text style={[Styles.titleText, { fontSize: 12, color: Colors.black }]}>Clinic</Text>
+                                            </Radio>
+                                        </Stack>
+                                    </Radio.Group>
+                                </Box>
+
+                                <CommonButton
+                                    mt={'8'}
+                                    label={"Serach"}
+                                />
+
+                            </Modal.Body>
+                            {/* <Modal.Footer justifyContent={'center'}>
+                                
+                            </Modal.Footer> */}
+                        </Modal.Content>
+                    </Modal>
+
+                    :
+                    null
+            }
+        </View >
     )
 }
 

@@ -12,6 +12,7 @@ import ProductDetails from '../screens/ProductDetails';
 import MyProfile from '../screens/MyProfile';
 import MyAds from '../screens/MyAds';
 import Archived from '../screens/Archived';
+import PageView from '../screens/PageView';
 
 
 const Stack = createNativeStackNavigator();
@@ -31,6 +32,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="MyProfile" component={MyProfile} />
                 <Stack.Screen name="MyAds" component={MyAds} />
                 <Stack.Screen name="Archived" component={Archived} />
+                <Stack.Screen name="PageView" component={PageView} />
             </Stack.Navigator>
         </NavigationContainer>
     )
