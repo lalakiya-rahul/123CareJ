@@ -13,7 +13,8 @@
     "native-base": "^3.4.25",
     "react": "18.0.0",
     "react-native": "0.69.0",
-    "react-native-otp-textinput": "^1.0.0"
+    "react-native-otp-textinput": "^1.0.0",
+    "react-native-webview": "^11.26.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

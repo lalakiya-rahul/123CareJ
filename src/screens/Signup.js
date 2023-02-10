@@ -61,7 +61,7 @@ export default function Signup({ navigation }) {
                         {/* <Input size="xl" mt={'8'} variant="unstyled" p={0} placeholder="Password" placeholderTextColor={Colors.grey2} focusOutlineColor={Colors.white} borderWidth={0} borderBottomColor={Colors.grey2} borderBottomWidth={'1'} /> */}
 
 
-                        <Pressable onPress={() => navigation.navigate('BottomTab')} style={{ alignSelf: 'flex-end' }}>
+                        <Pressable onPress={() => navigation.navigate('OTP')} style={{ alignSelf: 'flex-end' }}>
                             <View style={{ backgroundColor: Colors.primaryColor, borderRadius: 45 / 2, height: 45, width: 45, justifyContent: 'center', alignItems: 'center', marginTop: 15, }}>
                                 <Image alt={"signup"} source={require('../assets/Images/arrow-top-left.png')} style={{ height: 25, width: 25, tintColor: Colors.white, transform: [{ rotate: '135deg' }], }} />
                             </View>

@@ -204,7 +204,7 @@ const Product = ({ navigation }) => {
                                                     <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>Apple Sqaure, Surat, Gujarat</Text>
                                                 </HStack>
                                                 <HStack lineHeight={'2.5'} h={'4'} style={{ justifyContent: 'flex-start', alignItems: 'center', }}>
-                                                    <Image style={{ height: 8, width: 40, marginLeft: '2%', }}
+                                                    <Image style={{ height: 8, width: 40, marginLeft: '2%', tintColor: Colors.primaryColor }}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/rating.png')} />
                                                     <Text style={[Styles.titleText, { fontSize: 7, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>

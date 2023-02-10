@@ -160,7 +160,7 @@ const ProductDetails = ({ navigation }) => {
                                     <Image style={{ height: 50, width: 50, }}
                                         alt={"Alternate Text"}
                                         source={require('../assets/Images/web.png')} />
-                                    <Text style={[styles.callText, { marginTop: '1%', }]}>Global</Text>
+                                    <Text style={[styles.callText, { marginTop: '1%', }]}>Web</Text>
                                 </VStack>
                             </HStack>
                         </VStack>

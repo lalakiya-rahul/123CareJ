@@ -2,17 +2,65 @@ import * as React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Box, Checkbox, CheckCircleIcon, CheckIcon, HStack, Icon, Image, Input, Select, TextArea, VStack } from 'native-base';
+import { Box, Checkbox, CheckCircleIcon, CheckIcon, FlatList, HStack, Icon, Image, Input, Select, TextArea, VStack } from 'native-base';
 import fonts from '../constants/fonts';
 import CommonInput from '../components/Inputs';
 import PhoneInput from 'react-native-phone-number-input';
 import CommonButton from '../components/Button';
 import CommonHeader from '../components/Header';
+import { map } from 'lodash'
 
 export default function AddListing({ navigation }) {
     const [service, setService] = React.useState("");
     const [phoneNumber, setPhoneNumber] = React.useState('');
     const phoneInput = React.useRef(null);
+
+    const additionalData = [
+        {
+            "featured_name": "Cost",
+            "featured_id": 1,
+            "value": [
+                {
+                    "id": 1,
+                    "field_id": 1,
+                    "value": "Chargable",
+                    "status": 1,
+                    "created_at": "2023-02-01T12:59:34.000000Z",
+                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                },
+                {
+                    "id": 2,
+                    "field_id": 1,
+                    "value": "Free",
+                    "status": 1,
+                    "created_at": "2023-02-01T12:59:34.000000Z",
+                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                }
+            ]
+        },
+        {
+            "featured_name": "Delivery",
+            "featured_id": 1,
+            "value": [
+                {
+                    "id": 1,
+                    "field_id": 1,
+                    "value": "Delivery",
+                    "status": 1,
+                    "created_at": "2023-02-01T12:59:34.000000Z",
+                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                },
+                {
+                    "id": 2,
+                    "field_id": 1,
+                    "value": "Self pick up",
+                    "status": 1,
+                    "created_at": "2023-02-01T12:59:34.000000Z",
+                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                }
+            ]
+        }
+    ]
     return (
         <View>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
@@ -160,6 +208,38 @@ export default function AddListing({ navigation }) {
                                     </Select>
                                 </Box>
                             </HStack>
+                            {service ?
+                                <HStack>
+                                    <FlatList
+                                        contentContainerStyle={{ width: '100%', marginTop: 15 }}
+                                        data={additionalData}
+                                        renderItem={({ item }) => {
+                                            return (
+                                                <HStack style={{ justifyContent: 'flex-start', marginBottom: 5 }}>
+                                                    <VStack style={{ justifyContent: 'flex-start', width: '30%' }}>
+                                                        <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black, }}>{item.featured_name}</Text>
+                                                    </VStack>
+                                                    <VStack style={{ justifyContent: "flex-end", }}>
+                                                        <HStack style={{ alignItems: "flex-start", }}>
+                                                            {map(item.value, i => {
+                                                                return (
+                                                                    <HStack style={{ width: '35%' }}>
+                                                                        {/* <Image mr={2} style={{ height: 10, width: 15, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                                                        alt={"Alternate Text"}
+                                                                        source={require('../assets/Images/true.png')} /> */}
+                                                                        <Checkbox size={'sm'} my={2}>
+
+                                                                            <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.black, }}>{i.value}</Text>
+                                                                        </Checkbox>
+                                                                    </HStack>)
+                                                            })}
+                                                        </HStack>
+                                                    </VStack>
+                                                </HStack>
+                                            )
+                                        }} />
+                                </HStack>
+                                : null}
 
                             <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>

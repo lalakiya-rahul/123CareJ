@@ -118,6 +118,19 @@ export default function Profile({ navigation }) {
                             </HStack>
                         </Pressable>
                         <Divider mt={'0.5'} />
+                        <Pressable onPress={() => navigation.navigate('Message')}>
+                            <HStack justifyContent={'space-between'} alignItems={'center'} mt={'2'}>
+                                <HStack alignItems={'center'} p={'3'}>
+                                    <Image style={{ width: 25, height: 22, alignSelf: 'center', tintColor: Colors.primaryColor, }}
+                                        source={require('../assets/Images/email.png')} />
+                                    <Text style={styles.menuText}>Chats</Text>
+                                </HStack>
+                                <Image style={styles.BackIconStyle}
+                                    source={require('../assets/Images/back.png')} />
+                            </HStack>
+                        </Pressable>
+
+                        <Divider mt={'0.5'} />
                         <Pressable onPress={() => navigation.navigate('MyAds')}>
                             <HStack justifyContent={'space-between'} alignItems={'center'} mt={'2'}>
                                 <HStack alignItems={'center'} p={'3'}>
@@ -142,6 +155,7 @@ export default function Profile({ navigation }) {
                                     source={require('../assets/Images/back.png')} />
                             </HStack>
                         </Pressable>
+
                         <Divider mt={'0.5'} />
                         <FlatList
                             data={page}

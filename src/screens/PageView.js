@@ -1,13 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions } from 'react-native';
+import { View, Pressable, Dimensions } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Avatar, Box, Checkbox, CheckCircleIcon, Divider, HStack, Image, Input, Select, Text, VStack } from 'native-base';
+import { HStack, Image, Text, } from 'native-base';
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
-import PhoneInput from 'react-native-phone-number-input';
-import CommonButton from '../components/Button';
-import CommonHeader from '../components/Header';
+import { WebView } from 'react-native-webview';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -31,13 +29,18 @@ export default function PageView({ navigation, route }) {
 
                 <HStack alignSelf={'center'} alignItems={'center'}>
                     <HStack >
-
                         <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
                             alt={"Alternate Text"}
                             source={require('../assets/Images/notification.png')} />
                     </HStack>
                 </HStack>
             </HStack>
+            {
+                route.params.page.content ?
+                    <WebView source={{ html: '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>' + route.params.page.content + '</body></html>' }} />
+                    :
+                    null
+            }
 
         </View>
     )
