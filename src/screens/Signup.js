@@ -1,6 +1,6 @@
 
 import React, { useRef, useState } from 'react';
-import { Dimensions, ImageBackground, Pressable, StyleSheet, View } from 'react-native';
+import { Dimensions, ImageBackground, Pressable, StyleSheet, ToastAndroid, View } from 'react-native';
 import { HStack, VStack, Text, Image, Divider, ScrollView, Input } from 'native-base';
 import Colors from '../constants/colors';
 import Fonts from '../constants/fonts';
@@ -8,16 +8,65 @@ import CommonInput from '../components/Inputs';
 import CommonButton from '../components/Button';
 import PhoneInput from 'react-native-phone-number-input';
 import Styles from '../constants/styles';
+import { Helper } from '../helper/Helper';
+import { Urls } from '../helper/Urls';
+import Loader from '../components/Loader';
+import { checkInternet, showToast } from '../helper/Utils';
+import { validateEmail, validatePhone } from '../helper/Validations';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function Signup({ navigation }) {
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [formattedValue, setFormattedValue] = React.useState("");
+
+    const initState = {
+        name: '',
+        mobile: '',
+        email: '',
+
+        // deviceToken,deviceTypes, 
+    }
+    const [state, setState] = React.useState(initState);
+    const [loading, setLoding] = React.useState(false);
     const phoneInput = useRef(null);
+
+    const onInputChange = (field, value) => {
+        setState({
+            ...state,
+            [field]: value,
+        })
+    }
+
+    const sendOtp = async () => {
+        if (validatePhone(state.mobile) && validateEmail(state.email)) {
+            if (checkInternet()) {
+                setLoding(true);
+                const apiData = {
+                    mobile_no: parseInt(state.mobile),
+                    country: formattedValue === "" || '+91' ? 1 : 2,
+                    username: state.name,
+                    email: state.email
+                };
+                var response = await Helper.POST(Urls.register, apiData);
+                if (response.error === '0') {
+                    navigation.navigate('OTP', { phone: state.mobile });
+                    setLoding(false);
+                } else {
+                    ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                    setLoding(false);
+                }
+
+            } else {
+                ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+            }
+        }
+    };
+
     return (
         <ScrollView>
             <View style={[styles.container]}>
+                <Loader loading={loading} />
                 <VStack alignItems={'center'} p={8}>
                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
@@ -27,12 +76,19 @@ export default function Signup({ navigation }) {
                             Signup for a seamless experience
                         </Text>
 
-                        <Input size="xl" mt={'8'} variant="unstyled" p={0} placeholder="Name" placeholderTextColor={Colors.grey2} focusOutlineColor={Colors.white} borderWidth={0} borderBottomColor={Colors.grey2} borderBottomWidth={'1'} />
+                        <Input size="xl" mt={'8'}
+                            variant="unstyled" p={0}
+                            placeholder="Name" placeholderTextColor={Colors.grey2}
+                            focusOutlineColor={Colors.white} borderWidth={0}
+                            onChangeText={(value) => { onInputChange('name', value) }}
+                            borderBottomColor={Colors.grey2} borderBottomWidth={'1'} />
                         <Input
                             size="xl" mt={'6'} variant="unstyled" h={'8'}
                             p={0} placeholder="Mobile number" placeholderTextColor={Colors.grey2}
                             focusOutlineColor={Colors.white} borderWidth={0}
+                            keyboardType={'number-pad'} maxLength={10}
                             borderBottomColor={Colors.grey2} borderBottomWidth={'1'}
+                            onChangeText={(value) => { onInputChange('mobile', value) }}
                             InputLeftElement={<HStack bg={'amber.100'}>
                                 <PhoneInput
                                     containerStyle={{ width: 80 }}
@@ -40,7 +96,7 @@ export default function Signup({ navigation }) {
                                     textInputStyle={{ width: 1 }}
                                     flagButtonStyle={{ width: 60 }}
                                     ref={phoneInput}
-                                    defaultValue={phoneNumber}
+                                    defaultValue={formattedValue}
                                     defaultCode="IN"
                                     countryPickerProps={{
                                         countryCodes: ['IN', 'AE', 'US'],
@@ -50,18 +106,21 @@ export default function Signup({ navigation }) {
                                     // textInputStyle={[styles.formInput, { right: '100%', width: '100%', }]}
                                     countryPickerButtonStyle={{ backgroundColor: Colors.white, }}
                                     // textContainerStyle={{ paddingVertical: 0 }}
-                                    onChangeFormattedText={text => {
-                                        setPhoneNumber(text);
+                                    onChangeFormattedText={(text) => {
+                                        setFormattedValue(text);
                                     }}
                                 />
                             </HStack>}
                         />
 
-                        <Input size="xl" mt={'8'} variant="unstyled" p={0} placeholder="Email" placeholderTextColor={Colors.grey2} focusOutlineColor={Colors.white} borderWidth={0} borderBottomColor={Colors.grey2} borderBottomWidth={'1'} />
-                        {/* <Input size="xl" mt={'8'} variant="unstyled" p={0} placeholder="Password" placeholderTextColor={Colors.grey2} focusOutlineColor={Colors.white} borderWidth={0} borderBottomColor={Colors.grey2} borderBottomWidth={'1'} /> */}
+                        <Input size="xl" mt={'8'}
+                            variant="unstyled" p={0} placeholder="Email"
+                            placeholderTextColor={Colors.grey2} focusOutlineColor={Colors.white}
+                            keyboardType={"email-address"}
+                            onChangeText={(value) => { onInputChange('email', value) }}
+                            borderWidth={0} borderBottomColor={Colors.grey2} borderBottomWidth={'1'} />
 
-
-                        <Pressable onPress={() => navigation.navigate('OTP')} style={{ alignSelf: 'flex-end' }}>
+                        <Pressable onPress={() => sendOtp()} style={{ alignSelf: 'flex-end' }}>
                             <View style={{ backgroundColor: Colors.primaryColor, borderRadius: 45 / 2, height: 45, width: 45, justifyContent: 'center', alignItems: 'center', marginTop: 15, }}>
                                 <Image alt={"signup"} source={require('../assets/Images/arrow-top-left.png')} style={{ height: 25, width: 25, tintColor: Colors.white, transform: [{ rotate: '135deg' }], }} />
                             </View>
@@ -69,7 +128,7 @@ export default function Signup({ navigation }) {
 
                     </View>
                     <HStack alignItems={'center'} mt={'8'} w={'full'}>
-                        <Divider>  <View style={{ height: 20, width: 40, borderRadius: 30 / 3, backgroundColor: Colors.grey2, zIndex: 1, marginTop: '-3%', alignSelf: 'center' }}>
+                        <Divider>  <View style={{ height: 20, width: 40, borderRadius: 30 / 3, backgroundColor: Colors.grey2, zIndex: 1, marginTop: '-3%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={{ color: '#F9F8F7', fontSize: 11, alignSelf: 'center', }}>OR</Text>
                         </View> </Divider>
                     </HStack>

@@ -1,4 +1,5 @@
-import { showToast } from './Helper';
+import { ToastAndroid } from 'react-native';
+import { showToast } from './Utils';
 
 const validationBlank = (value, msg) => {
     console.log('value --> ', value);
@@ -45,19 +46,21 @@ const validateEmail = (value) => {
     if (re.test(String(value).toLowerCase())) {
         return true;
     } else if (value === '') {
-        showToast('Please enter Email address', 'error');
+        ToastAndroid.show('Please enter Email address', ToastAndroid.SHORT);
     } else {
-        showToast('Please enter valid Email address', 'error');
+        ToastAndroid.show('Please enter valid Email address', ToastAndroid.SHORT);
     }
 };
 
 const validatePhone = (value) => {
-    if (value.length === 11) {
+    if (value.length >= 10) {
+        console.log("true");
         return true;
     } else if (value === '') {
-        showToast('Please enter mobile number', 'error');
+        ToastAndroid.show('Please enter mobile number', ToastAndroid.SHORT);
     } else {
-        showToast('Please enter 11 digit mobile number', 'error');
+        console.log('else');
+        ToastAndroid.show('Please enter 10 digit mobile number', ToastAndroid.SHORT);
     }
 };
 

@@ -1,23 +1,31 @@
 
 import * as React from 'react';
-import { Image, Pressable, StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View, ScrollView, Dimensions, ToastAndroid } from 'react-native';
 import { Divider, HStack, Input, VStack } from 'native-base';
 import Colors from '../constants/colors'
 import Fonts from '../constants/fonts'
 import PhoneInput from 'react-native-phone-number-input';
+import { checkInternet, showToast } from '../helper/Utils';
+import { validateAll } from 'indicative/validator'
+import { Helper } from '../helper/Helper';
+import { Urls } from '../helper/Urls';
+import Loader from '../components/Loader';
+import FormErrorText from '../components/FormErrorText';
+import { SelectCountry } from 'react-native-element-dropdown';
+// import { validatePhone } from '../helper/Validations';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function Login({ navigation }) {
 
-    const [phoneNumber, setPhoneNumber] = React.useState('');
+    const [formattedValue, setFormattedValue] = React.useState("");
+    const [country, setCountry] = React.useState('1');
     const phoneInput = React.useRef(null);
 
     const initState = {
-        email: '',
-        password: '',
-        errors: {},
+        name: '',
+        mobile: '',
 
         // deviceToken,deviceTypes, 
     }
@@ -28,89 +36,48 @@ export default function Login({ navigation }) {
         setState({
             ...state,
             [field]: value,
-            error: {
-                ...state.errors,
-                [field]: '',
-            },
         })
     }
 
-    // const login = async () => {
-    //     if (checkInternet()) {
-    //         const messages = {
-    //             'email.required': 'Please enter email',
-    //             'password.required': 'Please enter password',
-    //         };
-    //         const rules = {
-    //             email: 'required|string',
-    //         };
+    const validatePhone = (value) => {
+        if (value.length >= 10) {
+            console.log("true");
+            return true;
+        } else if (value === '') {
+            ToastAndroid.show('Please enter mobile number', ToastAndroid.SHORT);
+        } else {
+            console.log('else');
+            ToastAndroid.show('Please enter 10 digit mobile number', ToastAndroid.SHORT);
+        }
+    };
 
-    //         validateAll(state, rules, messages)
-    //             .then(async () => {
-    //                 setLoding(true);
-    //                 const apiData = {
-    //                     email: state.email,
-    //                     password: state.password
-    //                 };
-    //                 const { data, error } = await Helper.POST(Urls.login, apiData);
-    //                 if (data) {
-    //                     setLoding(false);
-    //                     console.log('login data', data);
-    //                 } else {
-    //                     showToast(error, 'error');
-    //                     // if (error !== undefined) {
-    //                     //     setState({ ...state, errors: error })
-    //                     // } else {
-    //                     //     showToast('Oops !!! Something went wrong !!!');
-    //                     // }
-    //                 }
-    //             }).catch((error) => {
-    //                 const formattedErrors = {};
-    //                 error.forEach((e) => {
-    //                     console.log(e, 'eeee');
-    //                     formattedErrors[e.field] = [e.message]
-    //                 });
+    const login = async () => {
+        if (validatePhone(state.mobile)) {
+            if (checkInternet()) {
+                setLoding(true);
+                const apiData = {
+                    mobile_no: parseInt(state.mobile),
+                    country_id: formattedValue === "" || '+91' ? 1 : 2
+                };
+                var response = await Helper.POST(Urls.sendOtp, apiData);
+                if (response.error === '0') {
+                    navigation.navigate('OTP', { phone: state.mobile });
+                    setLoding(false);
+                } else {
+                    ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                    setLoding(false);
+                }
 
-    //                 setState({
-    //                     ...state,
-    //                     errors: formattedErrors,
-    //                 });
-    //             });
-    //     } else {
-    //         showToast(Urls.nointernet, 'error');
-    //     }
-    //     //     setLoding(true);
-    //     //     var formData = new FormData();
-    //     //     formData.append('phone', code + mno.substring(1) + '');
-    //     //     console.log('check formData', formData);
-    //     //     var response = await Helper.POST(Urls.sendCode, formData);
-    //     //     // console.log('check the response', response.status);
-    //     //     console.log("🚀 ~  Login.js ~ line 94 ~ ApisendCode ~ formData", formData);
-
-    //     //     if (response.status === true) {
-    //     //         setLoding(false);
-    //     //         // showToast(response.message, 'success');
-    //     //         navigation.navigate('Otpverification', {
-    //     //             flag: 'login',
-    //     //             name: '',
-    //     //             country_id: country_id,
-    //     //             Phone: mno,
-    //     //             code: code,
-    //     //             otp: response.data + '',
-    //     //         });
-    //     //     } else {
-    //     //         setLoding(false);
-    //     //         showToast(response.message, 'error');
-    //     //     }
-    //     // }
-    //     // else {
-    //     //     showToast(Urls.nointernet, 'error');
-    //     // }
-    // };
+            } else {
+                ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+            }
+        }
+    };
 
     return (
         <ScrollView>
             <View style={[styles.container]}>
+                <Loader loading={loading} />
                 <VStack alignItems={'center'} p={8}>
                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
@@ -120,12 +87,22 @@ export default function Login({ navigation }) {
                             Login for a seamless experience
                         </Text>
 
-                        <Input size="xl" mt={'8'} variant="unstyled" p={0} placeholder="Name" placeholderTextColor={Colors.grey2} focusOutlineColor={Colors.white} borderWidth={0} borderBottomColor={Colors.grey2} borderBottomWidth={'1'} />
+                        <Input size="xl" mt={'8'}
+                            variant="unstyled" p={0}
+                            placeholder="Name" placeholderTextColor={Colors.grey2}
+                            focusOutlineColor={Colors.white} borderWidth={0}
+                            borderBottomColor={Colors.grey2} borderBottomWidth={'1'}
+                            onChangeText={(value) => { onInputChange('name', value) }}
+                        />
+
+
                         <Input
                             size="xl" mt={'6'} variant="unstyled" h={'8'}
                             p={0} placeholder="Mobile number" placeholderTextColor={Colors.grey2}
                             focusOutlineColor={Colors.white} borderWidth={0}
                             borderBottomColor={Colors.grey2} borderBottomWidth={'1'}
+                            keyboardType={'number-pad'} maxLength={10}
+                            onChangeText={(value) => { onInputChange('mobile', value) }}
                             InputLeftElement={<HStack bg={'amber.100'}>
                                 <PhoneInput
                                     containerStyle={{ width: 80 }}
@@ -133,7 +110,7 @@ export default function Login({ navigation }) {
                                     textInputStyle={{ width: 1 }}
                                     flagButtonStyle={{ width: 60 }}
                                     ref={phoneInput}
-                                    defaultValue={phoneNumber}
+                                    defaultValue={formattedValue}
                                     defaultCode="IN"
                                     countryPickerProps={{
                                         countryCodes: ['IN', 'AE', 'US'],
@@ -143,14 +120,15 @@ export default function Login({ navigation }) {
                                     // textInputStyle={[styles.formInput, { right: '100%', width: '100%', }]}
                                     countryPickerButtonStyle={{ backgroundColor: Colors.white, }}
                                     // textContainerStyle={{ paddingVertical: 0 }}
-                                    onChangeFormattedText={text => {
-                                        setPhoneNumber(text);
+                                    onChangeFormattedText={(text) => {
+                                        setFormattedValue(text);
                                     }}
                                 />
+
                             </HStack>}
                         />
-
-                        <Pressable onPress={() => navigation.navigate('OTP')} style={{ alignSelf: 'flex-end' }}>
+                        {/* onPress={() => navigation.navigate('OTP')}  */}
+                        <Pressable onPress={() => login()} style={{ alignSelf: 'flex-end' }}>
                             <View style={{ backgroundColor: Colors.primaryColor, borderRadius: 45 / 2, height: 45, width: 45, justifyContent: 'center', alignItems: 'center', marginTop: 15, }}>
                                 <Image source={require('../assets/Images/arrow-top-left.png')} style={{ height: 25, width: 25, tintColor: Colors.white, transform: [{ rotate: '135deg' }], }} />
                             </View>
@@ -182,6 +160,7 @@ export default function Login({ navigation }) {
                         </Text>
                     </Pressable>
                 </VStack>
+
             </View>
             <View style={styles.bottomContainer}>
                 <Pressable onPress={() => navigation.navigate('BottomTab')}>
@@ -206,5 +185,31 @@ const styles = StyleSheet.create({
         left: '40%',
         bottom: 30,
 
-    }
+    },
+
+    dropdown: {
+        margin: 16,
+        height: 50,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.5,
+    },
+    imageStyle: {
+        width: 24,
+        height: 24,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+        marginLeft: 8,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
 })

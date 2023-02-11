@@ -1,23 +1,28 @@
 
 import * as React from 'react';
-import { Image, Pressable, StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View, ScrollView, Dimensions, ToastAndroid } from 'react-native';
 import { Divider, HStack, Input, VStack } from 'native-base';
 import Colors from '../constants/colors'
 import Fonts from '../constants/fonts'
 import OTPTextInput from 'react-native-otp-textinput';
+import { checkInternet } from '../helper/Utils';
+import { Urls } from '../helper/Urls';
+import Loader from '../components/Loader';
+import { isEmpty } from 'lodash'
+import { Helper } from '../helper/Helper';
 
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 
-export default function OTP({ navigation }) {
+export default function OTP({ navigation, route }) {
     // const otpInput = React.useRef(null);
     const [otpInput, setOtpInput] = React.useState('')
     const [seconds, setSeconds] = React.useState(30);
-
+    const [loading, setLoding] = React.useState(false);
     const setText = () => {
-        otpInput.current.setValue("1234");
+        otpInput.current.setValue("");
     }
 
     React.useEffect(() => {
@@ -31,9 +36,33 @@ export default function OTP({ navigation }) {
             clearInterval(interval);
         };
     }, [seconds]);
+
+    const verifyOtp = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                mobile_no: parseInt(route.params.phone),
+                otp: otpInput
+            };
+            var response = await Helper.POST(Urls.verifyOtp, apiData);
+            console.log(response, 'respo');
+            if (response.error === '0') {
+                navigation.navigate('BottomTab');
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
+
+
     return (
         <ScrollView>
             <View style={[styles.container]}>
+                <Loader loading={loading} />
                 <VStack p={8}>
                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
@@ -48,7 +77,7 @@ export default function OTP({ navigation }) {
                         </Text>
                         <HStack space={3} style={{ alignSelf: 'flex-start', }}>
                             <Text style={{ fontFamily: Fonts.Poppins_Bold, color: Colors.grey, fontSize: 14, marginTop: 15, textAlign: 'center', alignSelf: 'center', }}>
-                                9876543216
+                                {route.params.phone}
                             </Text>
                             {/* <Image style={{ height: 16, width: 16, tintColor: Colors.black, alignSelf: 'center', marginTop: '3%' }}
                                 alt={"Alternate Text"}
@@ -81,7 +110,7 @@ export default function OTP({ navigation }) {
 
                         }
 
-                        <Pressable onPress={() => navigation.navigate('OTP')} style={{ alignSelf: 'flex-end' }}>
+                        <Pressable onPress={() => verifyOtp()} style={{ alignSelf: 'flex-end' }}>
                             <View style={{ backgroundColor: Colors.primaryColor, borderRadius: 45 / 2, height: 45, width: 45, justifyContent: 'center', alignItems: 'center', marginTop: 15, }}>
                                 <Image source={require('../assets/Images/arrow-top-left.png')} style={{ height: 25, width: 25, tintColor: Colors.white, transform: [{ rotate: '135deg' }], }} />
                             </View>

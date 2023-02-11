@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState } from 'react';
-import { Image, View, Text } from 'react-native';
-import { ActivityIndicator } from 'react-native';
+import React from 'react';
+import { Image, View, Text, ActivityIndicator } from 'react-native';
+// import {  } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Colors from '../constants/colors';
 // import Images from '../Theme/Images';
@@ -26,13 +26,14 @@ export const checkInternet = async () => {
 
 
 export const showToast = (msg, type) => {
+    console.log(msg, type);
     if (msg) {
         Toast.show({
             text1: msg,
             type: type, //'success | error | info',
             position: 'top',
             visibilityTime: 6000,
-            autoHide: true,
+            // autoHide: true,
             topOffset: 10,
             // bottomOffset: 40,
         });

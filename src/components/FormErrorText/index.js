@@ -9,7 +9,7 @@ export default function FromErrorText(props) {
 
     if (errorText) {
         return (
-            <Text numberOfLines={1} mt={'2.5'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.error }}>{errorText}</Text>
+            <Text numberOfLines={1} mt={'2.5'} style={[{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.error }, optionalStyle]}>{errorText}</Text>
         )
     }
     return null;
@@ -17,4 +17,5 @@ export default function FromErrorText(props) {
 
 FromErrorText.propsTypes = {
     errorText: PropsTypes.any,
+    optionalStyle: PropsTypes.any
 }

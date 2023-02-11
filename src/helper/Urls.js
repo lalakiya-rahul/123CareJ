@@ -5,4 +5,7 @@ export const Urls = {
 
     // auth 
     login: '/login',
+    sendOtp: '/otp-send',
+    verifyOtp: '/otp-verify',
+    register: '/register'
 }
