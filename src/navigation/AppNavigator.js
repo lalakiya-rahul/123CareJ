@@ -12,7 +12,7 @@ import ProductDetails from '../screens/ProductDetails';
 import HospitalDetails from '../screens/HospitalDetails';
 import MyProfile from '../screens/MyProfile';
 import MyAds from '../screens/MyAds';
-import Archived from '../screens/Archived';
+import Fevorites from '../screens/Fevorites';
 import PageView from '../screens/PageView';
 
 
@@ -33,7 +33,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Message" component={Message} />
                 <Stack.Screen name="MyProfile" component={MyProfile} />
                 <Stack.Screen name="MyAds" component={MyAds} />
-                <Stack.Screen name="Archived" component={Archived} />
+                <Stack.Screen name="Fevorites" component={Fevorites} />
                 <Stack.Screen name="PageView" component={PageView} />
             </Stack.Navigator>
         </NavigationContainer>

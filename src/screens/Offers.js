@@ -5,7 +5,7 @@ import Colors from '../constants/colors';
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
 
-export default function Message({ navigation }) {
+export default function Offers({ navigation }) {
 
     //serach screen
 
@@ -125,11 +125,6 @@ export default function Message({ navigation }) {
                     </VStack>
                 </HStack>
             </View>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, }}>
-
-
-
-            </ScrollView>
         </View>
     )
 }

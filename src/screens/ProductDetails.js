@@ -124,8 +124,6 @@ const ProductDetails = ({ navigation }) => {
                         <VStack mt={'2'} >
                             <HStack justifyContent={'space-between'}>
                                 <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 25, }]}>Test image</Text>
-
-
                             </HStack>
                             <HStack h={'5'} alignItems={'center'} space={1}>
                                 <Image style={{ height: 20, width: 20, marginLeft: '-1%' }}
@@ -135,7 +133,7 @@ const ProductDetails = ({ navigation }) => {
                             </HStack>
 
 
-                            <HStack lineHeight={'2.5'} h={'8'} style={{ alignItems: 'center', }}>
+                            <HStack lineHeight={'2.5'} h={'6'} style={{ alignItems: 'center', }}>
                                 <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>4.7</Text>
                                 <Image style={{ height: 10, width: 50, marginLeft: '2%', }}
                                     alt={"Alternate Text"}
@@ -153,7 +151,7 @@ const ProductDetails = ({ navigation }) => {
                                 <Text style={{ fontSize: 9, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }}>Pay</Text>
                             </HStack > */}
 
-                            <HStack mt={'1'} justifyContent={'space-between'} alignItems={'center'}>
+                            <HStack justifyContent={'space-between'} alignItems={'center'}>
 
                                 <VStack alignItems={'center'} >
                                     <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
@@ -185,12 +183,14 @@ const ProductDetails = ({ navigation }) => {
 
                             </HStack>
 
-                            <Divider mt={'2'} />
+                            <Divider mt={'1'} />
 
-                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginTop: '3%', marginBottom: '1%' }]}>Description</Text>
-                            <Text onTextLayout={onTextLayout} pt={'1'} numberOfLines={textShown ? undefined : 3} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
-                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                            <Text onTextLayout={onTextLayout} lineHeight={'sm'} numberOfLines={textShown ? undefined : 3} style={[Styles.titleText, { fontSize: 15, color: Colors.primaryColor, fontFamily: fonts.Poppins_Medium, marginTop: '2%', }]}>
+                                About Us :-
+                                <Text mr={'2'} color={Colors.black} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
+                                    {' '} It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                </Text>
                             </Text>
                             {
                                 lengthMore ? <Text
@@ -200,12 +200,12 @@ const ProductDetails = ({ navigation }) => {
                             }
                         </VStack>
                     </View>
-                    <Divider />
+                    <Divider style={{ marginTop: -10 }} />
 
-                    <Stack p={'3'}>
+                    <Stack p={'3'} style={{ marginTop: -2 }}>
                         <HStack>
                             <FlatList
-                                contentContainerStyle={{ width: '100%', marginTop: 5 }}
+                                contentContainerStyle={{ width: '100%', }}
                                 data={additionalData}
                                 renderItem={({ item }) => {
                                     return (
@@ -231,8 +231,8 @@ const ProductDetails = ({ navigation }) => {
                                 }} />
                         </HStack>
                     </Stack>
-                    <Divider />
-                    <View style={{ padding: 10, }}>
+                    <Divider style={{ marginTop: -10 }} />
+                    <View style={{ padding: 10, marginTop: -8 }}>
                         <VStack>
                             <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>Rate this</Text>
                             <HStack justifyContent={'space-between'} w={'72'} alignSelf={'center'} mt={'2'}>
@@ -254,9 +254,9 @@ const ProductDetails = ({ navigation }) => {
                             </HStack>
                         </VStack>
 
-                        <Divider mt={'5'} />
-                        <VStack mt={'2'}>
-                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.chipColor, fontFamily: fonts.Poppins_Medium, }]}>
+                        <Divider mt={'2'} />
+                        <VStack mt={'1'}>
+                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
                                 Delivery Address
                             </Text>
                             <HStack mt={'3'} justifyContent={'space-between'}>
@@ -318,8 +318,8 @@ const ProductDetails = ({ navigation }) => {
                             </HStack>
                         </VStack>
 
-                        <Divider mt={'5'} />
-                        <Text mt={'3'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
+                        <Divider mt={'2'} />
+                        <Text mt={'1'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
                             Review & Ratings
                         </Text>
                         <HStack mt={'3'} >
@@ -334,8 +334,8 @@ const ProductDetails = ({ navigation }) => {
                             </VStack>
                         </HStack>
 
-                        <Divider mt={'5'} />
-                        <Text mt={'3'} style={{ fontSize: 13, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
+                        <Divider mt={'2'} />
+                        <Text mt={'1'} style={{ fontSize: 13, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
                             Recent rating trend
                         </Text>
                         <HStack mt={'2'} justifyContent={'space-between'}>
@@ -389,7 +389,10 @@ const ProductDetails = ({ navigation }) => {
                             </View>
                         </HStack>
 
-                        <Divider mt={'5'} />
+                        <Image resizeMode="contain" borderRadius={'xl'} height={'24'} mt={'2'}
+                            alt={"Alternate Text"} width={width / 1}
+                            source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
+                        <Divider mt={'2'} />
                         <Text mt={'3'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
                             User Review
                         </Text>
@@ -508,8 +511,8 @@ const ProductDetails = ({ navigation }) => {
                     </View>
 
                 </View>
-            </ScrollView>
-        </View>
+            </ScrollView >
+        </View >
     )
 }
 

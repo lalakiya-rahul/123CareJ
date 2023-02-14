@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 const CommonChip = (props) => {
     const { source, label, size, cardStyle, labelStyle, imageStyle } = props
     return (
-        <HStack style={[styles.card, { paddingVertical: 5, paddingHorizontal: '7%' }, cardStyle]} rounded={'full'} justifyContent={'center'} alignItems={'center'}>
+        <HStack style={[styles.card, { paddingVertical: 5, width: '30%' }, cardStyle]} rounded={'full'} justifyContent={'center'} alignItems={'center'}>
             <Text style={[styles.lableText, labelStyle]}>{label}</Text>
             <Image ml={1} size={size} style={[styles.imageStyle, imageStyle]}
                 alt={"Alternate Text"}

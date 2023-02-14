@@ -38,8 +38,6 @@ export default function MyProfile({ navigation }) {
     const [state, setState] = React.useState(initState);
     const [loading, setLoding] = React.useState(false);
 
-    console.log(countryId, statesId, cityId, 'all state----');
-
     const onInputChange = (field, value) => {
         setState({
             ...state,
@@ -50,7 +48,6 @@ export default function MyProfile({ navigation }) {
     React.useEffect(() => {
         (async () => getData())();
         getCountry();
-
         return () => {
             console.log('This will be logged on unmount');
         };
@@ -63,19 +60,18 @@ export default function MyProfile({ navigation }) {
             const apiData = {
                 user_id: JSON.parse(userData).user_id,
                 token: JSON.parse(userData).token,
-                profile,
-                username,
-                name,
-                email,
-                mobile_no,
-                country,
-                state,
-                city,
+                profile: '',
+                username: state.username,
+                name: state.name,
+                email: state.email,
+                mobile_no: state.mobile_no,
+                country: countryId,
+                state: statesId,
+                city: cityId,
             }
-            var response = await Helper.POST(Urls.updateProfile);
+            var response = await Helper.POST(Urls.updateProfile, apiData);
             if (response.error === '0') {
-                setCountry(response.data);
-                getState()
+                await AsyncStorage.setItem('userData', JSON.stringify(response.data));
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -89,7 +85,6 @@ export default function MyProfile({ navigation }) {
     const getData = async () => {
         setLoding(true);
         const userData = await AsyncStorage.getItem('userData');
-        console.log(userData, 'user data--');
         setState({
             name: JSON.parse(userData).name,
             username: JSON.parse(userData).username,
@@ -109,7 +104,6 @@ export default function MyProfile({ navigation }) {
             setLoding(true);
             var response = await Helper.GET(Urls.getCountry);
             if (response.error === '0') {
-                console.log(response.data, 'county data---');
                 setCountry(response.data);
                 getState()
                 setLoding(false);
@@ -127,7 +121,6 @@ export default function MyProfile({ navigation }) {
             setLoding(true);
             var response = await Helper.GET(Urls.getState);
             if (response.error === '0') {
-                console.log(response.data, 'state data--');
                 setStates(response.data)
                 getCity();
                 setLoding(false);
@@ -146,7 +139,6 @@ export default function MyProfile({ navigation }) {
             var response = await Helper.GET(Urls.getCity);
             if (response.error === '0') {
                 setCity(response.data)
-                console.log(response.data, 'city data---');
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -340,6 +332,7 @@ export default function MyProfile({ navigation }) {
                         <CommonButton
                             mt={'3'}
                             label={"Update"}
+                            onPress={() => updateProfile()}
                         />
 
                     </VStack>

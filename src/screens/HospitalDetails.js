@@ -112,18 +112,19 @@ const HospitalDetails = ({ navigation }) => {
                             </VStack> */}
                             <HStack justifyContent={'center'} alignContent={'center'} borderRadius={'2xl'}  >
                                 <Image resizeMode="contain" borderRadius={'xl'} height={'40'}
-                                    alt={"Alternate Text"} width={width / 1.3}
+                                    alt={"Alternate Text"} width={width / 1.7} alignSelf={'center'} style={{ marginLeft: '20%' }}
                                     source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
-                                <VStack style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 20 }}>
-                                    <Image style={[styles.imageStyle, { height: 40, width: 40, marginBottom: 20 }]} source={require('../assets/Images/fevorites.png')} alt="Alternate Text" />
-                                    <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
-                                </VStack>
+
                             </HStack>
                         </HStack>
 
                         <VStack mt={'2'} >
                             <HStack justifyContent={'space-between'}>
                                 <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 25, }]}>Test image</Text>
+                                <HStack style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                    <Image style={[styles.imageStyle, { height: 40, width: 40, }]} source={require('../assets/Images/fevorites.png')} alt="Alternate Text" />
+                                    <Image style={[styles.imageStyle, { height: 35, width: 35, marginLeft: 20 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
+                                </HStack>
                             </HStack>
                             <HStack h={'5'} alignItems={'center'} space={1}>
                                 <Image style={{ height: 20, width: 20, marginLeft: '-1%' }}
@@ -140,10 +141,53 @@ const HospitalDetails = ({ navigation }) => {
                                     source={require('../assets/Images/rating.png')} />
                                 <Text style={[Styles.titleText, { fontSize: 12, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>
                             </HStack>
+                            {/* Additional Details */}
+                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginTop: '1%', }]}>Additional Details</Text>
+                            <VStack ml={'4'} >
+                                <HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Medical</Text>
+                                    </HStack>
 
-                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginTop: '3%', marginBottom: '1%' }]}>Additional Details</Text>
-                            <HStack alignItems={'center'} space={3} >
-                                <HStack style={[styles.card, {
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Health</Text>
+                                    </HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Travel</Text>
+                                    </HStack>
+                                </HStack>
+                                <HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Insurance</Text>
+                                    </HStack>
+
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Health</Text>
+                                    </HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Medical</Text>
+                                    </HStack>
+                                </HStack>
+
+                                {/* <HStack style={[styles.card, {
                                     paddingVertical: 3, paddingHorizontal: '4%',
                                     backgroundColor: Colors.lightSkyBlue, borderColor: Colors.black, borderWidth: 1
                                 }]}
@@ -177,14 +221,56 @@ const HospitalDetails = ({ navigation }) => {
                                         fontSize: 12,
                                         color: Colors.black,
                                     }}>Travel</Text>
-                                </HStack >
+                                </HStack > */}
 
-                            </HStack>
+                            </VStack>
 
-                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginBottom: '1%' }]}>Speciality</Text>
+                            {/* Speciality */}
+                            <Text mt={'1'} style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginBottom: '1%' }]}>Speciality</Text>
+                            <VStack ml={'4'}>
+                                <HStack >
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Pathology</Text>
+                                    </HStack>
 
-                            <HStack alignItems={'center'} space={3} >
-                                <HStack style={[styles.card, {
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Neurology</Text>
+                                    </HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Surgery</Text>
+                                    </HStack>
+                                </HStack>
+                                <HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Pathology</Text>
+                                    </HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Anesthesiolgy</Text>
+                                    </HStack>
+                                    <HStack style={{ width: '35%' }}>
+                                        <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/true.png')} />
+                                        <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Neurology</Text>
+                                    </HStack>
+                                </HStack>
+
+                                {/* <HStack style={[styles.card, {
                                     paddingVertical: 3, paddingHorizontal: '4%',
                                     backgroundColor: Colors.lightSkyBlue, borderColor: Colors.black, borderWidth: 1
                                 }]}
@@ -218,20 +304,19 @@ const HospitalDetails = ({ navigation }) => {
                                         fontSize: 12,
                                         color: Colors.black,
                                     }}>Surgery</Text>
-                                </HStack >
+                                </HStack > */}
 
-                            </HStack>
+                            </VStack>
 
-                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginTop: '1%', }]}>Network</Text>
-
-                            <HStack mt={'2'} mb={'2'}>
+                            {/* Network */}
+                            <Text mt={'2'} style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginTop: '1%', }]}>Network</Text>
+                            <HStack ml={'4'} >
                                 <HStack style={{ width: '35%' }}>
                                     <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
                                         alt={"Alternate Text"}
                                         source={require('../assets/Images/true.png')} />
                                     <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black, }}>Network 1</Text>
                                 </HStack>
-
                                 <HStack style={{ width: '35%' }}>
                                     <Image mr={2} style={{ height: 14, width: 19, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
                                         alt={"Alternate Text"}
@@ -251,7 +336,6 @@ const HospitalDetails = ({ navigation }) => {
                             </HStack > */}
 
                             <HStack mt={'1'} justifyContent={'space-between'} alignItems={'center'}>
-
                                 <VStack alignItems={'center'} >
                                     <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
                                         alt={"Alternate Text"}
@@ -282,12 +366,13 @@ const HospitalDetails = ({ navigation }) => {
 
                             </HStack>
 
-                            <Divider mt={'2'} />
-
-                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginTop: '3%', marginBottom: '1%' }]}>Description</Text>
-                            <Text onTextLayout={onTextLayout} pt={'1'} numberOfLines={textShown ? undefined : 3} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
-                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                            <Divider mt={'1'} />
+                            <Text onTextLayout={onTextLayout} lineHeight={'sm'} numberOfLines={textShown ? undefined : 3} style={[Styles.titleText, { fontSize: 15, color: Colors.primaryColor, fontFamily: fonts.Poppins_Medium, marginTop: '3%', marginBottom: '1%', }]}>
+                                About Us :-
+                                <Text mr={'2'} color={Colors.black} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
+                                    {' '} It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                </Text>
                             </Text>
                             {
                                 lengthMore ? <Text
@@ -486,7 +571,11 @@ const HospitalDetails = ({ navigation }) => {
                             </View>
                         </HStack>
 
-                        <Divider mt={'5'} />
+                        <Image resizeMode="contain" borderRadius={'xl'} height={'24'} mt={'2'}
+                            alt={"Alternate Text"} width={width / 1}
+                            source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
+
+                        <Divider mt={'2'} />
                         <Text mt={'3'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
                             User Review
                         </Text>
@@ -603,7 +692,6 @@ const HospitalDetails = ({ navigation }) => {
                                 source={require('../assets/Images/back.png')} />
                         </HStack>
                     </View>
-
                 </View>
             </ScrollView>
         </View>

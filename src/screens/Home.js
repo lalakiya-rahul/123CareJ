@@ -313,9 +313,9 @@ export default function Home({ navigation }) {
             </HStack>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-                <View style={[Styles.container, { marginBottom: 540 }]}>
+                <View style={[Styles.container, { marginBottom: 610 }]}>
                     <VStack style={[styles.stepCard, { height: null }]}>
-                        <HStack style={{ justifyContent: 'space-between', width: '90%', alignSelf: 'center' }}>
+                        <HStack style={{ justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginBottom: '2%', marginTop: '2%' }}>
                             <View style={{ height: 65, width: 65, borderRadius: 65 / 1, backgroundColor: '#00247D1A', alignItems: 'center', alignSelf: 'center', }}>
                                 <Image
                                     style={{ height: 50, width: 50, resizeMode: 'stretch', alignSelf: 'center', justifyContent: 'center', marginTop: '10%', tintColor: Colors.secondaryPrimaryColor }}
@@ -342,7 +342,7 @@ export default function Home({ navigation }) {
                         dotColor={Colors.skyBlue}
                         inactiveDotColor={Colors.white}
                         parentWidth={width - 20}
-                        sliderBoxHeight={80}
+                        sliderBoxHeight={100}
                         ImageComponentStyle={{
                             alignItems: 'center', justifyContent: 'center', borderRadius: 8,
                             overflow: 'hidden', marginTop: '3%'
@@ -386,10 +386,8 @@ export default function Home({ navigation }) {
                         </HStack>
                     </View>
 
-
-
                     <View >
-                        <HStack mt={'3'}>
+                        <HStack mt={'1'}>
                             {/* <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 12, color: Colors.smallText }}>Browse by </Text>
                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}>Category</Text> */}
                         </HStack>
@@ -400,7 +398,7 @@ export default function Home({ navigation }) {
                             <FlatList
                                 data={data2}
                                 contentContainerStyle={{ alignSelf: 'center', }}
-                                numColumns={Math.ceil(data2.length / 4)}
+                                numColumns={Math.ceil(data2.length / 3)}
                                 renderItem={({ item, index }) => {
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
@@ -420,15 +418,19 @@ export default function Home({ navigation }) {
                                 keyExtractor={(item) => item.id.toString()}
                             />
                         </ScrollView>
-                        <HStack style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <HStack style={{ justifyContent: 'center', alignItems: 'center', marginTop: '-2%' }}>
                             <Text color={Colors.primaryColor}>{'\u2B24'}</Text>
                             <Text pl={'2'} color={Colors.grey2}>{'\u2B24'}</Text>
                             <Text pl={'2'} color={Colors.grey2}>{'\u2B24'}</Text>
                         </HStack>
                     </View>
 
+                    <Image resizeMode="contain" borderRadius={'xl'} height={'24'} mt={'2.5'}
+                        alt={"Alternate Text"} width={width / 1}
+                        source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
+
                     <View>
-                        <HStack alignItems={'center'} justifyContent={'space-between'} mt={'0.5'}>
+                        <HStack alignItems={'center'} justifyContent={'space-between'} mt={'3'}>
                             <HStack>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Letest Ads</Text>
                             </HStack>

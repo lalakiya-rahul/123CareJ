@@ -12,7 +12,7 @@ import CommonHeader from '../components/Header';
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
-export default function Archived({ navigation }) {
+export default function Fevorites({ navigation }) {
     const data = [
         {
             'id': 1,
@@ -73,7 +73,7 @@ export default function Archived({ navigation }) {
                             alt={"Alternate Text"}
                             source={require('../assets/Images/arrow_back.png')} />
                     </Pressable>
-                    <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>Archived Ads</Text>
+                    <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>Fevorites</Text>
                 </HStack>
 
                 <HStack alignSelf={'center'} alignItems={'center'}>
@@ -89,7 +89,7 @@ export default function Archived({ navigation }) {
                 <HStack style={[styles.titleHeaderView, { marginBottom: 8, }]}>
 
                     <VStack w={'100%'} space={2} alignSelf="center" >
-                        <Input h={'10'} placeholder="Search Archived Ads" fontFamily={fonts.Poppins_Medium}
+                        <Input h={'10'} placeholder="Search Fevorites" fontFamily={fonts.Poppins_Medium}
                             variant="rounded" fontSize="12" rounded={'full'} borderColor={Colors.primaryColor}
                             InputLeftElement={<Image ml={'4'}
                                 alt={"Alternate Text"} size={"4"}

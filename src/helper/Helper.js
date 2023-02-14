@@ -23,7 +23,6 @@ var Helper = {
 
     },
     GET: async function (url) {
-        console.log(url);
         return Axios({
             url: Urls.baseUrl + url,
             method: 'GET',

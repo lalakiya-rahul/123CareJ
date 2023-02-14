@@ -6,6 +6,7 @@ import { AlertDialog, Avatar, Button, Divider, HStack, Image, Input, Text, VStac
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
 import CommonHeader from '../components/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -76,6 +77,13 @@ export default function Profile({ navigation }) {
             "slug": "terms-and-condition"
         },
     ]
+
+    const logout = async () => {
+        await AsyncStorage.setItem("userData", "");
+        await AsyncStorage.clear();
+        navigation.replace("Login");
+        onClose
+    }
     return (
         <View>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
@@ -143,12 +151,12 @@ export default function Profile({ navigation }) {
                             </HStack>
                         </Pressable>
                         <Divider mt={'0.5'} />
-                        <Pressable onPress={() => navigation.navigate('Archived')}>
+                        <Pressable onPress={() => navigation.navigate('Fevorites')}>
                             <HStack justifyContent={'space-between'} alignItems={'center'} mt={'2'}>
                                 <HStack alignItems={'center'} p={'3'}>
                                     <Image style={{ width: 25, height: 22, alignSelf: 'center', tintColor: Colors.primaryColor, }}
                                         source={require('../assets/Images/hart1.png')} />
-                                    <Text style={styles.menuText}>Archived ads</Text>
+                                    <Text style={styles.menuText}>Fevorites</Text>
 
                                 </HStack>
                                 <Image style={styles.BackIconStyle}
@@ -178,10 +186,6 @@ export default function Profile({ navigation }) {
                             }
                             }
                             keyExtractor={(item) => item.id.toString()} />
-
-
-
-
                         <Pressable onPress={() => setIsOpen(!isOpen)}>
                             <HStack justifyContent={'space-between'} alignItems={'center'} mt={'2'}>
                                 <HStack alignItems={'center'} p={'3'}>
@@ -196,14 +200,14 @@ export default function Profile({ navigation }) {
                                 <AlertDialog.CloseButton />
                                 <AlertDialog.Header>Logout</AlertDialog.Header>
                                 <AlertDialog.Body>
-                                    You are sure you want to logout your account?
+                                    You are sure you want to logout?
                                 </AlertDialog.Body>
                                 <AlertDialog.Footer>
                                     <Button.Group space={2}>
                                         <Button variant="unstyled" colorScheme="coolGray" onPress={onClose} ref={cancelRef}>
                                             Cancel
                                         </Button>
-                                        <Button colorScheme="danger" onPress={onClose}>
+                                        <Button colorScheme={'darkBlue'} onPress={() => logout()}>
                                             Logout
                                         </Button>
                                     </Button.Group>
