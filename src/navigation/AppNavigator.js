@@ -9,6 +9,7 @@ import BottomTab from '../navigation/BottomTab';
 import Product from '../screens/Product';
 import Message from '../screens/Message';
 import ProductDetails from '../screens/ProductDetails';
+import HospitalDetails from '../screens/HospitalDetails';
 import MyProfile from '../screens/MyProfile';
 import MyAds from '../screens/MyAds';
 import Archived from '../screens/Archived';
@@ -28,6 +29,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="BottomTab" component={BottomTab} />
                 <Stack.Screen name="Product" component={Product} />
                 <Stack.Screen name="ProductDetails" component={ProductDetails} />
+                <Stack.Screen name="HospitalDetails" component={HospitalDetails} />
                 <Stack.Screen name="Message" component={Message} />
                 <Stack.Screen name="MyProfile" component={MyProfile} />
                 <Stack.Screen name="MyAds" component={MyAds} />

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
 import { Avatar, Box, Checkbox, CheckCircleIcon, Divider, HStack, Image, Input, Select, Text, VStack } from 'native-base';
@@ -8,15 +8,156 @@ import Styles from '../constants/styles';
 import PhoneInput from 'react-native-phone-number-input';
 import CommonButton from '../components/Button';
 import CommonHeader from '../components/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../components/Loader';
+import { Helper } from '../helper/Helper';
+import { Urls } from '../helper/Urls';
+import { map, isEmpty } from 'lodash'
+import { checkInternet } from '../helper/Utils';
 
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function MyProfile({ navigation }) {
-    const [service, setService] = React.useState("");
     const [phoneNumber, setPhoneNumber] = React.useState('');
+    const [countryId, setCountryId] = React.useState("");
+    const [statesId, setStatesId] = React.useState("");
+    const [cityId, setCityId] = React.useState("");
+    const [country, setCountry] = React.useState([]);
+    const [states, setStates] = React.useState([]);
+    const [city, setCity] = React.useState([]);
     const phoneInput = React.useRef(null);
+
+    const initState = {
+        name: '',
+        username: '',
+        email: '',
+        mobile_no: '',
+    }
+    const [state, setState] = React.useState(initState);
+    const [loading, setLoding] = React.useState(false);
+
+    console.log(countryId, statesId, cityId, 'all state----');
+
+    const onInputChange = (field, value) => {
+        setState({
+            ...state,
+            [field]: value,
+        })
+    }
+
+    React.useEffect(() => {
+        (async () => getData())();
+        getCountry();
+
+        return () => {
+            console.log('This will be logged on unmount');
+        };
+    }, [])
+
+    const updateProfile = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            const userData = await AsyncStorage.getItem('userData');
+            const apiData = {
+                user_id: JSON.parse(userData).user_id,
+                token: JSON.parse(userData).token,
+                profile,
+                username,
+                name,
+                email,
+                mobile_no,
+                country,
+                state,
+                city,
+            }
+            var response = await Helper.POST(Urls.updateProfile);
+            if (response.error === '0') {
+                setCountry(response.data);
+                getState()
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+    const getData = async () => {
+        setLoding(true);
+        const userData = await AsyncStorage.getItem('userData');
+        console.log(userData, 'user data--');
+        setState({
+            name: JSON.parse(userData).name,
+            username: JSON.parse(userData).username,
+            email: JSON.parse(userData).email,
+            mobile_no: JSON.parse(userData).mobile_no,
+
+        });
+        setCountryId(JSON.parse(userData).country)
+        setStatesId(JSON.parse(userData).state)
+        setCityId(JSON.parse(userData).city)
+
+        setLoding(false);
+    }
+
+    const getCountry = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            var response = await Helper.GET(Urls.getCountry);
+            if (response.error === '0') {
+                console.log(response.data, 'county data---');
+                setCountry(response.data);
+                getState()
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+    const getState = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            var response = await Helper.GET(Urls.getState);
+            if (response.error === '0') {
+                console.log(response.data, 'state data--');
+                setStates(response.data)
+                getCity();
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+    const getCity = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            var response = await Helper.GET(Urls.getCity);
+            if (response.error === '0') {
+                setCity(response.data)
+                console.log(response.data, 'city data---');
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+
     return (
         <View>
             {/* <CommonHeader LeftText={'Welcome, Richa'} backIcon={true} titleText={'My Profile'} onPress={() => navigation.goBack()} /> */}
@@ -39,15 +180,29 @@ export default function MyProfile({ navigation }) {
                     </HStack>
                 </HStack>
             </HStack>
+            <Loader loading={loading} />
             <ScrollView style={{ marginBottom: '10%' }}>
                 <View style={{ padding: 15, backgroundColor: Colors.white, }}>
                     <HStack  >
-                        <Image
-                            size={110} borderRadius={100}
-                            alt="Alternate Text"
-                            source={{ uri: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg' }} />
+                        <HStack >
+                            <Image
+                                size={110} borderRadius={100}
+                                alt="Alternate Text"
+                                source={{ uri: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg' }} />
+                            <VStack style={{
+                                height: 35, width: 35, borderRadius: 33 / 1, bottom: 2, right: 0, justifyContent: 'center',
+                                backgroundColor: Colors.primaryColor, alignItems: 'center', position: 'absolute',
+                            }}>
+                                <Image
+                                    style={{ height: 22, width: 22, alignSelf: 'center', tintColor: Colors.white }}
+                                    alt="Alternate Text"
+                                    source={require('../assets/Images/camera.png')} />
+
+                            </VStack>
+
+                        </HStack>
                         <VStack ml={'8'} alignSelf="flex-start" mt={'7'} >
-                            <Text style={Styles.titleText}>Richa Patel</Text>
+                            <Text style={Styles.titleText}>{state.name}</Text>
                             <Text style={{ color: Colors.smallText, fontFamily: fonts.Poppins_SemiBold, fontSize: 10 }}>
                                 You last logged in at: Jan 19th, 2023 at 11:20
                             </Text>
@@ -79,6 +234,8 @@ export default function MyProfile({ navigation }) {
                                 borderColor={Colors.secondaryPrimaryColor}
                                 rounded={'full'}
                                 minWidth="full"
+                                value={state.name}
+                                onChangeText={(value) => { onInputChange('name', value) }}
                                 placeholder="Name" />
                         </Box>
 
@@ -88,6 +245,8 @@ export default function MyProfile({ navigation }) {
                                 borderColor={Colors.secondaryPrimaryColor}
                                 rounded={'full'}
                                 minWidth="full"
+                                value={state.username}
+                                onChangeText={(value) => { onInputChange('username', value) }}
                                 placeholder="Username" />
                         </Box>
 
@@ -97,6 +256,8 @@ export default function MyProfile({ navigation }) {
                                 borderColor={Colors.secondaryPrimaryColor}
                                 rounded={'full'}
                                 minWidth="full"
+                                value={state.email}
+                                onChangeText={(value) => { onInputChange('email', value) }}
                                 placeholder="Email" />
                         </Box>
 
@@ -104,6 +265,8 @@ export default function MyProfile({ navigation }) {
                             <Input height={"12"} w={'full'} fontFamily={fonts.Poppins_SemiBold}
                                 borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor}
                                 rounded={'full'} placeholder="Enter your mobile no"
+                                value={state.mobile_no}
+                                onChangeText={(value) => { onInputChange('mobile_no', value) }}
                                 InputLeftElement={<HStack w={'20'} >
                                     <PhoneInput
                                         ref={phoneInput}
@@ -125,6 +288,55 @@ export default function MyProfile({ navigation }) {
                                 </HStack>} />
                         </Box>
 
+                        <HStack mt={'2'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                            <Box maxW="full">
+                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={countryId}
+                                    minWidth="full" accessibilityLabel="Select Country" placeholder="Select Country" _selectedItem={{
+                                        bg: "teal.600",
+                                        endIcon: <CheckCircleIcon size="5" />
+                                    }} mt={1} onValueChange={itemValue => setCountryId(itemValue)}>
+                                    {map(country, i => {
+                                        return (
+                                            <Select.Item label={i.name} value={i.id} />
+                                        )
+                                    })}
+                                </Select>
+                            </Box>
+                        </HStack>
+
+                        <HStack mt={'2'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                            <Box maxW="full">
+                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={statesId}
+                                    minWidth="full" accessibilityLabel="Select State" placeholder="Select State" _selectedItem={{
+                                        bg: "teal.600",
+                                        endIcon: <CheckCircleIcon size="5" />
+                                    }} mt={1} onValueChange={itemValue => setStatesId(itemValue)}>
+                                    {map(states, i => {
+                                        return (
+                                            <Select.Item label={i.name} value={i.id} />
+                                        )
+                                    })}
+                                </Select>
+                            </Box>
+                        </HStack>
+
+                        <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                            <Box maxW="full">
+                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={cityId}
+                                    minWidth="full" accessibilityLabel="Select City" placeholder="Select City" _selectedItem={{
+                                        bg: "teal.600",
+                                        endIcon: <CheckCircleIcon size="5" />
+                                    }} mt={1} onValueChange={itemValue => setCityId(itemValue)}>
+                                    {map(city, i => {
+                                        return (
+                                            <Select.Item label={i.name} value={i.id} />
+                                        )
+                                    })}
+
+                                </Select>
+                            </Box>
+                        </HStack>
+
                         <CommonButton
                             mt={'3'}
                             label={"Update"}
@@ -132,12 +344,9 @@ export default function MyProfile({ navigation }) {
 
                     </VStack>
 
-                    <Text style={[Styles.titleText, { marginTop: '2%' }]}>Settings</Text>
+                    {/* <Text style={[Styles.titleText, { marginTop: '2%' }]}>Settings</Text>
                     <VStack mt={'4'} style={{ alignItems: 'center' }}>
-                        {/* <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 16, color: Colors.black }}>
-                        Email
-
-                    </Text> */}
+                       
                         <Box >
                             <Input fontFamily={fonts.Poppins_SemiBold}
                                 borderWidth={'2'}
@@ -187,7 +396,7 @@ export default function MyProfile({ navigation }) {
                             label={"Update"}
                         />
 
-                    </VStack>
+                    </VStack> */}
 
                 </View>
             </ScrollView>

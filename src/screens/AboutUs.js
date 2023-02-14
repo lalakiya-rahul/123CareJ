@@ -1,9 +1,88 @@
-import { HStack, Image, ScrollView, VStack } from 'native-base';
+import { HStack, Image, Input, ScrollView, VStack } from 'native-base';
 import * as React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Dimensions, FlatList, Pressable, Text, View, StyleSheet } from 'react-native';
 import Colors from '../constants/colors';
+import fonts from '../constants/fonts';
+import Styles from '../constants/styles';
+
+//fevorites screen
 
 export default function AboutUs({ navigation }) {
+    const width = Dimensions.get("window").width
+    const height = Dimensions.get("window").height
+
+    const data = [
+        {
+            'id': 1,
+            'title': 'Test image',
+            'name': 'John O’Furniture',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 2,
+            'title': 'Test image',
+            'name': 'Olive Yew',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 3,
+            'title': 'Test image',
+            'name': 'Aida Bugg',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 4,
+            'title': 'Test image',
+            'name': 'Peg Legge',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 5,
+            'title': 'Test image',
+            'name': 'Liz Erd',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 6,
+            'title': 'Test image',
+            'name': 'A. Mused',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 7,
+            'title': 'Test image',
+            'name': 'Ray O’Sun',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 8,
+            'title': 'Test image',
+            'name': 'Rita Book',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 9,
+            'title': 'Test image',
+            'name': 'Anne Teak',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+        {
+            'id': 10,
+            'title': 'Test image',
+            'name': 'Anita Bath',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+        },
+    ]
     return (
         <View style={{ backgroundColor: Colors.white, height: '100%' }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
@@ -30,12 +109,120 @@ export default function AboutUs({ navigation }) {
                     </VStack>
                 </HStack>
             </HStack>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <Text style={{ textAlign: 'center' }}>
-                    Message screen
-                </Text>
+            <View style={{ padding: 8 }}>
+                <HStack style={[Styles.titleHeaderView, { marginBottom: 8, }]}>
+                    <VStack w={'100%'} space={2} alignSelf="center" >
+                        <Input h={'10'} placeholder="Search " fontFamily={fonts.Poppins_Medium}
+                            variant="rounded" fontSize="12" rounded={'full'} borderColor={Colors.primaryColor}
+                            InputLeftElement={<Image ml={'4'}
+                                alt={"Alternate Text"} size={"4"}
+                                source={require('../assets/Images/search.png')} />}
+                            InputRightElement={<Image mr={'4'}
+                                alt={"Alternate Text"} h={'5'} w={'4'}
+                                source={require('../assets/Images/mic.png')} />} />
+                    </VStack>
+                </HStack>
+            </View>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, }}>
+
+
+                <FlatList
+                    contentContainerStyle={{ paddingBottom: '50%', }}
+                    data={data}
+                    renderItem={({ item }) => {
+                        return (
+                            <View style={{ backgroundColor: Colors.white, padding: 5, }}>
+                                <Pressable onPress={() => navigation.navigate("ProductDetails")}>
+                                    <HStack style={[styles.card,
+                                    {
+                                        backgroundColor: Colors.white,
+                                        borderRadius: 10,
+                                        justifyContent: 'space-between', padding: 5,
+                                    }]}>
+                                        <HStack space={3} justifyContent={'space-between'} >
+                                            <VStack justifyContent={'center'} alignItems={'center'}>
+                                                <Image style={{
+                                                    width: 110,
+                                                    height: 110,
+                                                    resizeMode: 'cover'
+                                                }} borderRadius={'sm'} source={{
+                                                    uri: item.image
+                                                }} alt="Alternate Text" size="md" />
+
+                                            </VStack>
+
+                                            <VStack w={'64'} >
+                                                <HStack justifyContent={'space-between'}>
+                                                    <Text style={[Styles.titleText, { marginTop: '3%', color: Colors.black }]}>{item.title}</Text>
+                                                    <Image style={{
+                                                        width: 28,
+                                                        height: 28,
+                                                        resizeMode: 'cover',
+                                                    }} source={require('../assets/Images/fevoritesRed.png')} alt="Alternate Text" size="md"></Image>
+                                                </HStack>
+                                                <HStack h={'5'} alignItems={'center'} >
+                                                    <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
+                                                        alt={"Alternate Text"}
+                                                        source={require('../assets/Images/pin1.png')} />
+                                                    <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>Apple Sqaure, Surat, Gujarat</Text>
+                                                </HStack>
+                                                <HStack lineHeight={'2.5'} h={'4'} style={{ justifyContent: 'flex-start', alignItems: 'center', }}>
+                                                    <Image style={{ height: 8, width: 40, marginLeft: '2%', tintColor: Colors.primaryColor }}
+                                                        alt={"Alternate Text"}
+                                                        source={require('../assets/Images/rating.png')} />
+                                                    <Text style={[Styles.titleText, { fontSize: 7, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>
+                                                </HStack>
+
+
+                                                <HStack alignItems={'center'} space={1} mt={'3'}>
+                                                    <Image style={{ height: 21, width: 80, }}
+                                                        alt={"Alternate Text"}
+                                                        source={require('../assets/Images/callNow.png')} />
+                                                    <Image style={{ height: 21, width: 80, }}
+                                                        alt={"Alternate Text"}
+                                                        source={require('../assets/Images/inquiry.png')} />
+                                                    <Image style={{ height: 21, width: 80, }}
+                                                        alt={"Alternate Text"}
+                                                        source={require('../assets/Images/whatsappNow.png')} />
+                                                </HStack>
+                                            </VStack>
+                                        </HStack>
+                                    </HStack>
+                                </Pressable>
+                            </View>
+                        );
+                    }
+                    }
+                    keyExtractor={(item, index) => index.toString()}
+                />
             </ScrollView>
+
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    card: {
+        backgroundColor: Colors.secondaryPrimaryColor,
+        borderRadius: 25,
+        justifyContent: 'center',
+        shadowColor: Colors.black,
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        elevation: 2,
+        shadowOffset: { width: 0, height: 2 },
+        position: 'relative',
+    },
+    verticleLine: {
+        height: '100%',
+        width: 1,
+        backgroundColor: '#909090',
+    },
+    titleHeaderView: {
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 2
+
+    }
+});
 

@@ -7,12 +7,31 @@ import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
 import Share from 'react-native-share';
 import { map } from 'lodash'
+import { SliderBox } from "react-native-image-slider-box";
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 
 const ProductDetails = ({ navigation }) => {
+
+    const [textShown, setTextShown] = useState(false); //To show ur remaining Text
+    const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
+    const toggleNumberOfLines = () => { //To toggle the show text or hide it
+        setTextShown(!textShown);
+    }
+
+    const onTextLayout = useCallback(e => {
+        setLengthMore(e.nativeEvent.lines.length >= 3); //to check the text is more than 4 lines or not
+        // console.log(e.nativeEvent);
+    }, []);
+
+    const images = [
+        "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+        "https://source.unsplash.com/1024x768/?water",
+        "https://source.unsplash.com/1024x768/?girl",
+        "https://source.unsplash.com/1024x768/?tree", // Network image
+    ]
 
     const share = () => {
         Share.open({
@@ -54,7 +73,7 @@ const ProductDetails = ({ navigation }) => {
         },
     ]
     return (
-        <View backgroundColor={Colors.white} style={{ height: height, width: width, }}>
+        <View backgroundColor={Colors.white} style={{ height: height, width: width }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '5%', }} >
                 <HStack alignItems={'center'} >
                     <Pressable onPress={() => navigation.goBack()}>
@@ -77,36 +96,35 @@ const ProductDetails = ({ navigation }) => {
             </HStack>
             <ScrollView >
                 <View style={{ padding: 8, marginTop: '-1%' }}>
-                    {/* <HStack style={[styles.titleHeaderView, { marginBottom: 8, }]}>
-                        <VStack w={'100%'} space={2} alignSelf="center" >
-                            <Input h={'10'} placeholder="Search " fontFamily={fonts.Poppins_Medium}
-                                variant="rounded" fontSize="12" rounded={'full'} borderColor={Colors.primaryColor}
-                                InputLeftElement={<Image ml={'4'}
-                                    alt={"Alternate Text"} size={"4"}
-                                    source={require('../assets/Images/search.png')} />}
-                                InputRightElement={<Image mr={'4'}
-                                    alt={"Alternate Text"} h={'5'} w={'4'}
-                                    source={require('../assets/Images/mic.png')} />} />
-                        </VStack>
-                    </HStack> */}
-
-
                     <View style={{ padding: 10, }}>
                         <HStack >
-                            <VStack justifyContent={'center'} alignContent={'center'} borderRadius={'2xl'}  >
+                            {/* <VStack style={styles.stepCard}>
+                                <SliderBox
+                                    resizeMode={'cover'}
+                                    images={images}
+                                    autoplay={false}
+                                    disableOnPress={false}
+                                    dotColor={Colors.secondaryPrimaryColor}
+                                    inactiveDotColor={Colors.grey2}
+                                    parentWidth={width - 34}
+                                    ImageComponentStyle={{ alignItems: 'center', justifyContent: 'center', }}
+                                />
+                            </VStack> */}
+                            <HStack justifyContent={'center'} alignContent={'center'} borderRadius={'2xl'}  >
                                 <Image resizeMode="contain" borderRadius={'xl'} height={'40'}
-                                    alt={"Alternate Text"} width={width / 1}
+                                    alt={"Alternate Text"} width={width / 1.3}
                                     source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
-                                {/* <Image style={styles.imageStyle} borderRadius={'sm'} source={require('../assets/Images/groupLike.png')} alt="Alternate Text" size="md" /> */}
-                            </VStack>
+                                <VStack style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 20 }}>
+                                    <Image style={[styles.imageStyle, { height: 40, width: 40, marginBottom: 20 }]} source={require('../assets/Images/fevorites.png')} alt="Alternate Text" />
+                                    <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
+                                </VStack>
+                            </HStack>
                         </HStack>
-                        <VStack mt={'5'} >
+
+                        <VStack mt={'2'} >
                             <HStack justifyContent={'space-between'}>
                                 <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 25, }]}>Test image</Text>
-                                <HStack style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Image style={[styles.imageStyle, { height: 36, width: 36 }]} source={require('../assets/Images/fevorites.png')} alt="Alternate Text" />
-                                    <Image style={[styles.imageStyle, { height: 30, width: 30, marginLeft: 5 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
-                                </HStack>
+
 
                             </HStack>
                             <HStack h={'5'} alignItems={'center'} space={1}>
@@ -115,6 +133,7 @@ const ProductDetails = ({ navigation }) => {
                                     source={require('../assets/Images/pin1.png')} />
                                 <Text style={[Styles.titleText, { fontSize: 14, color: Colors.smallText, fontFamily: fonts.Poppins_Medium, }]}>Apple Sqaure, Surat, Gujarat</Text>
                             </HStack>
+
 
                             <HStack lineHeight={'2.5'} h={'8'} style={{ alignItems: 'center', }}>
                                 <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>4.7</Text>
@@ -134,47 +153,59 @@ const ProductDetails = ({ navigation }) => {
                                 <Text style={{ fontSize: 9, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }}>Pay</Text>
                             </HStack > */}
 
-                            <HStack mt={'5'} justifyContent={'space-between'} alignItems={'center'}>
-                                <VStack alignItems={'center'}>
-                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/call.png')} />
-                                    <Text style={styles.callText}>Call</Text>
-                                </VStack>
+                            <HStack mt={'1'} justifyContent={'space-between'} alignItems={'center'}>
 
                                 <VStack alignItems={'center'} >
                                     <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
                                         alt={"Alternate Text"}
-                                        source={require('../assets/Images/oregePin.png')} />
-                                    <Text style={styles.callText}>Direction</Text>
+                                        source={require('../assets/Images/leftdirecation.png')} />
                                 </VStack>
-
-                                <VStack alignItems={'center'}>
-                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/greenWp.png')} />
-                                    <Text style={styles.callText}>WhatsApp</Text>
-                                </VStack>
-
                                 <VStack alignItems={'center'}>
                                     <Image style={{ height: 50, width: 50, }}
                                         alt={"Alternate Text"}
                                         source={require('../assets/Images/web.png')} />
-                                    <Text style={[styles.callText, { marginTop: '1%', }]}>Web</Text>
                                 </VStack>
-                            </HStack>
-                        </VStack>
 
+                                <VStack alignItems={'center'}>
+                                    <Image style={{ height: 45, width: 45, }}
+                                        alt={"Alternate Text"}
+                                        source={require('../assets/Images/gmail.png')} />
+                                </VStack>
+                                <VStack alignItems={'center'}>
+                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
+                                        alt={"Alternate Text"}
+                                        source={require('../assets/Images/call.png')} />
+                                </VStack>
+                                <VStack alignItems={'center'}>
+                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
+                                        alt={"Alternate Text"}
+                                        source={require('../assets/Images/greenWp.png')} />
+                                </VStack>
+
+
+                            </HStack>
+
+                            <Divider mt={'2'} />
+
+                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginTop: '3%', marginBottom: '1%' }]}>Description</Text>
+                            <Text onTextLayout={onTextLayout} pt={'1'} numberOfLines={textShown ? undefined : 3} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
+                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                            </Text>
+                            {
+                                lengthMore ? <Text
+                                    onPress={toggleNumberOfLines}
+                                    style={{ fontFamily: fonts.Poppins_ExtraBold, fontSize: 9, alignSelf: 'flex-end' }}>{textShown ? 'Read less...' : 'Read more...'}</Text>
+                                    : null
+                            }
+                        </VStack>
                     </View>
-                    <Divider mt={'2'} />
+                    <Divider />
 
                     <Stack p={'3'}>
-                        <VStack>
-                            <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 15, color: Colors.black, }}>Additional Detalis</Text>
-                        </VStack>
                         <HStack>
                             <FlatList
-                                contentContainerStyle={{ width: '100%', marginTop: 15 }}
+                                contentContainerStyle={{ width: '100%', marginTop: 5 }}
                                 data={additionalData}
                                 renderItem={({ item }) => {
                                     return (
@@ -200,7 +231,7 @@ const ProductDetails = ({ navigation }) => {
                                 }} />
                         </HStack>
                     </Stack>
-                    <Divider mt={'2'} />
+                    <Divider />
                     <View style={{ padding: 10, }}>
                         <VStack>
                             <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>Rate this</Text>
@@ -504,6 +535,15 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: Colors.black,
         fontFamily: fonts.Poppins_Medium,
+    },
+    stepCard: {
+        backgroundColor: Colors.white, borderRadius: 8,
+        height: 140, shadowColor: 'black',
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 6,
+        shadowOpacity: 0.26,
+        elevation: 8,
+
     }
 });
 

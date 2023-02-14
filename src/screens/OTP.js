@@ -10,6 +10,7 @@ import { Urls } from '../helper/Urls';
 import Loader from '../components/Loader';
 import { isEmpty } from 'lodash'
 import { Helper } from '../helper/Helper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const width = Dimensions.get("window").width
@@ -47,6 +48,7 @@ export default function OTP({ navigation, route }) {
             var response = await Helper.POST(Urls.verifyOtp, apiData);
             console.log(response, 'respo');
             if (response.error === '0') {
+                await AsyncStorage.setItem('userData', JSON.stringify(response.data));
                 navigation.navigate('BottomTab');
                 setLoding(false);
             } else {

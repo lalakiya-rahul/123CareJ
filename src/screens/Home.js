@@ -8,6 +8,8 @@ import CommonHeader from '../components/Header';
 import SelectDropdown from 'react-native-select-dropdown';
 import Styles from '../constants/styles';
 import CommonButton from '../components/Button';
+import { SliderBox } from "react-native-image-slider-box";
+
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
@@ -113,13 +115,13 @@ const data2 = [
     },
     {
         'id': 2,
-        'title': 'B2B',
-        'image': require('../assets/Images/handshake.png'),
+        'title': 'Hospital',
+        'image': require('../assets/Images/medical-kit.png'),
     },
     {
         'id': 3,
-        'title': 'Doctors',
-        'image': require('../assets/Images/medical-kit.png'),
+        'title': 'clinic',
+        'image': require('../assets/Images/handshake.png'),
     },
     {
         'id': 4,
@@ -270,37 +272,21 @@ const data2 = [
 
 ]
 
+const images = [
+    "https://source.unsplash.com/1024x768/?nature",
+    "https://source.unsplash.com/1024x768/?water",
+    "https://source.unsplash.com/1024x768/?girl",
+    "https://source.unsplash.com/1024x768/?tree", // Network image
+]
+
 
 export default function Home({ navigation }) {
     const [isModalVisible, setModalVisible] = React.useState(false);
-    const [groupValues, setGroupValues] = React.useState([]);
-    // const [checkboxValue, setCheckboxValue] = React.useState([
-    //     { label: 'Customer', value: 'customer', checked: false },
-    //     { label: 'Merchant', value: 'merchant', checked: false },
-    //     { label: 'None', value: 'none', checked: false },
-    // ])
+
     const countries = ['IND', 'U.K', 'A.E.D']
 
-    // const checkboxHandler = (value, index) => {
-    //     const newValue = checkboxValue.map((checkbox, i) => {
-    //         if (i !== index)
-    //             return {
-    //                 ...checkbox,
-    //                 checked: false,
-    //             }
-    //         if (i === index) {
-    //             const item = {
-    //                 ...checkbox,
-    //                 checked: !checkbox.checked,
-    //             }
-    //             return item
-    //         }
-    //         return checkbox
-    //     })
-    //     setCheckboxValue(newValue)
-    // }
     return (
-        <View style={{ marginBottom: '20%', backgroundColor: Colors.white }}>
+        <View style={{ marginBottom: '20%', backgroundColor: Colors.white, }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
                 <HStack alignItems={'center'} >
                     <Pressable onPress={() => navigation.navigate('MyProfile')}>
@@ -327,16 +313,80 @@ export default function Home({ navigation }) {
             </HStack>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-                <View style={[Styles.container, { marginBottom: 440 }]}>
-                    <Image
-                        style={{ height: '10%', width: '100%', resizeMode: 'stretch' }}
-                        borderColor={Colors.secondaryPrimaryColor}
-                        source={require('../assets/Images/ads.png')} alt="Alternate Text" />
+                <View style={[Styles.container, { marginBottom: 540 }]}>
+                    <VStack style={[styles.stepCard, { height: null }]}>
+                        <HStack style={{ justifyContent: 'space-between', width: '90%', alignSelf: 'center' }}>
+                            <View style={{ height: 65, width: 65, borderRadius: 65 / 1, backgroundColor: '#00247D1A', alignItems: 'center', alignSelf: 'center', }}>
+                                <Image
+                                    style={{ height: 50, width: 50, resizeMode: 'stretch', alignSelf: 'center', justifyContent: 'center', marginTop: '10%', tintColor: Colors.secondaryPrimaryColor }}
+                                    source={require('../assets/Images/walk.png')} alt="Alternate Text" />
+                            </View>
+                            <VStack>
+                                <Text style={{ fontSize: 14, color: Colors.primaryColor, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>Today's </Text>
+                                <Text style={{ fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>230</Text>
 
-                    <Image
-                        style={{ height: '10%', width: '100%', resizeMode: 'stretch', marginTop: '2%' }}
-                        borderColor={Colors.secondaryPrimaryColor}
-                        source={require('../assets/Images/ads.png')} alt="Alternate Text" />
+                            </VStack>
+                            <VStack>
+                                <Text style={{ fontSize: 14, color: Colors.primaryColor, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>Yesterday</Text>
+                                <Text style={{ fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>10021</Text>
+                            </VStack>
+                        </HStack>
+                    </VStack>
+
+                    {/* <VStack mt={'3'} style={styles.stepCard}> */}
+                    <SliderBox
+                        resizeMode={'cover'}
+                        images={images}
+                        autoplay={false}
+                        disableOnPress={false}
+                        dotColor={Colors.skyBlue}
+                        inactiveDotColor={Colors.white}
+                        parentWidth={width - 20}
+                        sliderBoxHeight={80}
+                        ImageComponentStyle={{
+                            alignItems: 'center', justifyContent: 'center', borderRadius: 8,
+                            overflow: 'hidden', marginTop: '3%'
+                        }}
+                    />
+                    {/* </VStack> */}
+                    <View style={{ borderWidth: 1, borderRadius: 8, marginTop: '4%', borderColor: Colors.skyBlue }}>
+                        <HStack style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.white, width: '18%', height: '34%', alignSelf: 'center', position: 'absolute', marginTop: '-3%', }}>
+                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 15, color: Colors.primaryColor, }}>
+                                Finder
+                            </Text>
+                        </HStack>
+                        <HStack style={{ justifyContent: 'space-around', alignItems: 'center', padding: 8, marginTop: 3 }} >
+                            <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
+                                onPress={() => setModalVisible(true)} >
+                                <VStack>
+                                    <Image
+                                        style={{ height: 30, width: 30, resizeMode: 'stretch', alignSelf: 'center', justifyContent: 'center', }}
+                                        source={{ uri: 'https://parshwatechnologies.info/website/image/finder.png' }} alt="Alternate Text" />
+                                    <Text numberOfLines={2} width={'16'} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 11 }]}>Insurance Finder</Text>
+                                </VStack>
+                            </Pressable>
+                            <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
+                                onPress={() => setModalVisible(true)} >
+                                <VStack>
+                                    <Image
+                                        style={{ height: 30, width: 30, resizeMode: 'stretch', alignSelf: 'center', justifyContent: 'center', }}
+                                        source={{ uri: 'https://parshwatechnologies.info/website/image/bank.png' }} alt="Alternate Text" />
+                                    <Text numberOfLines={2} width={'12'} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 11 }]}>ATM</Text>
+                                </VStack>
+                            </Pressable>
+                            <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
+                                onPress={() => setModalVisible(true)} >
+                                <VStack>
+                                    <Image
+                                        style={{ height: 30, width: 30, resizeMode: 'stretch', alignSelf: 'center', justifyContent: 'center', }}
+                                        source={{ uri: 'https://parshwatechnologies.info/website/image/map.png' }} alt="Alternate Text" />
+                                    <Text numberOfLines={2} width={'12'} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 11 }]}>Metro Station</Text>
+                                </VStack>
+                            </Pressable>
+                        </HStack>
+                    </View>
+
+
 
                     <View >
                         <HStack mt={'3'}>
@@ -355,7 +405,7 @@ export default function Home({ navigation }) {
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
                                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
-                                                onPress={() => item.id === 1 ? setModalVisible(true) : navigation.navigate('Product')} >
+                                                onPress={() => item.id === 1 ? setModalVisible(true) : item.id === 2 || item.id === 3 ? navigation.navigate('Product', { isHospitalData: true }) : navigation.navigate('Product', { isHospitalData: false })} >
                                                 <Image
                                                     style={{ height: 30, width: 30, resizeMode: 'stretch' }}
                                                     borderColor={Colors.secondaryPrimaryColor}
@@ -382,7 +432,7 @@ export default function Home({ navigation }) {
                             <HStack>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Letest Ads</Text>
                             </HStack>
-                            <Pressable onPress={() => navigation.navigate('Product')}>
+                            <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
                                 <HStack alignItems={'center'} justifyItems={'center'}>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
 
@@ -398,12 +448,12 @@ export default function Home({ navigation }) {
                                         <Pressable onPress={() => navigation.navigate("ProductDetails")}>
                                             <HStack style={[styles.card,
                                             {
-                                                backgroundColor: Colors.white, borderColor: Colors.grey2,
-                                                borderTopLeftRadius: 35, borderBottomLeftRadius: 35, borderWidth: 1,
+                                                backgroundColor: Colors.white, borderColor: Colors.skyBlue,
+                                                borderWidth: 1,
                                                 justifyContent: 'space-between', padding: 5, alignItems: 'center', marginTop: '-0.5%'
                                             }]}>
                                                 <HStack space={6} justifyContent={'space-between'} >
-                                                    <VStack justifyContent={'center'} alignItems={'center'} ml={'2.5'}>
+                                                    <VStack justifyContent={'center'} alignItems={'center'}>
                                                         <Image style={{
                                                             width: 40,
                                                             height: 40,
@@ -459,12 +509,12 @@ export default function Home({ navigation }) {
                         />
                     </View>
                     <View >
-                        <VStack style={[styles.card, { borderColor: Colors.grey2 }]} justifyContent={'center'} >
+                        <VStack style={[styles.card, { borderColor: Colors.skyBlue }]} justifyContent={'center'} >
                             <HStack alignItems={'center'} justifyContent={'space-between'} p={2}>
                                 <HStack>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Featured recommendation</Text>
                                 </HStack>
-                                <Pressable onPress={() => navigation.navigate('Product')}>
+                                <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
                                     <HStack alignItems={'center'} justifyItems={'center'}>
                                         <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
                                     </HStack>
@@ -475,7 +525,7 @@ export default function Home({ navigation }) {
                                 showsHorizontalScrollIndicator={false}>
                                 {data.map((item, key) => (
                                     <View>
-                                        <Pressable onPress={() => navigation.navigate('Product')}>
+                                        <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
                                             <Image style={{
                                                 width: 50 * 2,
                                                 height: 70,
@@ -494,12 +544,12 @@ export default function Home({ navigation }) {
                     </View>
 
                     <View >
-                        <VStack style={[styles.card, { borderColor: Colors.grey2 }]} justifyContent={'center'} >
+                        <VStack style={[styles.card, { borderColor: Colors.skyBlue }]} justifyContent={'center'} >
                             <HStack alignItems={'center'} justifyContent={'space-between'} p={3}>
                                 <HStack>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Related recommendation</Text>
                                 </HStack>
-                                <Pressable onPress={() => navigation.navigate('Product')}>
+                                <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
                                     <HStack alignItems={'center'} justifyItems={'center'}>
                                         <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
                                     </HStack>
@@ -633,7 +683,6 @@ export default function Home({ navigation }) {
                             </Modal.Footer> */}
                         </Modal.Content>
                     </Modal>
-
                     :
                     null
             }
@@ -650,13 +699,19 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         margin: 5
     },
-
     titleHeaderView: {
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    stepCard: {
+        backgroundColor: Colors.white, borderRadius: 8,
+        height: '10%', shadowColor: 'black',
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 6,
+        shadowOpacity: 0.26,
+        elevation: 8,
 
     }
-
 });
 
 {/* <ImageBackground style={{ height: 90, width: '100%', borderRadius: 20 }}

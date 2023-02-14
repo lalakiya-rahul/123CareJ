@@ -69,27 +69,32 @@ const Tabs = () => {
                     tabBarIcon: ({ focused }) => (
                         <View style={{ alignContent: 'center', }}>
                             <Image
-                                source={require('../assets/Images/email.png')}
+                                source={require('../assets/Images/hearto.png')}
                                 resizeMode={'contain'}
                                 style={{ width: 30, height: 30, tintColor: focused ? Colors.white : Colors.grey2, alignSelf: 'center' }}
                             />
                             <Text style={{ color: focused ? Colors.white : Colors.grey2, fontSize: 12, }}
-                            >Message</Text>
+                            >Favorites</Text>
                         </View>
                     )
                 }}
             />
             <Tab.Screen
                 name="AddListing"
-                component={AddListing}
+                component={Message}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={{ position: 'absolute', padding: 5, alignSelf: 'center', backgroundColor: '#fff', width: 67, height: 70, borderRadius: 35, }}>
-                            <Image resizeMode='contain' source={require('../assets/Images/Add.png')}
+                            {/* <Image resizeMode='contain' source={require('../assets/Images/Add.png')}
                                 style={{
                                     width: 57, height: 60, borderRadius: 30,
                                 }}
-                            />
+                            /> */}
+                            <View style={{ height: 60, width: 60, borderRadius: 65 / 1, backgroundColor: Colors.skyBlue, alignSelf: 'center', }}>
+                                <Image
+                                    style={{ height: 35, width: 35, resizeMode: 'stretch', alignSelf: 'center', marginTop: '15%', tintColor: Colors.white, }}
+                                    source={require('../assets/Images/search.png')} alt="Alternate Text" />
+                            </View>
                         </View>
                     ),
                     tabBarButton: (props) => (
@@ -99,18 +104,18 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Serach"
-                component={Message}
+                component={AddListing}
                 options={{
 
                     tabBarIcon: ({ focused }) => (
                         <View style={{ alignItem: 'center', justifyContant: 'center', }}>
                             <Image
-                                source={require('../assets/Images/search.png')}
+                                source={require('../assets/Images/note-plus.png')}
                                 resizeMode={'contain'}
                                 style={{ width: 30, height: 30, tintColor: focused ? Colors.white : Colors.grey2, alignSelf: 'center' }}
                             />
                             <Text style={{ color: focused ? Colors.white : Colors.grey2, fontSize: 12 }}
-                            >Serach</Text>
+                            >Post Ads</Text>
                         </View>
                     )
                 }}

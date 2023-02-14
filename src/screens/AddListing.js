@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native';
 
 import Colors from '../constants/colors';
 import { Box, Checkbox, CheckCircleIcon, CheckIcon, FlatList, HStack, Icon, Image, Input, Select, TextArea, VStack } from 'native-base';
@@ -8,25 +8,36 @@ import CommonInput from '../components/Inputs';
 import PhoneInput from 'react-native-phone-number-input';
 import CommonButton from '../components/Button';
 import CommonHeader from '../components/Header';
-import { map } from 'lodash'
+import { map, isEmpty } from 'lodash'
+import { checkInternet } from '../helper/Utils';
+import { Urls } from '../helper/Urls';
+import { Helper } from '../helper/Helper';
+import Loader from '../components/Loader';
+import { formateString } from '../helper/Validations'
 
 export default function AddListing({ navigation }) {
-    const [service, setService] = React.useState("");
+    const [loading, setLoding] = React.useState(false);
+    const [CategoriesId, setCategoriesId] = React.useState("");
+    const [statesId, setStatesId] = React.useState("");
+    const [cityId, setCityId] = React.useState("");
+    const [Categories, setCategories] = React.useState([]);
+    const [states, setStates] = React.useState([]);
+    const [city, setCity] = React.useState([]);
+    const [service, setService] = React.useState('');
     const [phoneNumber, setPhoneNumber] = React.useState('');
-    const phoneInput = React.useRef(null);
-
-    const additionalData = [
+    const [additionalData, setAdditionalData] = React.useState([
         {
             "featured_name": "Cost",
             "featured_id": 1,
-            "value": [
+            "fields": [
                 {
                     "id": 1,
                     "field_id": 1,
                     "value": "Chargable",
                     "status": 1,
                     "created_at": "2023-02-01T12:59:34.000000Z",
-                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                    "updated_at": "2023-02-01T12:59:34.000000Z",
+                    "isChecked": false
                 },
                 {
                     "id": 2,
@@ -34,21 +45,23 @@ export default function AddListing({ navigation }) {
                     "value": "Free",
                     "status": 1,
                     "created_at": "2023-02-01T12:59:34.000000Z",
-                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                    "updated_at": "2023-02-01T12:59:34.000000Z",
+                    "isChecked": false
                 }
             ]
         },
         {
             "featured_name": "Delivery",
             "featured_id": 1,
-            "value": [
+            "fields": [
                 {
                     "id": 1,
                     "field_id": 1,
                     "value": "Delivery",
                     "status": 1,
                     "created_at": "2023-02-01T12:59:34.000000Z",
-                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                    "updated_at": "2023-02-01T12:59:34.000000Z",
+                    "isChecked": false
                 },
                 {
                     "id": 2,
@@ -56,11 +69,92 @@ export default function AddListing({ navigation }) {
                     "value": "Self pick up",
                     "status": 1,
                     "created_at": "2023-02-01T12:59:34.000000Z",
-                    "updated_at": "2023-02-01T12:59:34.000000Z"
+                    "updated_at": "2023-02-01T12:59:34.000000Z",
+                    "isChecked": false
                 }
             ]
         }
-    ]
+    ])
+    const phoneInput = React.useRef(null);
+
+    const handleChange = (id, fields) => {
+        console.log(id, fields, 'handleChange id');
+        console.log(fields, 'additionalData.fields----mal');
+        let temp = map(fields, product => {
+            console.log(product, 'productid');
+            if (id === product.id) {
+                return { ...product, isChecked: !product.isChecked };
+            }
+            return product;
+        });
+        console.log(temp, 'temp data');
+        // setAdditionalData([...temp]);
+    };
+
+    React.useEffect(() => {
+        getCategory();
+    }, [])
+
+    const getCategory = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            var response = await Helper.GET(Urls.getCategory);
+            if (response.error === '0') {
+                setCategories(response.data)
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+            getState();
+
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+    const getState = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            // const apiData = {
+            //     country_id: 1,
+            // }
+            var response = await Helper.GET(Urls.getState);
+            if (response.error === '0') {
+                console.log(response.data, 'userdata');
+                setStates(response.data)
+                getCity(statesId)
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+    const getCity = async (statesId) => {
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = `?city=${statesId}`
+
+            var response = await Helper.GET(Urls.getCity, apiData);
+            if (response.error === '0') {
+                console.log(response.data, 'ciyy na');
+                setCity(response.data)
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+
+
     return (
         <View>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
@@ -87,7 +181,7 @@ export default function AddListing({ navigation }) {
                     </VStack>
                 </HStack>
             </HStack>
-
+            <Loader loading={loading} />
             <ScrollView >
                 <View style={{ flex: 1, backgroundColor: Colors.white, padding: 15, marginTop: '-3%' }}>
                     <View style={[styles.cardView, { marginTop: '1%' }]}>
@@ -103,16 +197,17 @@ export default function AddListing({ navigation }) {
                                     <Text style={{ color: Colors.error }}>⁕</Text>
                                 </Text>
                                 <Box maxW="300">
-                                    <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={service}
+                                    <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={CategoriesId}
                                         minWidth="250" accessibilityLabel="Select Categories" placeholder="Select Categories" _selectedItem={{
                                             bg: "teal.600",
                                             endIcon: <CheckCircleIcon size="5" />
-                                        }} mt={1} onValueChange={itemValue => setService(itemValue)}>
-                                        <Select.Item label="UX Research" value="ux" />
-                                        <Select.Item label="Web Development" value="web" />
-                                        <Select.Item label="Cross Platform Development" value="cross" />
-                                        <Select.Item label="UI Designing" value="ui" />
-                                        <Select.Item label="Backend Development" value="backend" />
+                                        }} mt={1} onValueChange={itemValue => setCategoriesId(itemValue)}>
+                                        {map(Categories, i => {
+                                            return (
+                                                <Select.Item label={i.slug} value={i.id} />
+                                            )
+                                        })}
+
                                     </Select>
                                 </Box>
                             </HStack>
@@ -138,8 +233,6 @@ export default function AddListing({ navigation }) {
                                 </Box>
                             </VStack>
                         </VStack>
-
-
                     </View>
 
                     <VStack style={[styles.card, { backgroundColor: Colors.white }]} mt={'5'}>
@@ -171,20 +264,20 @@ export default function AddListing({ navigation }) {
                             </HStack>
                             <HStack mt={'2'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
-                                    Location
+                                    State
                                     <Text style={{ color: Colors.error }}>⁕</Text>
                                 </Text>
                                 <Box maxW="300">
-                                    <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={service}
-                                        minWidth="250" accessibilityLabel="Select Location" placeholder="Select Location" _selectedItem={{
+                                    <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={statesId}
+                                        minWidth="250" accessibilityLabel="Select Location" placeholder="Select State" _selectedItem={{
                                             bg: "teal.600",
                                             endIcon: <CheckCircleIcon size="5" />
-                                        }} mt={1} onValueChange={itemValue => setService(itemValue)}>
-                                        <Select.Item label="UX Research" value="ux" />
-                                        <Select.Item label="Web Development" value="web" />
-                                        <Select.Item label="Cross Platform Development" value="cross" />
-                                        <Select.Item label="UI Designing" value="ui" />
-                                        <Select.Item label="Backend Development" value="backend" />
+                                        }} mt={1} onValueChange={itemValue => setStatesId(itemValue)}>
+                                        {map(states, i => {
+                                            return (
+                                                <Select.Item label={i.name} value={i.id} />
+                                            )
+                                        })}
                                     </Select>
                                 </Box>
                             </HStack>
@@ -195,20 +288,21 @@ export default function AddListing({ navigation }) {
                                     <Text style={{ color: Colors.error }}>⁕</Text>
                                 </Text>
                                 <Box maxW="300">
-                                    <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={service}
+                                    <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={cityId}
                                         minWidth="250" accessibilityLabel="Select City" placeholder="Select City" _selectedItem={{
                                             bg: "teal.600",
                                             endIcon: <CheckCircleIcon size="5" />
-                                        }} mt={1} onValueChange={itemValue => setService(itemValue)}>
-                                        <Select.Item label="UX Research" value="ux" />
-                                        <Select.Item label="Web Development" value="web" />
-                                        <Select.Item label="Cross Platform Development" value="cross" />
-                                        <Select.Item label="UI Designing" value="ui" />
-                                        <Select.Item label="Backend Development" value="backend" />
+                                        }} mt={1} onValueChange={itemValue => setCityId(itemValue)}>
+                                        {map(city, i => {
+                                            return (
+                                                <Select.Item label={i.name} value={i.id} />
+                                            )
+                                        })}
+
                                     </Select>
                                 </Box>
                             </HStack>
-                            {service ?
+                            {CategoriesId &&
                                 <HStack>
                                     <FlatList
                                         contentContainerStyle={{ width: '100%', marginTop: 15 }}
@@ -221,17 +315,14 @@ export default function AddListing({ navigation }) {
                                                     </VStack>
                                                     <VStack style={{ justifyContent: "flex-end", }}>
                                                         <HStack style={{ alignItems: "flex-start", }}>
-                                                            {map(item.value, i => {
+                                                            {map(item.fields, i => {
                                                                 return (
-                                                                    <HStack style={{ width: '35%' }}>
-                                                                        {/* <Image mr={2} style={{ height: 10, width: 15, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
-                                                                        alt={"Alternate Text"}
-                                                                        source={require('../assets/Images/true.png')} /> */}
-                                                                        <Checkbox size={'sm'} my={2}>
-
+                                                                    <HStack style={{ width: '35%', }}>
+                                                                        <Checkbox style={{ marginLeft: 1 }} value={i.value} onChange={() => handleChange(i.id, item.fields)}>
                                                                             <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.black, }}>{i.value}</Text>
                                                                         </Checkbox>
-                                                                    </HStack>)
+                                                                    </HStack>
+                                                                )
                                                             })}
                                                         </HStack>
                                                     </VStack>
@@ -239,7 +330,7 @@ export default function AddListing({ navigation }) {
                                             )
                                         }} />
                                 </HStack>
-                                : null}
+                            }
 
                             <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
@@ -316,14 +407,14 @@ export default function AddListing({ navigation }) {
 
                             <VStack alignSelf={'center'} mt={'8'}>
                                 <HStack alignSelf={'center'}>
-                                    <Checkbox mr={'1.5'} isChecked size={'md'} colorScheme="green" />
+                                    {/* <Checkbox mr={'1.5'} isChecked size={'md'} colorScheme="green" /> */}
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}>
                                         I have read and agree to the Terms & Conditions
                                     </Text>
                                 </HStack>
 
                                 <HStack alignSelf={'center'} mt={'2'}>
-                                    <Checkbox mr={'1.5'} isChecked size={'md'} colorScheme="green" />
+                                    {/* <Checkbox mr={'1.5'} isChecked size={'md'} colorScheme="green" /> */}
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}>
                                         I accept to receive marketing emails
                                     </Text>

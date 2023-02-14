@@ -136,7 +136,7 @@ export default function Login({ navigation }) {
 
                     </View>
                     <HStack alignItems={'center'} mt={'8'} w={'full'}>
-                        <Divider>  <View style={{ height: 20, width: 40, borderRadius: 30 / 3, backgroundColor: Colors.grey2, zIndex: 1, marginTop: '-3%', alignSelf: 'center' }}>
+                        <Divider>  <View style={{ height: 25, width: 45, borderRadius: 30 / 3, backgroundColor: Colors.grey2, zIndex: 1, marginTop: '-3%', alignSelf: 'center' }}>
                             <Text style={{ color: '#F9F8F7', fontSize: 11, alignSelf: 'center', paddingVertical: 3 }}>OR</Text>
                         </View> </Divider>
                     </HStack>

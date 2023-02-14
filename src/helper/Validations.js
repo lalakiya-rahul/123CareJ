@@ -116,6 +116,13 @@ const validateConfirmPassword = (value, length) => {
     }
 };
 
+function formateString(stringToFormat, ...args) {
+    console.log(stringToFormat, 'stringToFormat');
+    const newString = stringToFormat.replace(/{(\d+)}/g, (match, index) => args[index]);
+    console.log(newString, 'new string');
+    return newString;
+}
+
 export {
     validatePhone,
     validateEmail,
@@ -125,4 +132,5 @@ export {
     validationBlank,
     validationempty,
     validationempty1,
+    formateString
 };

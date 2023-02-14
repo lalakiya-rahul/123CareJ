@@ -7,5 +7,13 @@ export const Urls = {
     login: '/login',
     sendOtp: '/otp-send',
     verifyOtp: '/otp-verify',
-    register: '/register'
+    register: '/register',
+
+    // post ads
+    getCategory: '/category',
+    getCountry: '/country',
+    getState: '/state?country_id=1',
+    getCity: '/city?state_id=4',
+    updateProfile: '/member/profile/update',
+
 }

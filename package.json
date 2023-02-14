@@ -17,7 +17,10 @@
     "native-base": "^3.4.25",
     "react": "18.0.0",
     "react-native": "0.69.0",
+    "react-native-ble-plx": "^2.0.3",
     "react-native-element-dropdown": "^2.6.0",
+    "react-native-fast-image": "^8.6.3",
+    "react-native-image-slider-box": "github:megamaxs1234/react-native-image-slider-box",
     "react-native-otp-textinput": "^1.0.0",
     "react-native-webview": "^11.26.1"
   },
