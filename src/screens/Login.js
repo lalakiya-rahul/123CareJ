@@ -12,6 +12,7 @@ import { Urls } from '../helper/Urls';
 import Loader from '../components/Loader';
 import FormErrorText from '../components/FormErrorText';
 import { SelectCountry } from 'react-native-element-dropdown';
+import { TextInput } from "@react-native-material/core";
 // import { validatePhone } from '../helper/Validations';
 
 const width = Dimensions.get("window").width
@@ -26,6 +27,7 @@ export default function Login({ navigation }) {
     const initState = {
         name: '',
         mobile: '',
+        mobileError: ''
 
         // deviceToken,deviceTypes, 
     }
@@ -44,10 +46,17 @@ export default function Login({ navigation }) {
             console.log("true");
             return true;
         } else if (value === '') {
-            ToastAndroid.show('Please enter mobile number', ToastAndroid.SHORT);
+            setState({
+                ...state,
+                mobileError: 'Please enter mobile number'
+            })
+            // ToastAndroid.show('Please enter mobile number', ToastAndroid.SHORT);
         } else {
-            console.log('else');
-            ToastAndroid.show('Please enter 10 digit mobile number', ToastAndroid.SHORT);
+            setState({
+                ...state,
+                mobileError: 'Please enter 10 digit mobile number'
+            })
+            // ToastAndroid.show('', ToastAndroid.SHORT);
         }
     };
 
@@ -77,6 +86,7 @@ export default function Login({ navigation }) {
     return (
         <ScrollView>
             <View style={[styles.container]}>
+
                 <Loader loading={loading} />
                 <VStack alignItems={'center'} p={8}>
                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -87,6 +97,8 @@ export default function Login({ navigation }) {
                             Login for a seamless experience
                         </Text>
 
+
+
                         <Input size="xl" mt={'8'}
                             variant="unstyled" p={0}
                             placeholder="Name" placeholderTextColor={Colors.grey2}
@@ -94,8 +106,13 @@ export default function Login({ navigation }) {
                             borderBottomColor={Colors.grey2} borderBottomWidth={'1'}
                             onChangeText={(value) => { onInputChange('name', value) }}
                         />
+                        {/* <HStack >
 
-
+                            <TextInput label="Name" style={{ width: '100%' }}
+                                variant="standard" color={Colors.primaryColor}
+                                onChangeText={(value) => { onInputChange('name', value) }}
+                            />
+                        </HStack> */}
                         <Input
                             size="xl" mt={'6'} variant="unstyled" h={'8'}
                             p={0} placeholder="Mobile number" placeholderTextColor={Colors.grey2}
@@ -127,6 +144,7 @@ export default function Login({ navigation }) {
 
                             </HStack>}
                         />
+                        <FormErrorText optionalStyle={{ marginLeft: '-30%' }} errorText={state.mobileError} />
                         {/* onPress={() => navigation.navigate('OTP')}  */}
                         <Pressable onPress={() => login()} style={{ alignSelf: 'flex-end' }}>
                             <View style={{ backgroundColor: Colors.primaryColor, borderRadius: 45 / 2, height: 45, width: 45, justifyContent: 'center', alignItems: 'center', marginTop: 15, }}>

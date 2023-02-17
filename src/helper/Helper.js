@@ -4,6 +4,7 @@ import { Urls } from './Urls';
 
 var Helper = {
     POST: async function (url, body) {
+        console.log(url, body, 'body dataa');
         return Axios({
             url: Urls.baseUrl + url,
             method: 'POST',

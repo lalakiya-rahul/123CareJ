@@ -13,7 +13,7 @@ const Styles = StyleSheet.create({
         height: height,
     },
     titleText: {
-        fontFamily: fonts.Poppins_SemiBold,
+        fontFamily: fonts.Poppins_Regular,
         fontSize: 16,
         color: Colors.primaryColor
     },

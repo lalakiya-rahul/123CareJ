@@ -33,6 +33,106 @@ const ProductDetails = ({ navigation }) => {
         "https://source.unsplash.com/1024x768/?tree", // Network image
     ]
 
+    const images1 = [
+        require('../assets/Images/ads2.png'),
+        require('../assets/Images/ads3.png'),
+        require('../assets/Images/ads.png'),
+    ]
+
+    const data = [
+        {
+            'id': 1,
+            'title': 'oxygen1',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+        },
+        {
+            'id': 2,
+            'title': 'oxygen2',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': ''
+        },
+        {
+            'id': 3,
+            'title': 'oxygen3',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+        },
+        {
+            'id': 4,
+            'title': 'oxygen4',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+        },
+        {
+            'id': 5,
+            'title': 'oxygen5',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+
+        },
+        {
+            'id': 6,
+            'title': 'oxygen6',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+        },
+        {
+            'id': 7,
+            'title': 'oxygen7',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+
+        },
+        {
+            'id': 8,
+            'title': 'oxygen8',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+
+        },
+        {
+            'id': 9,
+            'title': 'oxygen9',
+            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+        },
+        {
+            'id': 10,
+            'title': 'oxygen10',
+            'image': "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+
+        },
+        {
+            'id': 11,
+            'title': 'oxygen11',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+
+        },
+        {
+            'id': 12,
+            'title': 'oxygen12',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+
+        },
+        {
+            'id': 13,
+            'title': 'oxygen13',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
+            'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
+
+        },
+        {
+            'id': 14,
+            'title': 'oxygen14',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
+        },
+    ]
+
+
     const share = () => {
         Share.open({
             title: '123 Care',
@@ -95,35 +195,38 @@ const ProductDetails = ({ navigation }) => {
                 </HStack>
             </HStack>
             <ScrollView >
-                <View style={{ padding: 8, marginTop: '-1%' }}>
+                <View style={{ padding: 8, marginTop: '-1%', marginBottom: 100 }}>
                     <View style={{ padding: 10, }}>
                         <HStack >
-                            {/* <VStack style={styles.stepCard}>
-                                <SliderBox
-                                    resizeMode={'cover'}
-                                    images={images}
-                                    autoplay={false}
-                                    disableOnPress={false}
-                                    dotColor={Colors.secondaryPrimaryColor}
-                                    inactiveDotColor={Colors.grey2}
-                                    parentWidth={width - 34}
-                                    ImageComponentStyle={{ alignItems: 'center', justifyContent: 'center', }}
-                                />
-                            </VStack> */}
-                            <HStack justifyContent={'center'} alignContent={'center'} borderRadius={'2xl'}  >
+                            <SliderBox
+                                resizeMode={'cover'}
+                                images={images}
+                                autoplay={false}
+                                disableOnPress={false}
+                                dotColor={Colors.secondaryPrimaryColor}
+                                inactiveDotColor={Colors.grey2}
+                                parentWidth={width - 34}
+                                sliderBoxHeight={160}
+                                ImageComponentStyle={{
+                                    alignItems: 'center', justifyContent: 'center', borderRadius: 8,
+                                    overflow: 'hidden', marginTop: 1
+                                }}
+                            />
+
+                            {/* <HStack justifyContent={'center'} alignContent={'center'} borderRadius={'2xl'}  >
                                 <Image resizeMode="contain" borderRadius={'xl'} height={'40'}
-                                    alt={"Alternate Text"} width={width / 1.3}
+                                    alt={"Alternate Text"} width={width / 1.7} alignSelf={'center'} style={{ marginLeft: '20%' }}
                                     source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
-                                <VStack style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 20 }}>
-                                    <Image style={[styles.imageStyle, { height: 40, width: 40, marginBottom: 20 }]} source={require('../assets/Images/fevorites.png')} alt="Alternate Text" />
-                                    <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
-                                </VStack>
-                            </HStack>
+                            </HStack> */}
                         </HStack>
 
                         <VStack mt={'2'} >
                             <HStack justifyContent={'space-between'}>
-                                <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 25, }]}>Test image</Text>
+                                <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 20, }]}>Test image</Text>
+                                <HStack style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                    <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={require('../assets/Images/10.jpg')} alt="Alternate Text" />
+                                    <Image style={[styles.imageStyle, { height: 35, width: 35, marginLeft: 20 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
+                                </HStack>
                             </HStack>
                             <HStack h={'5'} alignItems={'center'} space={1}>
                                 <Image style={{ height: 20, width: 20, marginLeft: '-1%' }}
@@ -132,6 +235,20 @@ const ProductDetails = ({ navigation }) => {
                                 <Text style={[Styles.titleText, { fontSize: 14, color: Colors.smallText, fontFamily: fonts.Poppins_Medium, }]}>Apple Sqaure, Surat, Gujarat</Text>
                             </HStack>
 
+                            <HStack mt={'1'} >
+                                <Image style={{ height: 14, width: 14, }}
+                                    alt={"Alternate Text"}
+                                    source={require('../assets/Images/time.png')} />
+                                <Text ml={'2'} style={[Styles.titleText, { fontSize: 14, color: Colors.primaryColor, fontFamily: fonts.Poppins_Medium, }]}>
+                                    Open now</Text>
+
+                                <Text ml={'3'} style={[Styles.titleText, { fontSize: 12, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
+                                    10:00 am - 8:00 pm </Text>
+
+                                {/* <Image style={{ height: 20, width: 20, transform: [{ rotate: '270deg' }], tintColor: Colors.chipColor }}
+                                    alt={"Alternate Text"}
+                                    source={require('../assets/Images/back.png')} /> */}
+                            </HStack>
 
                             <HStack lineHeight={'2.5'} h={'6'} style={{ alignItems: 'center', }}>
                                 <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>4.7</Text>
@@ -140,18 +257,9 @@ const ProductDetails = ({ navigation }) => {
                                     source={require('../assets/Images/rating.png')} />
                                 <Text style={[Styles.titleText, { fontSize: 12, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>
                             </HStack>
-
-                            {/* <HStack style={{
-                                paddingHorizontal: 6, paddingVertical: 1, width: '13%', backgroundColor: Colors.lightSkyBlue,
-                                justifyContent: 'space-between'
-                            }} rounded={'full'} justifyContent={'center'} alignItems={'center'}>
-                                <View style={{ backgroundColor: Colors.white, borderRadius: 13 / 1, width: 13, height: 13, alignItems: 'center', }}>
-                                    <Text style={{ fontSize: 10, color: Colors.black, fontFamily: fonts.Poppins_Medium, textAlign: 'center', bottom: 3 }} >₹</Text>
-                                </View>
-                                <Text style={{ fontSize: 9, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }}>Pay</Text>
-                            </HStack > */}
-
-                            <HStack justifyContent={'space-between'} alignItems={'center'}>
+                            {/* direaction,mails icons */}
+                            <Divider mt={'2'} />
+                            <HStack mt={'2'} justifyContent={'space-between'} alignItems={'center'}>
 
                                 <VStack alignItems={'center'} >
                                     <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
@@ -182,27 +290,29 @@ const ProductDetails = ({ navigation }) => {
 
 
                             </HStack>
+                            <Divider mt={'2'} />
 
-                            <Divider mt={'1'} />
-
-                            <Text onTextLayout={onTextLayout} lineHeight={'sm'} numberOfLines={textShown ? undefined : 3} style={[Styles.titleText, { fontSize: 15, color: Colors.primaryColor, fontFamily: fonts.Poppins_Medium, marginTop: '2%', }]}>
-                                About Us :-
-                                <Text mr={'2'} color={Colors.black} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
-                                    {' '} It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                </Text>
+                            {/* Review & Ratings */}
+                            <Text mt={'2'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
+                                Offer & Promotion
                             </Text>
-                            {
-                                lengthMore ? <Text
-                                    onPress={toggleNumberOfLines}
-                                    style={{ fontFamily: fonts.Poppins_ExtraBold, fontSize: 9, alignSelf: 'flex-end' }}>{textShown ? 'Read less...' : 'Read more...'}</Text>
-                                    : null
-                            }
+                            <HStack >
+                                {/* <View style={{ height: 30, width: 30, backgroundColor: Colors.darkBlue, alignItems: 'center', borderRadius: 2 }}>
+                                    <Text style={{ fontSize: 10, color: Colors.white, fontFamily: fonts.Poppins_Medium, textAlign: 'center', paddingVertical: 5 }}>2.4</Text>
+                                </View> */}
+                                <VStack h={'4'}>
+                                    <Text lineHeight={'sm'} style={[Styles.titleText, { fontSize: 10, color: Colors.black, fontFamily: fonts.Poppins_SemiBold, }]}>
+                                        17 Ratings </Text>
+                                    {/* <Text lineHeight={'sm'} style={[Styles.titleText, { fontSize: 9, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
+                                        123 rating index based on 10 ratings across the web</Text> */}
+                                </VStack>
+                            </HStack>
+                            <Divider mt={'2'} />
                         </VStack>
                     </View>
-                    <Divider style={{ marginTop: -10 }} />
 
-                    <Stack p={'3'} style={{ marginTop: -2 }}>
+
+                    <Stack p={'3'} style={{ marginTop: '-4%' }}>
                         <HStack>
                             <FlatList
                                 contentContainerStyle={{ width: '100%', }}
@@ -231,285 +341,124 @@ const ProductDetails = ({ navigation }) => {
                                 }} />
                         </HStack>
                     </Stack>
-                    <Divider style={{ marginTop: -10 }} />
-                    <View style={{ padding: 10, marginTop: -8 }}>
-                        <VStack>
+
+                    <View style={{ padding: 10, marginTop: '-6%' }}>
+                        <Divider mt={'1'} />
+                        <Text onTextLayout={onTextLayout} lineHeight={'sm'} numberOfLines={textShown ? undefined : 2} style={[Styles.titleText, { fontSize: 17, color: Colors.primaryColor, fontFamily: fonts.Poppins_Medium, marginTop: '3%', }]}>
+                            About Us
+                            <Text mr={'2'} color={Colors.black} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
+                                {'     '} It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                            </Text>
+                        </Text>
+                        {
+                            lengthMore ? <Text
+                                onPress={toggleNumberOfLines}
+                                style={{ fontFamily: fonts.Poppins_ExtraBold, fontSize: 10, alignSelf: 'flex-end', backgroundColor: Colors.white, marginTop: '-5%', width: '22%', textAlign: 'right' }}>{textShown ? 'Read less...' : 'Read more...'}</Text>
+                                : null
+                        }
+                        <Divider mt={'1'} />
+
+                        {/* rating now */}
+                        <HStack style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: 5, marginBottom: 5 }} >
                             <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>Rate this</Text>
                             <HStack justifyContent={'space-between'} w={'72'} alignSelf={'center'} mt={'2'}>
-                                <Image style={{ height: 40, width: 40, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/yellowStar.png')} />
-                                <Image style={{ height: 40, width: 40, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/whiteStar.png')} />
-                                <Image style={{ height: 40, width: 40, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/whiteStar.png')} />
-                                <Image style={{ height: 40, width: 40, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/whiteStar.png')} />
-                                <Image style={{ height: 40, width: 40, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/whiteStar.png')} />
-                            </HStack>
-                        </VStack>
-
-                        <Divider mt={'2'} />
-                        <VStack mt={'1'}>
-                            <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
-                                Delivery Address
-                            </Text>
-                            <HStack mt={'3'} justifyContent={'space-between'}>
-                                <HStack>
-                                    <Image style={{ height: 20, width: 20, }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/pin1.png')} />
-                                    <VStack ml={'3'}>
-                                        <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
-                                            Dumas Rd, Surat, Gujarat</Text>
-                                        <HStack alignItems={'center'} >
-                                            <Image style={{ height: 12, width: 10, marginLeft: '-1%', tintColor: Colors.black }}
-                                                alt={"Alternate Text"}
-                                                source={require('../assets/Images/copy.png')} />
-                                            <Text style={[Styles.titleText, { fontSize: 12, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>
-                                                Copy Address</Text>
-                                        </HStack>
-                                    </VStack>
-                                </HStack>
-                                <Image style={{ height: 35, width: 35, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/mapAddress.png')} />
-                            </HStack>
-                            <HStack mt={'3'} ml={'1'}>
-                                <Image style={{ height: 16, width: 16, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/time.png')} />
-                                <Text ml={'3'} style={[Styles.titleText, { fontSize: 14, color: Colors.primaryColor, fontFamily: fonts.Poppins_Medium, }]}>
-                                    Open now</Text>
-
-                                <Text ml={'3'} style={[Styles.titleText, { fontSize: 12, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
-                                    10:00 am - 8:00 pm </Text>
-
-                                <Image style={{ height: 20, width: 20, transform: [{ rotate: '270deg' }], tintColor: Colors.chipColor }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/back.png')} />
-                            </HStack>
-                            <HStack mt={'3'} ml={'1'}>
-                                <Image style={{ height: 14, width: 14, tintColor: Colors.black }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/call2.png')} />
-                                <Text ml={'3'} style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
-                                    (+91) 98765 43210</Text>
-                            </HStack>
-                            {/* <HStack mt={'3'} >
-                                <Image style={{ height: 25, width: 25, tintColor: Colors.black, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/Payment.png')} />
-                                <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginLeft: 5 }]}>
-                                    Make a payment using G Pay</Text>
-                            </HStack> */}
-
-                            <HStack mt={'3'} >
-                                <Image style={{ height: 16, width: 16, tintColor: Colors.black, }}
-                                    alt={"Alternate Text"}
-                                    source={require('../assets/Images/pen.png')} />
-                                <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, marginLeft: 15 }]}>
-                                    Edit this listing</Text>
-                            </HStack>
-                        </VStack>
-
-                        <Divider mt={'2'} />
-                        <Text mt={'1'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
-                            Review & Ratings
-                        </Text>
-                        <HStack mt={'3'} >
-                            <View style={{ height: 30, width: 30, backgroundColor: Colors.darkBlue, alignItems: 'center', borderRadius: 2 }}>
-                                <Text style={{ fontSize: 10, color: Colors.white, fontFamily: fonts.Poppins_Medium, textAlign: 'center', paddingVertical: 5 }}>2.4</Text>
-                            </View>
-                            <VStack ml={'3'} h={'8'}>
-                                <Text lineHeight={'sm'} style={[Styles.titleText, { fontSize: 10, color: Colors.black, fontFamily: fonts.Poppins_SemiBold, }]}>
-                                    17 Ratings </Text>
-                                <Text lineHeight={'sm'} style={[Styles.titleText, { fontSize: 9, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>
-                                    123 rating index based on 10 ratings across the web</Text>
-                            </VStack>
-                        </HStack>
-
-                        <Divider mt={'2'} />
-                        <Text mt={'1'} style={{ fontSize: 13, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
-                            Recent rating trend
-                        </Text>
-                        <HStack mt={'2'} justifyContent={'space-between'}>
-                            <View style={{ height: 35, width: 80, backgroundColor: '#00247D1A', alignItems: 'center', borderRadius: 2, }}>
-                                <Text style={{ fontSize: 10, color: Colors.primaryColor, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>All Review</Text>
-                            </View>
-
-                            <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: '#00247D1A', borderWidth: 1 }}>
-                                <HStack style={{ alignItems: 'center', }}>
-                                    <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/star1.png')} />
-                                    <Text style={{ fontSize: 10, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>1</Text>
-                                </HStack>
-                            </View>
-
-                            <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: '#00247D1A', borderWidth: 1 }}>
-                                <HStack style={{ alignItems: 'center', }}>
-                                    <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/star1.png')} />
-                                    <Text style={{ fontSize: 10, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>2</Text>
-                                </HStack>
-                            </View>
-
-                            <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: '#00247D1A', borderWidth: 1 }}>
-                                <HStack style={{ alignItems: 'center', }}>
-                                    <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/star1.png')} />
-                                    <Text style={{ fontSize: 10, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>3</Text>
-                                </HStack>
-                            </View>
-
-                            <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: '#00247D1A', borderWidth: 1 }}>
-                                <HStack style={{ alignItems: 'center', }}>
-                                    <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/star1.png')} />
-                                    <Text style={{ fontSize: 10, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>4</Text>
-                                </HStack>
-                            </View>
-
-                            <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: '#00247D1A', borderWidth: 1 }}>
-                                <HStack style={{ alignItems: 'center', }}>
-                                    <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/star1.png')} />
-                                    <Text style={{ fontSize: 10, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>5</Text>
-                                </HStack>
-                            </View>
-                        </HStack>
-
-                        <Image resizeMode="contain" borderRadius={'xl'} height={'24'} mt={'2'}
-                            alt={"Alternate Text"} width={width / 1}
-                            source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
-                        <Divider mt={'2'} />
-                        <Text mt={'3'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
-                            User Review
-                        </Text>
-                        <VStack mt={'3'}  >
-                            <HStack style={{ alignItems: 'center', }}>
-                                <Image style={{ height: 50, width: 50 }}
-                                    alt={"Alternate Text"}
-                                    rounded={'full'}
-                                    source={{ uri: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg' }} />
-                                <VStack style={{ marginLeft: '4%', marginBottom: 8 }}>
-                                    <Text mt={'3'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Bold, }}>
-                                        James Lawson
-                                    </Text>
-                                    <HStack>
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
+                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                                    <HStack style={{ alignItems: 'center', }}>
+                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
                                             alt={"Alternate Text"}
                                             source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
+                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>1</Text>
                                     </HStack>
+                                </View>
 
-                                </VStack>
-                            </HStack>
-                            <Text mt={'3'} style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Medium, }}>
-                                air max are always very comfortable fit, clean and just perfect in every way.
-                            </Text>
-
-                            <Text mt={'10'} style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Medium, }}>
-                                December 10, 2016
-                            </Text>
-                        </VStack>
-
-                        <VStack mt={'3'}  >
-                            <HStack style={{ alignItems: 'center', }}>
-                                <Image style={{ height: 50, width: 50 }}
-                                    alt={"Alternate Text"}
-                                    rounded={'full'}
-                                    source={{ uri: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg' }} />
-                                <VStack style={{ marginLeft: '4%', marginBottom: 8 }}>
-                                    <Text mt={'3'} style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Bold, }}>
-                                        Laura Octavian
-                                    </Text>
-                                    <HStack>
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
+                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                                    <HStack style={{ alignItems: 'center', }}>
+                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
                                             alt={"Alternate Text"}
                                             source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Image style={{ height: 12, width: 12, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
+                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>2</Text>
                                     </HStack>
+                                </View>
 
-                                </VStack>
+                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                                    <HStack style={{ alignItems: 'center', }}>
+                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/star1.png')} />
+                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>3</Text>
+                                    </HStack>
+                                </View>
+
+                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                                    <HStack style={{ alignItems: 'center', }}>
+                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/star1.png')} />
+                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>4</Text>
+                                    </HStack>
+                                </View>
+
+                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                                    <HStack style={{ alignItems: 'center', }}>
+                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/star1.png')} />
+                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>5</Text>
+                                    </HStack>
+                                </View>
                             </HStack>
-                            <Text mt={'3'} style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Medium, }}>
-                                air max are always very comfortable fit, clean and just perfect in every way.
-                            </Text>
-
-                            <Text mt={'6'} style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Medium, }}>
-                                December 10, 2016
-                            </Text>
-                        </VStack>
+                        </HStack>
 
                         <Divider mt={'2'} />
-                        <Text mt={'3'} style={{ fontSize: 13, color: Colors.chipColor, fontFamily: fonts.Poppins_Medium, alignSelf: 'center' }}>
-                            See All Reviews
-                        </Text>
+                        <SliderBox
+                            resizeMode={'cover'}
+                            images={images1}
+                            autoplay={false}
+                            disableOnPress={false}
+                            dotColor={Colors.skyBlue}
+                            inactiveDotColor={Colors.white}
+                            parentWidth={width - 34}
+                            sliderBoxHeight={100}
+                            ImageComponentStyle={{
+                                alignItems: 'center', justifyContent: 'center', borderRadius: 8,
+                                overflow: 'hidden', marginTop: '3%'
+                            }}
+                        />
+                        <Divider mt={'2'} />
 
-                        <Text mt={'1'} style={{ fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
-                            Also Listed in
-                        </Text>
-
-                        <Text mt={'1'} style={{ fontSize: 12, color: '#696666', fontFamily: fonts.Poppins_Medium, }}>
-                            Fabric Retailers
-                        </Text>
-                        <Text style={{ fontSize: 12, color: '#696666', fontFamily: fonts.Poppins_Medium, }}>
-                            Architects
-                        </Text>
-                        <Text style={{ fontSize: 12, color: '#696666', fontFamily: fonts.Poppins_Medium, }}>
-                            Fabric Wholesalers
-                        </Text>
-                        <Text style={{ fontSize: 12, color: '#696666', fontFamily: fonts.Poppins_Medium, }}>
-                            Interior Designers
-                        </Text>
-                        <Text style={{ fontSize: 12, color: '#696666', fontFamily: fonts.Poppins_Medium, }}>
-                            More...
-                        </Text>
-
-                        <Divider mt={'5'} />
-                        <HStack style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: fonts.Poppins_Medium, }}>
-                                Report an issue
-                            </Text>
-                            <Image style={{ height: 20, width: 20, transform: [{ rotate: '180deg' }], tintColor: Colors.chipColor }}
-                                alt={"Alternate Text"}
-                                source={require('../assets/Images/back.png')} />
-                        </HStack>
                     </View>
+                    <VStack style={[styles.card, { borderColor: Colors.skyBlue }]} justifyContent={'center'} mt={'1'} m={2}>
+                        <HStack alignItems={'center'} justifyContent={'space-between'} p={3}>
+                            <HStack>
+                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Related recommendation</Text>
+                            </HStack>
+                            <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
+                                <HStack alignItems={'center'} justifyItems={'center'}>
+                                    <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
+                                </HStack>
+                            </Pressable>
+                        </HStack>
+                        <ScrollView
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}>
+                            {data.map((item, key) => (
+                                <View>
+                                    <Image style={{
+                                        width: 50 * 2,
+                                        height: 70,
+                                        margin: 5,
+                                        marginHorizontal: 13,
+                                        resizeMode: 'cover'
+                                    }} borderRadius={'md'} source={{
+                                        uri: item.image
+                                    }} alt="Alternate Text" size="md" />
 
+                                    <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
+                                </View>
+                            ))}
+                        </ScrollView>
+                    </VStack>
                 </View>
             </ScrollView >
         </View >

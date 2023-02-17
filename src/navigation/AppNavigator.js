@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Login';
@@ -14,14 +14,29 @@ import MyProfile from '../screens/MyProfile';
 import MyAds from '../screens/MyAds';
 import Fevorites from '../screens/Fevorites';
 import PageView from '../screens/PageView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Stack = createNativeStackNavigator();
-
 const AppNavigator = () => {
+
+    // const initState = {
+    //     token: ''
+    // }
+    // const [state, setState] = React.useState(initState);
+
+    // useEffect(async () => {
+    //     const userData = await AsyncStorage.getItem('userData');
+    //     setState({
+    //         token: JSON.parse(userData).token
+    //     })
+    //     return () => {
+    //         console.log("This will be logged on unmount");
+    //     }
+    // }, []);
     return (
         <NavigationContainer independent={true}>
-            <Stack.Navigator initialRouteName="Login"
+            <Stack.Navigator initialRouteName={"Login"}
                 screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="OTP" component={OTP} />
@@ -39,6 +54,8 @@ const AppNavigator = () => {
         </NavigationContainer>
     )
 }
+
+
 
 export default AppNavigator;
 

@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import Product from '../screens/Product';
 import ProductDetails from '../screens/ProductDetails';
+import HospitalDetails from '../screens/HospitalDetails';
 import AboutUs from '../screens/AboutUs';
 import AddListing from '../screens/AddListing'
 import Search from '../screens/Search';
@@ -39,6 +40,7 @@ function HomeStack() {
             <HomeNavigationStack.Screen name="Home" component={Home} />
             <HomeNavigationStack.Screen name="Product" component={Product} />
             <HomeNavigationStack.Screen name="ProductDetails" component={ProductDetails} />
+            <HomeNavigationStack.Screen name="HospitalDetails" component={HospitalDetails} />
             <HomeNavigationStack.Screen name="MyProfile" component={MyProfile} />
         </HomeNavigationStack.Navigator>
     );

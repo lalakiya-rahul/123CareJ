@@ -234,9 +234,9 @@ const Product = ({ navigation, route }) => {
                                             <VStack justifyContent={'center'} alignItems={'center'} >
                                                 <Image style={{
                                                     width: 110,
-                                                    height: 110,
-                                                    resizeMode: 'cover'
-                                                }} borderRadius={'sm'} source={{
+                                                    height: 115,
+                                                    resizeMode: 'center'
+                                                }} borderRadius={'md'} source={{
                                                     uri: item.image
                                                 }} alt="Alternate Text" size="md" />
 
@@ -244,16 +244,15 @@ const Product = ({ navigation, route }) => {
 
                                             <VStack w={'64'}>
                                                 <HStack justifyContent={'space-between'} >
-                                                    <Text style={[Styles.titleText, { marginTop: '3%', color: Colors.black }]}>{item.title}</Text>
-                                                    <Pressable >
-                                                        <Image style={{
-                                                            width: 28,
-                                                            height: 28,
-                                                            resizeMode: 'cover',
-                                                        }} source={item.id === 2 ? require('../assets/Images/fevoritesRed.png') : require('../assets/Images/10.jpg')} alt="Alternate Text" size="md"></Image>
-                                                    </Pressable>
+                                                    <Text numberOfLines={2} style={[Styles.titleText, { color: Colors.black, width: '80%', }]}>{item.title}</Text>
+                                                    <Image style={{
+                                                        width: 25,
+                                                        height: 25,
+                                                        resizeMode: 'cover',
+                                                    }} source={item.id === 2 ? require('../assets/Images/fevoritesRed.png') : require('../assets/Images/10.jpg')} alt="Alternate Text" ></Image>
+
                                                 </HStack>
-                                                <HStack h={'5'} alignItems={'center'} >
+                                                <HStack h={'5'} alignItems={'center'}  >
                                                     <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/pin1.png')} />
@@ -267,7 +266,7 @@ const Product = ({ navigation, route }) => {
                                                 </HStack>
 
 
-                                                <HStack alignItems={'center'} space={1} mt={'3'}>
+                                                <HStack alignItems={'flex-end'} justifyContent={'flex-end'} space={1} mt={'3'}>
                                                     <Image style={styles.imageIconSize}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/call.png')} />
@@ -289,7 +288,7 @@ const Product = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index.toString()}
                 />
             </View >
-        </View>
+        </View >
     )
 }
 

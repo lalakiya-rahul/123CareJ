@@ -11,6 +11,8 @@ import Loader from '../components/Loader';
 import { isEmpty } from 'lodash'
 import { Helper } from '../helper/Helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { login } from '../reducer/actions';
 
 
 const width = Dimensions.get("window").width
@@ -22,6 +24,8 @@ export default function OTP({ navigation, route }) {
     const [otpInput, setOtpInput] = React.useState('')
     const [seconds, setSeconds] = React.useState(30);
     const [loading, setLoding] = React.useState(false);
+    const dispatch = useDispatch();
+
     const setText = () => {
         otpInput.current.setValue("");
     }
@@ -49,6 +53,9 @@ export default function OTP({ navigation, route }) {
             console.log(response, 'respo');
             if (response.error === '0') {
                 await AsyncStorage.setItem('userData', JSON.stringify(response.data));
+
+                dispatch(login({ userDetail: response.data }))
+
                 navigation.navigate('BottomTab');
                 setLoding(false);
             } else {

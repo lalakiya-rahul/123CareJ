@@ -14,6 +14,12 @@ export const Urls = {
     getCountry: '/country',
     getState: '/state?country_id=1',
     getCity: '/city?state_id=4',
+    postAds: '/member/product/add',
+
+    //dashborad 
+    homePage: '/home',
+
+    // profile
     updateProfile: '/member/profile/update',
 
 }

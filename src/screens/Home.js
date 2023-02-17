@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, } from 'react-native';
+import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, Linking, } from 'react-native';
 
 import Colors from '../constants/colors';
 import { Avatar, Box, Button, HStack, Image, Input, Text, VStack, Modal, CheckBox, Checkbox, Radio, Stack } from 'native-base';
@@ -9,6 +9,11 @@ import SelectDropdown from 'react-native-select-dropdown';
 import Styles from '../constants/styles';
 import CommonButton from '../components/Button';
 import { SliderBox } from "react-native-image-slider-box";
+import { useSelector } from 'react-redux';
+import { Helper } from '../helper/Helper';
+import { Urls } from '../helper/Urls';
+import Loader from '../components/Loader';
+import { checkInternet } from '../helper/Utils';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -273,17 +278,49 @@ const data2 = [
 ]
 
 const images = [
-    "https://source.unsplash.com/1024x768/?nature",
-    "https://source.unsplash.com/1024x768/?water",
-    "https://source.unsplash.com/1024x768/?girl",
-    "https://source.unsplash.com/1024x768/?tree", // Network image
+    require('../assets/Images/ads2.png'),
+    require('../assets/Images/ads3.png'),
+    require('../assets/Images/ads.png'),
 ]
 
 
 export default function Home({ navigation }) {
+    const { userDetail } = useSelector((state) => state.reducerDetail);
+
     const [isModalVisible, setModalVisible] = React.useState(false);
+    const [getCategoryData, setCategoryData] = React.useState([]);
+
+    const [loading, setLoding] = React.useState(false);
 
     const countries = ['IND', 'U.K', 'A.E.D']
+
+    React.useEffect(() => {
+        getCategory();
+    }, []);
+
+
+    const getCategory = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+
+            const apiData = {
+                lang_id: 1
+            };
+            var response = await Helper.POST(Urls.homePage, apiData);
+            console.log(response, 'respo');
+            if (response.error === '0') {
+                setCategoryData(response.data)
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
+
+    console.log(getCategoryData);
 
     return (
         <View style={{ marginBottom: '20%', backgroundColor: Colors.white, }}>
@@ -311,6 +348,7 @@ export default function Home({ navigation }) {
                     </VStack>
                 </HStack>
             </HStack>
+            <Loader loading={loading} />
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
                 <View style={[Styles.container, { marginBottom: 610 }]}>
@@ -396,18 +434,18 @@ export default function Home({ navigation }) {
                             showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}>
                             <FlatList
-                                data={data2}
+                                data={getCategoryData.category}
                                 contentContainerStyle={{ alignSelf: 'center', }}
-                                numColumns={Math.ceil(data2.length / 3)}
+                                numColumns={6}
                                 renderItem={({ item, index }) => {
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
                                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
-                                                onPress={() => item.id === 1 ? setModalVisible(true) : item.id === 2 || item.id === 3 ? navigation.navigate('Product', { isHospitalData: true }) : navigation.navigate('Product', { isHospitalData: false })} >
+                                                onPress={() => item.category_id === 2 || item.category_id === 3 && navigation.navigate('Product', { isHospitalData: true })} >
                                                 <Image
                                                     style={{ height: 30, width: 30, resizeMode: 'stretch' }}
                                                     borderColor={Colors.secondaryPrimaryColor}
-                                                    source={item.image} alt="Alternate Text" />
+                                                    source={{ uri: item.image }} alt="Alternate Text" />
 
                                                 <Text numberOfLines={2} width={'12'} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 11 }]}>{item.title}</Text>
                                             </Pressable>
@@ -415,7 +453,7 @@ export default function Home({ navigation }) {
                                     );
                                 }
                                 }
-                                keyExtractor={(item) => item.id.toString()}
+                                keyExtractor={(item) => item.category_id.toString()}
                             />
                         </ScrollView>
                         <HStack style={{ justifyContent: 'center', alignItems: 'center', marginTop: '-2%' }}>
@@ -425,9 +463,20 @@ export default function Home({ navigation }) {
                         </HStack>
                     </View>
 
-                    <Image resizeMode="contain" borderRadius={'xl'} height={'24'} mt={'2.5'}
-                        alt={"Alternate Text"} width={width / 1}
-                        source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
+                    <SliderBox
+                        resizeMode={'cover'}
+                        images={images}
+                        autoplay={false}
+                        disableOnPress={false}
+                        dotColor={Colors.skyBlue}
+                        inactiveDotColor={Colors.white}
+                        parentWidth={width - 20}
+                        sliderBoxHeight={100}
+                        ImageComponentStyle={{
+                            alignItems: 'center', justifyContent: 'center', borderRadius: 8,
+                            overflow: 'hidden', marginTop: '3%'
+                        }}
+                    />
 
                     <View>
                         <HStack alignItems={'center'} justifyContent={'space-between'} mt={'3'}>
@@ -443,7 +492,7 @@ export default function Home({ navigation }) {
                         </HStack>
                         <FlatList
                             contentContainerStyle={{ marginTop: '1%' }}
-                            data={data.slice(0, 5)}
+                            data={getCategoryData.latest && getCategoryData.latest.slice(0, 5)}
                             renderItem={({ item }) => {
                                 return (
                                     <View style={{ backgroundColor: Colors.white, marginTop: 2 }}>
@@ -461,9 +510,7 @@ export default function Home({ navigation }) {
                                                             height: 40,
                                                             resizeMode: 'cover',
                                                             borderRadius: 4,
-                                                        }} source={{
-                                                            uri: item.image
-                                                        }} alt="Alternate Text" size="md" />
+                                                        }} source={{ uri: item.image_url }} alt="Alternate Text" size="md" />
                                                     </VStack>
 
                                                     <VStack >
@@ -472,12 +519,12 @@ export default function Home({ navigation }) {
                                                             <Image style={{ height: 10, width: 10, }}
                                                                 alt={"Alternate Text"}
                                                                 source={require('../assets/Images/time.png')} />
-                                                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>Nov 5th, 2022 at 13:48</Text>
+                                                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.created_at}</Text>
 
                                                             <Image style={{ height: 10, width: 10, }}
                                                                 alt={"Alternate Text"}
                                                                 source={require('../assets/Images/pin1.png')} />
-                                                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>Ahmedabad</Text>
+                                                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.city_name}</Text>
                                                         </HStack>
 
 
@@ -486,19 +533,23 @@ export default function Home({ navigation }) {
 
                                                 <HStack style={{ alignItems: 'center', justifyContent: 'space-evenly', width: '30%' }} >
                                                     <VStack >
-                                                        <Image size={9}
-                                                            alt={"Alternate Text"}
-                                                            source={require('../assets/Images/fevorites.png')} />
-                                                    </VStack>
-                                                    <VStack >
                                                         <Image size={7}
                                                             alt={"Alternate Text"}
-                                                            source={require('../assets/Images/call.png')} />
+                                                            source={require('../assets/Images/10.jpg')} />
                                                     </VStack>
-                                                    <VStack >
-                                                        <Image size={7}
-                                                            alt={"Alternate Text"}
-                                                            source={require('../assets/Images/greenWp.png')} />
+                                                    <VStack>
+                                                        <Pressable onPress={() => Linking.openURL(`tel:${item.member.mobile_no}`)}>
+                                                            <Image size={7}
+                                                                alt={"Alternate Text"}
+                                                                source={require('../assets/Images/call.png')} />
+                                                        </Pressable>
+                                                    </VStack>
+                                                    <VStack>
+                                                        <Pressable onPress={() => Linking.openURL('whatsapp://send?text=' + "Hello " + '&phone=91' + item.member.mobile_no)}>
+                                                            <Image size={7}
+                                                                alt={"Alternate Text"}
+                                                                source={require('../assets/Images/greenWp.png')} />
+                                                        </Pressable>
                                                     </VStack>
                                                 </HStack>
                                             </HStack>
@@ -525,7 +576,7 @@ export default function Home({ navigation }) {
                             <ScrollView
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}>
-                                {data.map((item, key) => (
+                                {getCategoryData.featured && getCategoryData.featured.map((item, key) => (
                                     <View>
                                         <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
                                             <Image style={{
@@ -535,7 +586,7 @@ export default function Home({ navigation }) {
                                                 marginHorizontal: 13,
                                                 resizeMode: 'cover'
                                             }} borderRadius={'md'} source={{
-                                                uri: item.image
+                                                uri: item.image_url
                                             }} alt="Alternate Text" size="md" />
                                             <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
                                         </Pressable>
@@ -560,7 +611,7 @@ export default function Home({ navigation }) {
                             <ScrollView
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}>
-                                {data.map((item, key) => (
+                                {getCategoryData.related && getCategoryData.related.map((item, key) => (
                                     <View>
                                         <Image style={{
                                             width: 50 * 2,
@@ -569,7 +620,7 @@ export default function Home({ navigation }) {
                                             marginHorizontal: 13,
                                             resizeMode: 'cover'
                                         }} borderRadius={'md'} source={{
-                                            uri: item.image
+                                            uri: item.image_url
                                         }} alt="Alternate Text" size="md" />
 
                                         <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
