@@ -12,14 +12,24 @@ export const Urls = {
     // post ads
     getCategory: '/category',
     getCountry: '/country',
-    getState: '/state?country_id=1',
-    getCity: '/city?state_id=4',
+    getState: '/state',
+    getCity: '/city',
     postAds: '/member/product/add',
 
     //dashborad 
     homePage: '/home',
 
+    //proudct
+    //view all
+    productListViewAll: '/products',
+    productDetail: '/productDetail',
+
+    myAds: '/member/product',
+
     // profile
     updateProfile: '/member/profile/update',
+
+    //pages
+    pages: '/page',
 
 }

@@ -50,12 +50,9 @@ export default function OTP({ navigation, route }) {
                 otp: otpInput
             };
             var response = await Helper.POST(Urls.verifyOtp, apiData);
-            console.log(response, 'respo');
             if (response.error === '0') {
                 await AsyncStorage.setItem('userData', JSON.stringify(response.data));
-
                 dispatch(login({ userDetail: response.data }))
-
                 navigation.navigate('BottomTab');
                 setLoding(false);
             } else {

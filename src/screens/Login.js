@@ -13,6 +13,9 @@ import Loader from '../components/Loader';
 import FormErrorText from '../components/FormErrorText';
 import { SelectCountry } from 'react-native-element-dropdown';
 import { TextInput } from "@react-native-material/core";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { login } from '../reducer/actions';
 // import { validatePhone } from '../helper/Validations';
 
 const width = Dimensions.get("window").width
@@ -23,6 +26,7 @@ export default function Login({ navigation }) {
     const [formattedValue, setFormattedValue] = React.useState("");
     const [country, setCountry] = React.useState('1');
     const phoneInput = React.useRef(null);
+
 
     const initState = {
         name: '',
@@ -60,7 +64,7 @@ export default function Login({ navigation }) {
         }
     };
 
-    const login = async () => {
+    const loginApi = async () => {
         if (validatePhone(state.mobile)) {
             if (checkInternet()) {
                 setLoding(true);
@@ -82,6 +86,8 @@ export default function Login({ navigation }) {
             }
         }
     };
+
+
 
     return (
         <ScrollView>
@@ -146,7 +152,7 @@ export default function Login({ navigation }) {
                         />
                         <FormErrorText optionalStyle={{ marginLeft: '-30%' }} errorText={state.mobileError} />
                         {/* onPress={() => navigation.navigate('OTP')}  */}
-                        <Pressable onPress={() => login()} style={{ alignSelf: 'flex-end' }}>
+                        <Pressable onPress={() => loginApi()} style={{ alignSelf: 'flex-end' }}>
                             <View style={{ backgroundColor: Colors.primaryColor, borderRadius: 45 / 2, height: 45, width: 45, justifyContent: 'center', alignItems: 'center', marginTop: 15, }}>
                                 <Image source={require('../assets/Images/arrow-top-left.png')} style={{ height: 25, width: 25, tintColor: Colors.white, transform: [{ rotate: '135deg' }], }} />
                             </View>

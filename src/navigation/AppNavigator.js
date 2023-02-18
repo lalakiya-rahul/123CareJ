@@ -15,28 +15,18 @@ import MyAds from '../screens/MyAds';
 import Fevorites from '../screens/Fevorites';
 import PageView from '../screens/PageView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../reducer/actions';
 
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
 
-    // const initState = {
-    //     token: ''
-    // }
-    // const [state, setState] = React.useState(initState);
-
-    // useEffect(async () => {
-    //     const userData = await AsyncStorage.getItem('userData');
-    //     setState({
-    //         token: JSON.parse(userData).token
-    //     })
-    //     return () => {
-    //         console.log("This will be logged on unmount");
-    //     }
-    // }, []);
+    const { userDetail } = useSelector((state) => state.reducerDetail);
+    console.log(userDetail, 'log--');
     return (
         <NavigationContainer independent={true}>
-            <Stack.Navigator initialRouteName={"Login"}
+            <Stack.Navigator initialRouteName={userDetail.token ? "BottomTab" : "Login"}
                 screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="OTP" component={OTP} />

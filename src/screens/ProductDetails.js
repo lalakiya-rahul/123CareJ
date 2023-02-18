@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, View, ScrollView, Pressable, Dimensions, } from 'react-native';
+import { StyleSheet, View, ScrollView, Pressable, Dimensions, ToastAndroid, Linking } from 'react-native';
 
 import Colors from '../constants/colors';
 import { HStack, Image, Text, VStack, FlatList, Input, Divider, Stack } from 'native-base';
@@ -8,29 +8,63 @@ import Styles from '../constants/styles';
 import Share from 'react-native-share';
 import { map } from 'lodash'
 import { SliderBox } from "react-native-image-slider-box";
+import Loader from '../components/Loader';
+import { checkInternet } from '../helper/Utils';
+import { Helper } from '../helper/Helper';
+import { Urls } from '../helper/Urls';
+import { useSelector } from 'react-redux';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 
-const ProductDetails = ({ navigation }) => {
-
+export default function ProductDetails({ navigation, route }) {
+    const { userDetail } = useSelector((state) => state.reducerDetail);
+    const [productDetail, setGetProductDetail] = React.useState([])
     const [textShown, setTextShown] = useState(false); //To show ur remaining Text
     const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
     const toggleNumberOfLines = () => { //To toggle the show text or hide it
         setTextShown(!textShown);
     }
 
+    const [like, setLike] = useState(true);
+
+    const [loading, setLoding] = React.useState(false);
+
     const onTextLayout = useCallback(e => {
-        setLengthMore(e.nativeEvent.lines.length >= 3); //to check the text is more than 4 lines or not
-        // console.log(e.nativeEvent);
+        setLengthMore(e.nativeEvent.lines.length >= 3);
     }, []);
 
+    React.useEffect(() => {
+        getProductDetail();
+    }, []);
+
+    const getProductDetail = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                lang_id: 1,
+                product_id: route.params.product_id,
+                user_id: userDetail.user_id
+            }
+            var response = await Helper.POST(Urls.productDetail, apiData);
+            if (response.error === '0') {
+                setGetProductDetail(response.data)
+                console.log(response.data, 'getProductDetail data----');
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
     const images = [
         "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
         "https://source.unsplash.com/1024x768/?water",
         "https://source.unsplash.com/1024x768/?girl",
-        "https://source.unsplash.com/1024x768/?tree", // Network image
+        "https://source.unsplash.com/1024x768/?tree",
     ]
 
     const images1 = [
@@ -132,6 +166,7 @@ const ProductDetails = ({ navigation }) => {
         },
     ]
 
+    console.log(like, 'likee');
 
     const share = () => {
         Share.open({
@@ -185,6 +220,7 @@ const ProductDetails = ({ navigation }) => {
                 </HStack>
                 <HStack alignSelf={'center'} alignItems={'center'}>
                     <HStack >
+
                         <Image style={{ height: 22, width: 22 }} mr={'2'} ml={'2'}
                             alt={"Alternate Text"}
                             source={require('../assets/Images/share1.png')} />
@@ -194,6 +230,7 @@ const ProductDetails = ({ navigation }) => {
                     </HStack>
                 </HStack>
             </HStack>
+            <Loader loading={loading} />
             <ScrollView >
                 <View style={{ padding: 8, marginTop: '-1%', marginBottom: 100 }}>
                     <View style={{ padding: 10, }}>
@@ -222,17 +259,21 @@ const ProductDetails = ({ navigation }) => {
 
                         <VStack mt={'2'} >
                             <HStack justifyContent={'space-between'}>
-                                <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 20, }]}>Test image</Text>
+                                <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 20, }]}>{productDetail.title}</Text>
                                 <HStack style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                    <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={require('../assets/Images/10.jpg')} alt="Alternate Text" />
-                                    <Image style={[styles.imageStyle, { height: 35, width: 35, marginLeft: 20 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
+                                    <Pressable onPress={() => setLike(true)}>
+                                        <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={like ? require('../assets/Images/10.jpg') : require('../assets/Images/fevoritesRed.png')} alt="Alternate Text" />
+                                    </Pressable>
+                                    <Pressable onPress={() => share()}>
+                                        <Image style={[styles.imageStyle, { height: 35, width: 35, marginLeft: 20 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
+                                    </Pressable>
                                 </HStack>
                             </HStack>
                             <HStack h={'5'} alignItems={'center'} space={1}>
                                 <Image style={{ height: 20, width: 20, marginLeft: '-1%' }}
                                     alt={"Alternate Text"}
                                     source={require('../assets/Images/pin1.png')} />
-                                <Text style={[Styles.titleText, { fontSize: 14, color: Colors.smallText, fontFamily: fonts.Poppins_Medium, }]}>Apple Sqaure, Surat, Gujarat</Text>
+                                <Text style={[Styles.titleText, { fontSize: 14, color: Colors.smallText, fontFamily: fonts.Poppins_Medium, }]}>{productDetail.city_name}</Text>
                             </HStack>
 
                             <HStack mt={'1'} >
@@ -262,30 +303,40 @@ const ProductDetails = ({ navigation }) => {
                             <HStack mt={'2'} justifyContent={'space-between'} alignItems={'center'}>
 
                                 <VStack alignItems={'center'} >
-                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/leftdirecation.png')} />
+                                    <Pressable onPress={() => Linking.openURL('google.navigation:q=35.6063+51.4008')}>
+                                        <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/leftdirecation.png')} />
+                                    </Pressable>
                                 </VStack>
                                 <VStack alignItems={'center'}>
-                                    <Image style={{ height: 50, width: 50, }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/web.png')} />
+                                    <Pressable onPress={() => Linking.openURL('https://parshwatechnologies.info/')}>
+                                        <Image style={{ height: 50, width: 50, }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/web.png')} />
+                                    </Pressable>
                                 </VStack>
 
                                 <VStack alignItems={'center'}>
-                                    <Image style={{ height: 45, width: 45, }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/gmail.png')} />
+                                    <Pressable onPress={() => Linking.openURL('mailto:' + productDetail.member.email)}>
+                                        <Image style={{ height: 45, width: 45, }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/gmail.png')} />
+                                    </Pressable>
                                 </VStack>
                                 <VStack alignItems={'center'}>
-                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/call.png')} />
+                                    <Pressable onPress={() => Linking.openURL(`tel:${productDetail.member.mobile_no}`)}>
+                                        <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/call.png')} />
+                                    </Pressable>
                                 </VStack>
                                 <VStack alignItems={'center'}>
-                                    <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
-                                        alt={"Alternate Text"}
-                                        source={require('../assets/Images/greenWp.png')} />
+                                    <Pressable onPress={() => Linking.openURL('whatsapp://send?text=' + "Hello " + '&phone=91' + productDetail.member.mobile_no)}>
+                                        <Image style={{ height: 40, width: 40, marginLeft: '2%', }}
+                                            alt={"Alternate Text"}
+                                            source={require('../assets/Images/greenWp.png')} />
+                                    </Pressable>
                                 </VStack>
 
 
@@ -347,8 +398,7 @@ const ProductDetails = ({ navigation }) => {
                         <Text onTextLayout={onTextLayout} lineHeight={'sm'} numberOfLines={textShown ? undefined : 2} style={[Styles.titleText, { fontSize: 17, color: Colors.primaryColor, fontFamily: fonts.Poppins_Medium, marginTop: '3%', }]}>
                             About Us
                             <Text mr={'2'} color={Colors.black} fontFamily={fonts.Poppins_Medium} fontSize={9} alignSelf={'center'}>
-                                {'     '} It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                {'     '} {productDetail.description}
                             </Text>
                         </Text>
                         {
@@ -433,7 +483,7 @@ const ProductDetails = ({ navigation }) => {
                             <HStack>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Related recommendation</Text>
                             </HStack>
-                            <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
+                            <Pressable onPress={() => navigation.navigate('Product', { viewAll: true })}>
                                 <HStack alignItems={'center'} justifyItems={'center'}>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
                                 </HStack>
@@ -442,7 +492,7 @@ const ProductDetails = ({ navigation }) => {
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}>
-                            {data.map((item, key) => (
+                            {productDetail.similar && productDetail.similar.map((item, key) => (
                                 <View>
                                     <Image style={{
                                         width: 50 * 2,
@@ -451,7 +501,7 @@ const ProductDetails = ({ navigation }) => {
                                         marginHorizontal: 13,
                                         resizeMode: 'cover'
                                     }} borderRadius={'md'} source={{
-                                        uri: item.image
+                                        uri: item.image_url
                                     }} alt="Alternate Text" size="md" />
 
                                     <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
@@ -465,7 +515,6 @@ const ProductDetails = ({ navigation }) => {
     )
 }
 
-export default ProductDetails;
 
 const styles = StyleSheet.create({
     card: {

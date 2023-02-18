@@ -23,7 +23,17 @@ const height = Dimensions.get("window").height
 
 export default function AddListing({ navigation }) {
 
-    const iAddtioanalData = [
+    const [loading, setLoding] = React.useState(false);
+    const [CategoriesId, setCategoriesId] = React.useState("");
+    const [statesId, setStatesId] = React.useState("");
+    const [cityId, setCityId] = React.useState("");
+    const [Categories, setCategories] = React.useState([]);
+    const [states, setStates] = React.useState([]);
+    const [city, setCity] = React.useState([]);
+    const [service, setService] = React.useState('');
+    const [phoneNumber, setPhoneNumber] = React.useState('');
+    const [userInfo, setUserInfo] = React.useState([]);
+    const [additionalData, setAdditionalData] = React.useState([
         {
             "featured_name": "Cost",
             "featured_id": 1,
@@ -53,8 +63,8 @@ export default function AddListing({ navigation }) {
             "featured_id": 2,
             "fields": [
                 {
-                    "id": 1,
-                    "field_id": 1,
+                    "id": 3,
+                    "field_id": 2,
                     "value": "Delivery",
                     "status": 1,
                     "created_at": "2023-02-01T12:59:34.000000Z",
@@ -62,8 +72,8 @@ export default function AddListing({ navigation }) {
                     "isChecked": false
                 },
                 {
-                    "id": 2,
-                    "field_id": 1,
+                    "id": 4,
+                    "field_id": 2,
                     "value": "Self pick up",
                     "status": 1,
                     "created_at": "2023-02-01T12:59:34.000000Z",
@@ -72,19 +82,7 @@ export default function AddListing({ navigation }) {
                 }
             ]
         }
-    ];
-
-    const [loading, setLoding] = React.useState(false);
-    const [CategoriesId, setCategoriesId] = React.useState("");
-    const [statesId, setStatesId] = React.useState("");
-    const [cityId, setCityId] = React.useState("");
-    const [Categories, setCategories] = React.useState([]);
-    const [states, setStates] = React.useState([]);
-    const [city, setCity] = React.useState([]);
-    const [service, setService] = React.useState('');
-    const [phoneNumber, setPhoneNumber] = React.useState('');
-    const [userInfo, setUserInfo] = React.useState([]);
-    const [additionalData, setAdditionalData] = React.useState(iAddtioanalData)
+    ])
     const [storeAddtionalData, setStoreAdditoinalData] = React.useState([]);
     const phoneInput = React.useRef(null);
     const [filePath, setFilePath] = React.useState({});
@@ -101,12 +99,16 @@ export default function AddListing({ navigation }) {
         name: '',
         area: '',
         phone: '',
+        imageName: '',
     }
     const [state, setState] = React.useState(initState);
 
-    const handleChange = (featured_id, id,) => {
-        console.log(featured_id, id, 'data');
-
+    const handleChange = (featured_id, id, fieldItem) => {
+        // console.log(featured_id, id, fieldItem);
+        // const data1 = map(additionalData, i => {
+        //     i.featured_id[featured_id]
+        // })
+        // console.log(data1, 'data12');
     };
 
     const onInputChange = (field, value) => {
@@ -117,10 +119,7 @@ export default function AddListing({ navigation }) {
     }
 
     React.useEffect(() => {
-        // const { userDetail } = useSelector((state) => state.reducerDetail);
-        // if (userDetail === "") {
-        //     navigation.popToTop("Login")
-        // }
+
         (async () => getData())();
         getCategory();
     }, [])
@@ -158,10 +157,14 @@ export default function AddListing({ navigation }) {
     const getState = async () => {
         if (checkInternet()) {
             setLoding(true);
-            var response = await Helper.GET(Urls.getState);
+            const apiData = {
+                country_id: 1,
+            }
+            var response = await Helper.POST(Urls.getState, apiData);
+            console.log(response, 'rest');
             if (response.error === '0') {
                 setStates(response.data)
-                getCity(statesId)
+                getCity();
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -172,12 +175,14 @@ export default function AddListing({ navigation }) {
         }
     }
 
-    const getCity = async (statesId) => {
+    const getCity = async () => {
+        console.log(statesId, 'statesId---');
         if (checkInternet()) {
             setLoding(true);
-            const apiData = `?city=${statesId}`
-
-            var response = await Helper.GET(Urls.getCity, apiData);
+            const apiData = {
+                state_id: 1,
+            }
+            var response = await Helper.POST(Urls.getCity, apiData);
             if (response.error === '0') {
                 setCity(response.data)
                 setLoding(false);
@@ -301,6 +306,10 @@ export default function AddListing({ navigation }) {
             console.log('type -> ', response.type);
             console.log('fileName -> ', response.fileName);
             setFilePath(response.assets[0].uri);
+            setState({
+                ...state,
+                imageName: response.assets[0].fileName
+            })
         });
     };
 
@@ -322,7 +331,7 @@ export default function AddListing({ navigation }) {
             formdata.append('description', state.description);
             formdata.append('name', state.name);
             formdata.append('tags', state.tags);
-            formdata.append('feature_id[]', [1_1]);
+            formdata.append('feature_id[]', [1]);
             var postImage = filePath;
             console.log(postImage, 'post image');
             var uri = '' + postImage;
@@ -341,6 +350,7 @@ export default function AddListing({ navigation }) {
             if (response.error === '0') {
                 console.log(response, 'responce');
                 setLoding(false);
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
                 setLoding(false);
@@ -449,6 +459,8 @@ export default function AddListing({ navigation }) {
                                     <Input fontFamily={fonts.Poppins_SemiBold} borderWidth={'2'}
                                         borderColor={Colors.secondaryPrimaryColor}
                                         rounded={'full'}
+
+                                        value={state.imageName}
                                         InputRightElement={
                                             <Pressable onPress={() => setModalVisible(true)} style={styles.imagePickerstyle}>
                                                 <HStack >
@@ -544,7 +556,7 @@ export default function AddListing({ navigation }) {
                                                             {map(item.fields, i => {
                                                                 return (
                                                                     <HStack style={{ width: '35%', }}>
-                                                                        <Checkbox style={{ marginLeft: 1 }} value={i.isChecked[i.id]} onChange={() => handleChange(item.featured_id, i.id)}>
+                                                                        <Checkbox style={{ marginLeft: 1 }} value={i.isChecked[i.id]} onChange={() => handleChange(item.featured_id, i.id, item.fields)}>
                                                                             <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.black, }}>{i.value}</Text>
                                                                         </Checkbox>
                                                                     </HStack>

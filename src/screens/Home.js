@@ -14,6 +14,7 @@ import { Helper } from '../helper/Helper';
 import { Urls } from '../helper/Urls';
 import Loader from '../components/Loader';
 import { checkInternet } from '../helper/Utils';
+import { useIsFocused } from '@react-navigation/native';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -286,17 +287,17 @@ const images = [
 
 export default function Home({ navigation }) {
     const { userDetail } = useSelector((state) => state.reducerDetail);
-
+    console.log(userDetail, 'log');
     const [isModalVisible, setModalVisible] = React.useState(false);
     const [getCategoryData, setCategoryData] = React.useState([]);
-
+    const isFocused = useIsFocused();
     const [loading, setLoding] = React.useState(false);
 
     const countries = ['IND', 'U.K', 'A.E.D']
 
     React.useEffect(() => {
         getCategory();
-    }, []);
+    }, [isFocused]);
 
 
     const getCategory = async () => {
@@ -307,7 +308,6 @@ export default function Home({ navigation }) {
                 lang_id: 1
             };
             var response = await Helper.POST(Urls.homePage, apiData);
-            console.log(response, 'respo');
             if (response.error === '0') {
                 setCategoryData(response.data)
                 setLoding(false);
@@ -319,8 +319,6 @@ export default function Home({ navigation }) {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     };
-
-    console.log(getCategoryData);
 
     return (
         <View style={{ marginBottom: '20%', backgroundColor: Colors.white, }}>
@@ -441,7 +439,7 @@ export default function Home({ navigation }) {
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
                                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
-                                                onPress={() => item.category_id === 2 || item.category_id === 3 && navigation.navigate('Product', { isHospitalData: true })} >
+                                                onPress={() => navigation.navigate('Product', { viewAll: false })} >
                                                 <Image
                                                     style={{ height: 30, width: 30, resizeMode: 'stretch' }}
                                                     borderColor={Colors.secondaryPrimaryColor}
@@ -483,7 +481,7 @@ export default function Home({ navigation }) {
                             <HStack>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Letest Ads</Text>
                             </HStack>
-                            <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
+                            <Pressable onPress={() => navigation.navigate('Product', { viewAll: true })}>
                                 <HStack alignItems={'center'} justifyItems={'center'}>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
 
@@ -496,7 +494,7 @@ export default function Home({ navigation }) {
                             renderItem={({ item }) => {
                                 return (
                                     <View style={{ backgroundColor: Colors.white, marginTop: 2 }}>
-                                        <Pressable onPress={() => navigation.navigate("ProductDetails")}>
+                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
                                             <HStack style={[styles.card,
                                             {
                                                 backgroundColor: Colors.white, borderColor: Colors.skyBlue,
@@ -567,7 +565,7 @@ export default function Home({ navigation }) {
                                 <HStack>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Featured recommendation</Text>
                                 </HStack>
-                                <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
+                                <Pressable onPress={() => navigation.navigate('Product', { viewAll: true })}>
                                     <HStack alignItems={'center'} justifyItems={'center'}>
                                         <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
                                     </HStack>
@@ -578,7 +576,7 @@ export default function Home({ navigation }) {
                                 showsHorizontalScrollIndicator={false}>
                                 {getCategoryData.featured && getCategoryData.featured.map((item, key) => (
                                     <View>
-                                        <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
+                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
                                             <Image style={{
                                                 width: 50 * 2,
                                                 height: 70,
@@ -602,7 +600,7 @@ export default function Home({ navigation }) {
                                 <HStack>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Related recommendation</Text>
                                 </HStack>
-                                <Pressable onPress={() => navigation.navigate('Product', { isHospitalData: false })}>
+                                <Pressable onPress={() => navigation.navigate('Product', { viewAll: true })}>
                                     <HStack alignItems={'center'} justifyItems={'center'}>
                                         <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
                                     </HStack>
@@ -613,17 +611,18 @@ export default function Home({ navigation }) {
                                 showsHorizontalScrollIndicator={false}>
                                 {getCategoryData.related && getCategoryData.related.map((item, key) => (
                                     <View>
-                                        <Image style={{
-                                            width: 50 * 2,
-                                            height: 70,
-                                            margin: 5,
-                                            marginHorizontal: 13,
-                                            resizeMode: 'cover'
-                                        }} borderRadius={'md'} source={{
-                                            uri: item.image_url
-                                        }} alt="Alternate Text" size="md" />
-
-                                        <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
+                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
+                                            <Image style={{
+                                                width: 50 * 2,
+                                                height: 70,
+                                                margin: 5,
+                                                marginHorizontal: 13,
+                                                resizeMode: 'cover'
+                                            }} borderRadius={'md'} source={{
+                                                uri: item.image_url
+                                            }} alt="Alternate Text" size="md" />
+                                            <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
+                                        </Pressable>
                                     </View>
                                 ))}
                             </ScrollView>

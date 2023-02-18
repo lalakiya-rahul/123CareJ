@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -14,12 +14,14 @@ import { Helper } from '../helper/Helper';
 import { Urls } from '../helper/Urls';
 import { map, isEmpty } from 'lodash'
 import { checkInternet } from '../helper/Utils';
+import { useSelector } from 'react-redux';
 
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function MyProfile({ navigation }) {
+    const { userDetail } = useSelector((state) => state.reducerDetail);
     const [phoneNumber, setPhoneNumber] = React.useState('');
     const [countryId, setCountryId] = React.useState("");
     const [statesId, setStatesId] = React.useState("");
@@ -34,6 +36,7 @@ export default function MyProfile({ navigation }) {
         username: '',
         email: '',
         mobile_no: '',
+        profile: ''
     }
     const [state, setState] = React.useState(initState);
     const [loading, setLoding] = React.useState(false);
@@ -45,8 +48,8 @@ export default function MyProfile({ navigation }) {
         })
     }
 
-    React.useEffect(() => {
-        (async () => getData())();
+    useEffect(() => {
+        getData();
         getCountry();
         return () => {
             console.log('This will be logged on unmount');
@@ -57,10 +60,11 @@ export default function MyProfile({ navigation }) {
         if (checkInternet()) {
             setLoding(true);
             const userData = await AsyncStorage.getItem('userData');
+            console.log(userData, 'profile page');
             const apiData = {
-                user_id: JSON.parse(userData).user_id,
+                user_id: userData.user_id,
                 token: JSON.parse(userData).token,
-                profile: '',
+                profile: JSON.parse(userData).profile,
                 username: state.username,
                 name: state.name,
                 email: state.email,
@@ -70,9 +74,12 @@ export default function MyProfile({ navigation }) {
                 city: cityId,
             }
             var response = await Helper.POST(Urls.updateProfile, apiData);
+            console.log(response, 'profile save');
             if (response.error === '0') {
+                console.log(response, 'profile save pchi');
                 await AsyncStorage.setItem('userData', JSON.stringify(response.data));
                 setLoding(false);
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
                 setLoding(false);
@@ -82,26 +89,30 @@ export default function MyProfile({ navigation }) {
         }
     }
 
+    console.log(state);
     const getData = async () => {
         setLoding(true);
         const userData = await AsyncStorage.getItem('userData');
+        console.log(userData, 'userdata----get srate');
         setState({
+            ...state,
             name: JSON.parse(userData).name,
             username: JSON.parse(userData).username,
             email: JSON.parse(userData).email,
             mobile_no: JSON.parse(userData).mobile_no,
-
+            profile: JSON.parse(userData).profile
         });
         setCountryId(JSON.parse(userData).country)
         setStatesId(JSON.parse(userData).state)
         setCityId(JSON.parse(userData).city)
-
         setLoding(false);
+
     }
 
     const getCountry = async () => {
         if (checkInternet()) {
             setLoding(true);
+
             var response = await Helper.GET(Urls.getCountry);
             if (response.error === '0') {
                 setCountry(response.data);
@@ -119,7 +130,10 @@ export default function MyProfile({ navigation }) {
     const getState = async () => {
         if (checkInternet()) {
             setLoding(true);
-            var response = await Helper.GET(Urls.getState);
+            const apiData = {
+                country_id: 1,
+            }
+            var response = await Helper.POST(Urls.getState, apiData);
             if (response.error === '0') {
                 setStates(response.data)
                 getCity();
@@ -136,7 +150,10 @@ export default function MyProfile({ navigation }) {
     const getCity = async () => {
         if (checkInternet()) {
             setLoding(true);
-            var response = await Helper.GET(Urls.getCity);
+            const apiData = {
+                state_id: 1,
+            }
+            var response = await Helper.POST(Urls.getCity, apiData);
             if (response.error === '0') {
                 setCity(response.data)
                 setLoding(false);
@@ -148,7 +165,6 @@ export default function MyProfile({ navigation }) {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     }
-
 
     return (
         <View>
@@ -194,7 +210,7 @@ export default function MyProfile({ navigation }) {
 
                         </HStack>
                         <VStack ml={'8'} alignSelf="flex-start" mt={'7'} >
-                            <Text style={Styles.titleText}>{state.name}</Text>
+                            <Text style={Styles.titleText}>{userDetail.name ? userDetail.name : 'Guest'}</Text>
                             <Text style={{ color: Colors.smallText, fontFamily: fonts.Poppins_SemiBold, fontSize: 10 }}>
                                 You last logged in at: Jan 19th, 2023 at 11:20
                             </Text>
@@ -258,6 +274,7 @@ export default function MyProfile({ navigation }) {
                                 borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor}
                                 rounded={'full'} placeholder="Enter your mobile no"
                                 value={state.mobile_no}
+                                maxLength={10}
                                 onChangeText={(value) => { onInputChange('mobile_no', value) }}
                                 InputLeftElement={<HStack w={'20'} >
                                     <PhoneInput

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { StyleSheet, View, FlatList, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, View, FlatList, Dimensions, Pressable, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
 import { Button, HStack, Image, Input, Text, VStack } from 'native-base';
@@ -11,26 +11,36 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Styles from '../constants/styles';
 import Modal from "react-native-modal";
 import CommonButton from '../components/Button';
+import { checkInternet } from '../helper/Utils';
+import { Helper } from '../helper/Helper';
+import { Urls } from '../helper/Urls';
+import Loader from '../components/Loader';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
-const Product = ({ navigation, route }) => {
+export default function Product({ navigation, route }) {
     console.log(route.params, 'params data');
     const countries = ["Egypt", "Canada", "Australia", "Ireland"]
     const [isModalVisible, setModalVisible] = React.useState(false);
+    const [productViewAll, setGetProductViewAll] = React.useState([]);
+    const [loading, setLoding] = React.useState(false);
     const data = [
         {
             'id': 1,
             'title': 'Test image',
             'name': 'John O’Furniture',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023"
         },
         {
             'id': 2,
             'title': 'Test image',
             'name': 'Olive Yew',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -38,6 +48,8 @@ const Product = ({ navigation, route }) => {
             'id': 3,
             'title': 'Test image',
             'name': 'Aida Bugg',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -45,6 +57,8 @@ const Product = ({ navigation, route }) => {
             'id': 4,
             'title': 'Test image',
             'name': 'Peg Legge',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -52,6 +66,8 @@ const Product = ({ navigation, route }) => {
             'id': 5,
             'title': 'Test image',
             'name': 'Liz Erd',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -59,6 +75,8 @@ const Product = ({ navigation, route }) => {
             'id': 6,
             'title': 'Test image',
             'name': 'A. Mused',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -66,6 +84,8 @@ const Product = ({ navigation, route }) => {
             'id': 7,
             'title': 'Test image',
             'name': 'Ray O’Sun',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -73,6 +93,8 @@ const Product = ({ navigation, route }) => {
             'id': 8,
             'title': 'Test image',
             'name': 'Rita Book',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -80,6 +102,8 @@ const Product = ({ navigation, route }) => {
             'id': 9,
             'title': 'Test image',
             'name': 'Anne Teak',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -87,6 +111,8 @@ const Product = ({ navigation, route }) => {
             'id': 10,
             'title': 'Test image',
             'name': 'Anita Bath',
+            'city_name': "Ahmedabad",
+            'created_at': "02 01st, 2023",
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
@@ -94,75 +120,100 @@ const Product = ({ navigation, route }) => {
     const data2 = [
         {
             'id': 1,
-            'title': 'Narayana Multispeciality Hospital',
+            'title': 'Narayana Hospital',
             'name': 'John O’Furniture',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 2,
             'title': 'SVP Hospital',
             'name': 'Olive Yew',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 3,
             'title': 'Sterling Hospital',
             'name': 'Aida Bugg',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 4,
             'title': 'Karnavati Hospital',
             'name': 'Peg Legge',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 5,
             'title': 'Long Life Hospital',
             'name': 'Liz Erd',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 6,
-            'title': 'Zydus Hospitals Ahmedabad',
+            'title': 'Zydus Hospitals',
             'name': 'A. Mused',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 7,
             'title': 'Saviour Hospital',
             'name': 'Ray O’Sun',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 8,
-            'title': 'VS General Hospital',
+            'title': 'VS Hospital',
             'name': 'Rita Book',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 9,
             'title': 'Mansi Hospital',
             'name': 'Anne Teak',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
         {
             'id': 10,
-            'title': 'Nidhi Multispeciality Hospital',
+            'title': 'Nidhi  Hospital',
             'name': 'Anita Bath',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
+            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
             'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
         },
     ]
+
+    React.useEffect(() => {
+        if (route.params.viewAll) {
+            getProductViewAll()
+        }
+    }, []);
+
+    const getProductViewAll = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                lang_id: 1
+            }
+            var response = await Helper.POST(Urls.productListViewAll, apiData);
+            if (response.error === '0') {
+                setGetProductViewAll(response.data)
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
 
     return (
         <View backgroundColor={Colors.white} style={{ height: height, width: width, }}>
@@ -187,6 +238,7 @@ const Product = ({ navigation, route }) => {
                     </HStack>
                 </HStack>
             </HStack>
+            <Loader loading={loading} />
             <View style={{ padding: 8, marginTop: '-1%' }}>
                 <HStack style={[styles.titleHeaderView, { marginBottom: 8, }]}>
 
@@ -219,30 +271,30 @@ const Product = ({ navigation, route }) => {
 
                 <FlatList
                     contentContainerStyle={{ paddingBottom: '50%', }}
-                    data={route.params.isHospitalData === true ? data2 : data}
+                    data={route.params.viewAll ? productViewAll : data2}
                     renderItem={({ item }) => {
                         return (
                             <View style={{ backgroundColor: Colors.white, padding: 5, }}>
-                                <Pressable onPress={() => route.params.isHospitalData === true ? navigation.navigate("HospitalDetails") : navigation.navigate("ProductDetails")}>
+                                <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
                                     <HStack style={[styles.card,
                                     {
                                         backgroundColor: Colors.white,
                                         borderRadius: 10,
                                         justifyContent: 'space-between', padding: 5,
                                     }]}>
-                                        <HStack space={3} justifyContent={'space-around'} >
-                                            <VStack justifyContent={'center'} alignItems={'center'} >
+                                        <HStack space={3} justifyContent={'space-around'} style={{ width: '100%' }}>
+                                            <VStack justifyContent={'center'} alignItems={'center'} style={{ width: '30%' }}>
                                                 <Image style={{
-                                                    width: 110,
+                                                    width: 115,
                                                     height: 115,
-                                                    resizeMode: 'center'
+                                                    resizeMode: 'contain'
                                                 }} borderRadius={'md'} source={{
-                                                    uri: item.image
-                                                }} alt="Alternate Text" size="md" />
+                                                    uri: item.image_url
+                                                }} alt="Alternate Text" />
 
                                             </VStack>
 
-                                            <VStack w={'64'}>
+                                            <VStack style={{ width: '68%' }}>
                                                 <HStack justifyContent={'space-between'} >
                                                     <Text numberOfLines={2} style={[Styles.titleText, { color: Colors.black, width: '80%', }]}>{item.title}</Text>
                                                     <Image style={{
@@ -256,9 +308,9 @@ const Product = ({ navigation, route }) => {
                                                     <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/pin1.png')} />
-                                                    <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>Apple Sqaure, Surat, Gujarat</Text>
+                                                    <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>{item.city_name}</Text>
                                                 </HStack>
-                                                <HStack lineHeight={'2.5'} h={'4'} style={{ justifyContent: 'flex-start', alignItems: 'center', }}>
+                                                <HStack style={{ justifyContent: 'flex-start', alignItems: 'center', }}>
                                                     <Image style={{ height: 8, width: 40, marginLeft: '2%', tintColor: Colors.primaryColor }}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/rating.png')} />
@@ -320,5 +372,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Product;
+
 

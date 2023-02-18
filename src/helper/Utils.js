@@ -40,8 +40,8 @@ export const showToast = (msg, type) => {
     }
 };
 export const CheckLogin = async () => {
-    var user_id = await AsyncStorage.getItem('user_id');
-    var access_token = await AsyncStorage.getItem('access_token');
+    var user_id = await AsyncStorage.getItem('userData').user_id;
+    var access_token = await AsyncStorage.getItem('userData').token;
 
     if (validationempty(user_id)) {
         LocalData.user_id = user_id;

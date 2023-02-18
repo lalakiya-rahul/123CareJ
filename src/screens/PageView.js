@@ -12,6 +12,7 @@ const height = Dimensions.get("window").height
 
 export default function PageView({ navigation, route }) {
     var data = route.params.page
+    var title = route.params.title
     console.log(data, 'route----');
     return (
         <View style={{ backgroundColor: Colors.white, height: '100%' }}>
@@ -23,7 +24,7 @@ export default function PageView({ navigation, route }) {
                             source={require('../assets/Images/arrow_back.png')} />
                     </Pressable>
                     <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>
-                        {route.params.page.title}
+                        {title}
                     </Text>
                 </HStack>
 
@@ -36,8 +37,8 @@ export default function PageView({ navigation, route }) {
                 </HStack>
             </HStack>
             {
-                route.params.page.content ?
-                    <WebView source={{ html: '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>' + route.params.page.content + '</body></html>' }} />
+                route.params.page ?
+                    <WebView source={{ html: '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>' + route.params.page + '</body></html>' }} />
                     :
                     null
             }

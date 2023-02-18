@@ -52,6 +52,7 @@ export default function Signup({ navigation }) {
                 if (response.error === '0') {
                     navigation.navigate('OTP', { phone: state.mobile });
                     setLoding(false);
+                    ToastAndroid.show(response.message, ToastAndroid.SHORT);
                 } else {
                     ToastAndroid.show(response.message, ToastAndroid.SHORT);
                     setLoding(false);
