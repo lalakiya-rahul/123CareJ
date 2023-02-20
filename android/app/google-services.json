@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "374365398163",
+    "project_id": "care-bab2a",
+    "storage_bucket": "care-bab2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374365398163:android:fa16dec1650e5cbf129966",
+        "android_client_info": {
+          "package_name": "com.care123j"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374365398163-jnt69bl4hqgoo80hi1r5fr6ptcpp1aka.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBajGHqFydbHjMVkoJ0rdjXqg0N-g9OVao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374365398163-jnt69bl4hqgoo80hi1r5fr6ptcpp1aka.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

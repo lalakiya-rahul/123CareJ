@@ -164,7 +164,6 @@ export default function AddListing({ navigation }) {
             console.log(response, 'rest');
             if (response.error === '0') {
                 setStates(response.data)
-                getCity();
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -175,12 +174,12 @@ export default function AddListing({ navigation }) {
         }
     }
 
-    const getCity = async () => {
+    const getCity = async (statesId) => {
         console.log(statesId, 'statesId---');
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
-                state_id: 1,
+                state_id: statesId,
             }
             var response = await Helper.POST(Urls.getCity, apiData);
             if (response.error === '0') {
@@ -350,6 +349,7 @@ export default function AddListing({ navigation }) {
             if (response.error === '0') {
                 console.log(response, 'responce');
                 setLoding(false);
+                navigation.navigate("Home")
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -497,7 +497,7 @@ export default function AddListing({ navigation }) {
                                         minWidth="250" accessibilityLabel="Select Location" placeholder="Select State" _selectedItem={{
                                             bg: "teal.600",
                                             endIcon: <CheckCircleIcon size="5" />
-                                        }} mt={1} onValueChange={itemValue => setStatesId(itemValue)}>
+                                        }} mt={1} onValueChange={itemValue => { setStatesId(itemValue), getCity(itemValue) }}>
                                         {map(states, i => {
                                             return (
                                                 <Select.Item label={i.name} value={i.id} />

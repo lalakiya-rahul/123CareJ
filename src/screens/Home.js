@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, Linking, } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, Linking, BackHandler, } from 'react-native';
 
 import Colors from '../constants/colors';
 import { Avatar, Box, Button, HStack, Image, Input, Text, VStack, Modal, CheckBox, Checkbox, Radio, Stack } from 'native-base';
@@ -15,6 +15,7 @@ import { Urls } from '../helper/Urls';
 import Loader from '../components/Loader';
 import { checkInternet } from '../helper/Utils';
 import { useIsFocused } from '@react-navigation/native';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -295,9 +296,41 @@ export default function Home({ navigation }) {
 
     const countries = ['IND', 'U.K', 'A.E.D']
 
-    React.useEffect(() => {
+    let backHandlerClickCount = 0;
+
+    useEffect(() => {
         getCategory();
     }, [isFocused]);
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', backButtonHandler);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', backButtonHandler);
+        };
+    }, []);
+
+    const backButtonHandler = () => {
+        const shortToast = message => {
+            Toast.show(message, {
+                duration: Toast.durations.LONG,
+                position: Toast.positions.BOTTOM,
+            });
+        }
+        let backHandlerClickCount;
+        backHandlerClickCount += 1;
+        if ((backHandlerClickCount < 2)) {
+            shortToast('Press again to quit the application');
+        } else {
+            BackHandler.exitApp();
+        }
+
+        // timeout for fade and exit
+        setTimeout(() => {
+            backHandlerClickCount = 0;
+        }, 1000);
+
+        return true;
+    }
 
 
     const getCategory = async () => {

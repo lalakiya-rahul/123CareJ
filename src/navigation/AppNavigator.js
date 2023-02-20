@@ -22,11 +22,9 @@ import { login } from '../reducer/actions';
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
 
-    const { userDetail } = useSelector((state) => state.reducerDetail);
-    console.log(userDetail, 'log--');
     return (
         <NavigationContainer independent={true}>
-            <Stack.Navigator initialRouteName={userDetail.token ? "BottomTab" : "Login"}
+            <Stack.Navigator initialRouteName={"Login"}
                 screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="OTP" component={OTP} />

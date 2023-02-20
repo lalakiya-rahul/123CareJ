@@ -127,11 +127,11 @@ export default function MyProfile({ navigation }) {
         }
     }
 
-    const getState = async () => {
+    const getState = async (itemValue) => {
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
-                country_id: 1,
+                country_id: itemValue,
             }
             var response = await Helper.POST(Urls.getState, apiData);
             if (response.error === '0') {
@@ -147,11 +147,11 @@ export default function MyProfile({ navigation }) {
         }
     }
 
-    const getCity = async () => {
+    const getCity = async (itemValue) => {
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
-                state_id: 1,
+                state_id: itemValue,
             }
             var response = await Helper.POST(Urls.getCity, apiData);
             if (response.error === '0') {
@@ -303,7 +303,7 @@ export default function MyProfile({ navigation }) {
                                     minWidth="full" accessibilityLabel="Select Country" placeholder="Select Country" _selectedItem={{
                                         bg: "teal.600",
                                         endIcon: <CheckCircleIcon size="5" />
-                                    }} mt={1} onValueChange={itemValue => setCountryId(itemValue)}>
+                                    }} mt={1} onValueChange={itemValue => { setCountryId(itemValue), getState(itemValue) }}>
                                     {map(country, i => {
                                         return (
                                             <Select.Item label={i.name} value={i.id} />
@@ -319,7 +319,7 @@ export default function MyProfile({ navigation }) {
                                     minWidth="full" accessibilityLabel="Select State" placeholder="Select State" _selectedItem={{
                                         bg: "teal.600",
                                         endIcon: <CheckCircleIcon size="5" />
-                                    }} mt={1} onValueChange={itemValue => setStatesId(itemValue)}>
+                                    }} mt={1} onValueChange={itemValue => { setStatesId(itemValue), getCity(itemValue) }}>
                                     {map(states, i => {
                                         return (
                                             <Select.Item label={i.name} value={i.id} />

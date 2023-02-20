@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, View, ScrollView, Dimensions, ToastAndroid } from 'react-native';
 import { Divider, HStack, Input, VStack } from 'native-base';
 import Colors from '../constants/colors'
@@ -14,7 +14,7 @@ import FormErrorText from '../components/FormErrorText';
 import { SelectCountry } from 'react-native-element-dropdown';
 import { TextInput } from "@react-native-material/core";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../reducer/actions';
 // import { validatePhone } from '../helper/Validations';
 
@@ -27,6 +27,14 @@ export default function Login({ navigation }) {
     const [country, setCountry] = React.useState('1');
     const phoneInput = React.useRef(null);
 
+
+
+    useEffect(() => {
+        // const { userDetail } = useSelector((state) => state.reducerDetail);
+        // if (userDetail.token) {
+        //     navigation.navigate("BottomTab")
+        // }
+    }, []);
 
     const initState = {
         name: '',

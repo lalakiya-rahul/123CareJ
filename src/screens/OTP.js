@@ -43,12 +43,17 @@ export default function OTP({ navigation, route }) {
     }, [seconds]);
 
     const verifyOtp = async () => {
+        var token = await AsyncStorage.getItem('token');
+        console.log(token, 'tokenn');
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
                 mobile_no: parseInt(route.params.phone),
-                otp: otpInput
+                otp: otpInput,
+                device_id: 'android',
+                device_token: token
             };
+            console.log(apiData, 'apifa');
             var response = await Helper.POST(Urls.verifyOtp, apiData);
             if (response.error === '0') {
                 await AsyncStorage.setItem('userData', JSON.stringify(response.data));
