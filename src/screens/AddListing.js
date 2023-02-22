@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, PermissionsAndroid, Platform, Pressable, ScrollView, StyleSheet, Text, ToastAndroid, View, } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -22,18 +22,18 @@ const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function AddListing({ navigation }) {
-
-    const [loading, setLoding] = React.useState(false);
-    const [CategoriesId, setCategoriesId] = React.useState("");
-    const [statesId, setStatesId] = React.useState("");
-    const [cityId, setCityId] = React.useState("");
-    const [Categories, setCategories] = React.useState([]);
-    const [states, setStates] = React.useState([]);
-    const [city, setCity] = React.useState([]);
-    const [service, setService] = React.useState('');
-    const [phoneNumber, setPhoneNumber] = React.useState('');
-    const [userInfo, setUserInfo] = React.useState([]);
-    const [additionalData, setAdditionalData] = React.useState([
+    const { userDetail } = useSelector((state) => state.reducerDetail);
+    const [loading, setLoding] = useState(false);
+    const [CategoriesId, setCategoriesId] = useState("");
+    const [statesId, setStatesId] = useState("");
+    const [cityId, setCityId] = useState("");
+    const [Categories, setCategories] = useState([]);
+    const [states, setStates] = useState([]);
+    const [city, setCity] = useState([]);
+    const [service, setService] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [userInfo, setUserInfo] = useState([]);
+    const [additionalData, setAdditionalData] = useState([
         {
             "featured_name": "Cost",
             "featured_id": 1,
@@ -83,10 +83,10 @@ export default function AddListing({ navigation }) {
             ]
         }
     ])
-    const [storeAddtionalData, setStoreAdditoinalData] = React.useState([]);
-    const phoneInput = React.useRef(null);
-    const [filePath, setFilePath] = React.useState({});
-    const [isModalVisible, setModalVisible] = React.useState(false);
+    const [storeAddtionalData, setStoreAdditoinalData] = useState([]);
+    const phoneInput = useRef(null);
+    const [filePath, setFilePath] = useState({});
+    const [isModalVisible, setModalVisible] = useState(false);
 
     const initState = {
         user_id: '',
@@ -101,10 +101,10 @@ export default function AddListing({ navigation }) {
         phone: '',
         imageName: '',
     }
-    const [state, setState] = React.useState(initState);
+    const [state, setState] = useState(initState);
 
     const handleChange = (featured_id, id, fieldItem) => {
-        // console.log(featured_id, id, fieldItem);
+        console.log(featured_id, id, fieldItem);
         // const data1 = map(additionalData, i => {
         //     i.featured_id[featured_id]
         // })
@@ -118,14 +118,16 @@ export default function AddListing({ navigation }) {
         })
     }
 
-    React.useEffect(() => {
-
-        (async () => getData())();
+    useEffect(() => {
+        if (isEmpty(userDetail.token)) {
+            navigation.navigate('Login')
+        }
+        getData();
         getCategory();
     }, [])
 
     const getData = async () => {
-        setLoding(true);
+
         const userData = await AsyncStorage.getItem('userData');
         setState({
             ...state,
@@ -133,7 +135,7 @@ export default function AddListing({ navigation }) {
             lang_id: JSON.parse(userData).lang_id,
             token: JSON.parse(userData).token
         });
-        setLoding(false);
+
     }
 
     const getCategory = async () => {
@@ -161,7 +163,6 @@ export default function AddListing({ navigation }) {
                 country_id: 1,
             }
             var response = await Helper.POST(Urls.getState, apiData);
-            console.log(response, 'rest');
             if (response.error === '0') {
                 setStates(response.data)
                 setLoding(false);
@@ -175,7 +176,6 @@ export default function AddListing({ navigation }) {
     }
 
     const getCity = async (statesId) => {
-        console.log(statesId, 'statesId---');
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
@@ -247,7 +247,6 @@ export default function AddListing({ navigation }) {
         let isStoragePermitted = await requestExternalWritePermission();
         if (isCameraPermitted && isStoragePermitted) {
             launchCamera(options, (response) => {
-                console.log('Response = ', response);
 
                 if (response.didCancel) {
                     alert('User cancelled camera picker');
@@ -332,7 +331,6 @@ export default function AddListing({ navigation }) {
             formdata.append('tags', state.tags);
             formdata.append('feature_id[]', [1]);
             var postImage = filePath;
-            console.log(postImage, 'post image');
             var uri = '' + postImage;
             var arr = uri.split('/');
             var name = arr[arr.length - 1];
@@ -360,6 +358,7 @@ export default function AddListing({ navigation }) {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     };
+
 
     return (
         <View>
@@ -475,12 +474,25 @@ export default function AddListing({ navigation }) {
                                         minWidth="250" placeholder="Upload Pictures" />
                                 </Box>
                             </HStack>
-
+                            {/* <HStack alignSelf={'flex-end'} w={'56'} mt={'1'} mb={'1'}>
+                                <HStack style={{ backgroundColor: Colors.grey, borderRadius: 5, padding: 5 }}>
+                                    <Image style={{ height: 35, width: 35 }}
+                                        alt={"Alternate Text"}
+                                        source={{ uri: filePath && filePath ? filePath : 'https://parshwatechnologies.info/website/image/image-gallery%201.png' }} />
+                                </HStack>
+                                <HStack style={{ backgroundColor: Colors.grey, borderRadius: 5, padding: 5, marginLeft: 5 }}>
+                                    <Image style={{ height: 35, width: 35 }}
+                                        alt={"Alternate Text"}
+                                        source={{ uri: 'https://parshwatechnologies.info/website/image/image-gallery%201.png' }} />
+                                </HStack>
+                            </HStack> */}
                             <HStack alignSelf={'flex-end'} w={'56'}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.smallText }}>
                                     Add up to 2 pictures. Use real pictures of your product, not catalogs.
                                 </Text>
                             </HStack>
+
+
 
                             <HStack alignSelf={'flex-start'} w={'56'} style={{ marginLeft: width / 4 }}>
                                 {/* <Image style={{ height: 50, width: 50, borderRadius: 5, marginRight: '3%' }}
@@ -558,7 +570,7 @@ export default function AddListing({ navigation }) {
                                                             {map(item.fields, i => {
                                                                 return (
                                                                     <HStack style={{ width: '35%', }}>
-                                                                        <Checkbox style={{ marginLeft: 1 }} value={i.isChecked[i.id]} onChange={() => handleChange(item.featured_id, i.id, item.fields)}>
+                                                                        <Checkbox style={{ marginLeft: 1 }} value={i.isChecked[i.id] || false} onChange={() => handleChange(item.featured_id, i.id, item.fields)}>
                                                                             <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.black, }}>{i.value}</Text>
                                                                         </Checkbox>
                                                                     </HStack>

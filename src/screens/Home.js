@@ -339,6 +339,7 @@ export default function Home({ navigation }) {
         }
     };
 
+
     // console.log(advertiseData, 'advertiseData--');
     return (
         <View style={{ marginBottom: '20%', backgroundColor: Colors.white, }}>

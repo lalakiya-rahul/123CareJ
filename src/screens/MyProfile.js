@@ -49,6 +49,9 @@ export default function MyProfile({ navigation }) {
     }
 
     useEffect(() => {
+        if (isEmpty(userDetail.token)) {
+            navigation.navigate('Login')
+        }
         getData();
         getCountry(countryId);
         getState();

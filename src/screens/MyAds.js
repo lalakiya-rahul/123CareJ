@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
         position: 'relative'
     },
     boxStyle: {
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.primaryColor,
         alignItems: 'center',
         borderRadius: 3,
         // borderColor: Colors.smallText,

@@ -186,7 +186,7 @@ export default function Fevorites({ navigation }) {
                                                     alt={"Alternate Text"}
                                                     style={{ height: 10, width: 10 }}
                                                     source={require('../assets/Images/pin1.png')} />
-                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>Ahmedabad</Text>
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.city_name}</Text>
                                             </HStack>
 
                                             <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', marginTop: -8 }}>
