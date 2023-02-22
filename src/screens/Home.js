@@ -15,7 +15,9 @@ import { Urls } from '../helper/Urls';
 import Loader from '../components/Loader';
 import { checkInternet } from '../helper/Utils';
 import { useIsFocused } from '@react-navigation/native';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import Slider from '../components/SliderBox';
+import FastImage from 'react-native-fast-image';
+import { ImageSlider } from "react-native-image-slider-banner";
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -287,50 +289,18 @@ const images = [
 
 
 export default function Home({ navigation }) {
-    const { userDetail } = useSelector((state) => state.reducerDetail);
-    console.log(userDetail, 'log');
-    const [isModalVisible, setModalVisible] = React.useState(false);
-    const [getCategoryData, setCategoryData] = React.useState([]);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [getCategoryData, setCategoryData] = useState([]);
     const isFocused = useIsFocused();
-    const [loading, setLoding] = React.useState(false);
+    const [loading, setLoding] = useState(false);
+    const [advertiseData, setAdvertiseData] = useState(false);
 
     const countries = ['IND', 'U.K', 'A.E.D']
 
-    let backHandlerClickCount = 0;
-
     useEffect(() => {
         getCategory();
+        getAdvertise();
     }, [isFocused]);
-
-    useEffect(() => {
-        BackHandler.addEventListener('hardwareBackPress', backButtonHandler);
-        return () => {
-            BackHandler.removeEventListener('hardwareBackPress', backButtonHandler);
-        };
-    }, []);
-
-    const backButtonHandler = () => {
-        const shortToast = message => {
-            Toast.show(message, {
-                duration: Toast.durations.LONG,
-                position: Toast.positions.BOTTOM,
-            });
-        }
-        let backHandlerClickCount;
-        backHandlerClickCount += 1;
-        if ((backHandlerClickCount < 2)) {
-            shortToast('Press again to quit the application');
-        } else {
-            BackHandler.exitApp();
-        }
-
-        // timeout for fade and exit
-        setTimeout(() => {
-            backHandlerClickCount = 0;
-        }, 1000);
-
-        return true;
-    }
 
 
     const getCategory = async () => {
@@ -353,6 +323,23 @@ export default function Home({ navigation }) {
         }
     };
 
+    const getAdvertise = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            var response = await Helper.POST(Urls.advertise);
+            if (response.error === '0') {
+                setAdvertiseData(response.data)
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
+
+    // console.log(advertiseData, 'advertiseData--');
     return (
         <View style={{ marginBottom: '20%', backgroundColor: Colors.white, }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
@@ -372,15 +359,17 @@ export default function Home({ navigation }) {
                     </Pressable>
                 </HStack>
                 <HStack alignSelf={'center'} alignItems={'center'}>
-                    <VStack >
-                        <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
-                            alt={"Alternate Text"}
-                            source={require('../assets/Images/notification.png')} />
-                    </VStack>
+                    <Pressable onPress={() => navigation.navigate("Notification")}>
+                        <VStack >
+                            <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
+                                alt={"Alternate Text"}
+                                source={require('../assets/Images/notification.png')} />
+                        </VStack>
+                    </Pressable>
                 </HStack>
             </HStack>
             <Loader loading={loading} />
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
 
                 <View style={[Styles.container, { marginBottom: 610 }]}>
                     <VStack style={[styles.stepCard, { height: null }]}>
@@ -402,10 +391,11 @@ export default function Home({ navigation }) {
                         </HStack>
                     </VStack>
 
-                    {/* <VStack mt={'3'} style={styles.stepCard}> */}
                     <SliderBox
+                        circleLoop
                         resizeMode={'cover'}
-                        images={images}
+                        images={advertiseData && advertiseData.map((i => i.image))}
+                        onCurrentImagePressed={() => advertiseData && advertiseData.map((i => Linking.openURL(i.website_url)))}
                         autoplay={false}
                         disableOnPress={false}
                         dotColor={Colors.skyBlue}
@@ -417,7 +407,7 @@ export default function Home({ navigation }) {
                             overflow: 'hidden', marginTop: '3%'
                         }}
                     />
-                    {/* </VStack> */}
+
                     <View style={{ borderWidth: 1, borderRadius: 8, marginTop: '4%', borderColor: Colors.skyBlue }}>
                         <HStack style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.white, width: '18%', height: '34%', alignSelf: 'center', position: 'absolute', marginTop: '-3%', }}>
                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 15, color: Colors.primaryColor, }}>
@@ -463,22 +453,23 @@ export default function Home({ navigation }) {
                         <ScrollView
                             horizontal
                             showsVerticalScrollIndicator={false}
-                            showsHorizontalScrollIndicator={false}>
+                            showsHorizontalScrollIndicator={false}
+                            key={getCategoryData.category}
+                        >
                             <FlatList
                                 data={getCategoryData.category}
                                 contentContainerStyle={{ alignSelf: 'center', }}
                                 numColumns={6}
-                                renderItem={({ item, index }) => {
+                                renderItem={({ item }) => {
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
                                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
-                                                onPress={() => navigation.navigate('Product', { viewAll: false })} >
+                                                onPress={() => navigation.navigate('Product', { viewAll: false, category_id: item.category_id, title: item.title })} >
                                                 <Image
                                                     style={{ height: 30, width: 30, resizeMode: 'stretch' }}
                                                     borderColor={Colors.secondaryPrimaryColor}
                                                     source={{ uri: item.image }} alt="Alternate Text" />
-
-                                                <Text numberOfLines={2} width={'12'} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 11 }]}>{item.title}</Text>
+                                                <Text numberOfLines={2} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 10, }]}>{item.title}</Text>
                                             </Pressable>
                                         </VStack>
                                     );
@@ -495,8 +486,10 @@ export default function Home({ navigation }) {
                     </View>
 
                     <SliderBox
+                        circleLoop
                         resizeMode={'cover'}
-                        images={images}
+                        images={advertiseData && advertiseData.map((i => i.image))}
+                        onCurrentImagePressed={() => advertiseData && advertiseData.map((i => Linking.openURL(i.website_url)))}
                         autoplay={false}
                         disableOnPress={false}
                         dotColor={Colors.skyBlue}
@@ -514,7 +507,7 @@ export default function Home({ navigation }) {
                             <HStack>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}> Letest Ads</Text>
                             </HStack>
-                            <Pressable onPress={() => navigation.navigate('Product', { viewAll: true })}>
+                            <Pressable onPress={() => navigation.navigate('Product', { viewAll: true, })}>
                                 <HStack alignItems={'center'} justifyItems={'center'}>
                                     <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.smallText }}>View All</Text>
 
@@ -527,7 +520,7 @@ export default function Home({ navigation }) {
                             renderItem={({ item }) => {
                                 return (
                                     <View style={{ backgroundColor: Colors.white, marginTop: 2 }}>
-                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
+                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
                                             <HStack style={[styles.card,
                                             {
                                                 backgroundColor: Colors.white, borderColor: Colors.skyBlue,
@@ -606,10 +599,11 @@ export default function Home({ navigation }) {
                             </HStack>
                             <ScrollView
                                 horizontal={true}
+                                key={getCategoryData.featured}
                                 showsHorizontalScrollIndicator={false}>
                                 {getCategoryData.featured && getCategoryData.featured.map((item, key) => (
-                                    <View>
-                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
+                                    <View key={key}>
+                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
                                             <Image style={{
                                                 width: 50 * 2,
                                                 height: 70,
@@ -643,8 +637,8 @@ export default function Home({ navigation }) {
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}>
                                 {getCategoryData.related && getCategoryData.related.map((item, key) => (
-                                    <View>
-                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
+                                    <View key={key}>
+                                        <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
                                             <Image style={{
                                                 width: 50 * 2,
                                                 height: 70,

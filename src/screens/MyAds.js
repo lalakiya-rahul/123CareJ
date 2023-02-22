@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -74,7 +74,7 @@ export default function MyAds({ navigation }) {
     const [getMyAds, setGetMyAds] = React.useState([])
     const [loading, setLoding] = React.useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         (async () => getMyAdsData())();
     }, [])
 
@@ -160,6 +160,7 @@ export default function MyAds({ navigation }) {
                     contentContainerStyle={{ paddingBottom: '20%' }}
                     data={getMyAds}
                     renderItem={({ item }) => {
+                        console.log(item.image_url, 'item.image_url');
                         return (
                             <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
                                 <HStack style={[styles.card,

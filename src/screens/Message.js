@@ -1,4 +1,4 @@
-import { HStack, Image, Input, ScrollView, VStack } from 'native-base';
+import { Divider, HStack, Image, Input, ScrollView, VStack } from 'native-base';
 import * as React from 'react';
 import { Dimensions, FlatList, Pressable, Text, View, StyleSheet } from 'react-native';
 import Colors from '../constants/colors';
@@ -15,74 +15,75 @@ export default function Message({ navigation }) {
     const data = [
         {
             'id': 1,
-            'title': 'Test image',
-            'name': 'John O’Furniture',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'name': 'Lon C. Nakamura',
+            'msg': 'Hi',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
+            'time': '22:01'
         },
         {
             'id': 2,
-            'title': 'Test image',
-            'name': 'Olive Yew',
+            'name': 'Charles L. Leathers',
+            'msg': 'No sir',
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'time': '21:03'
         },
         {
             'id': 3,
-            'title': 'Test image',
-            'name': 'Aida Bugg',
+            'name': 'Donnie C. Griffin',
+            'msg': 'Ok',
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'time': '20:21'
         },
         {
             'id': 4,
-            'title': 'Test image',
-            'name': 'Peg Legge',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'name': 'Benjamin F. Hurst',
+            'msg': 'Thats fine',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
+            'time': '03:01'
         },
         {
             'id': 5,
-            'title': 'Test image',
-            'name': 'Liz Erd',
+            'name': 'Ann C. Cavin',
+            'msg': 'Its a very nice',
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'time': '07:34'
         },
         {
             'id': 6,
-            'title': 'Test image',
-            'name': 'A. Mused',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'name': 'Anna T. Lopez',
+            'msg': 'Yes, I am good',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
+            'time': '09:06'
         },
         {
             'id': 7,
-            'title': 'Test image',
-            'name': 'Ray O’Sun',
+            'name': 'Debra J. McHugh',
+            'msg': 'Yes, I am on the way',
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'time': '13:45'
         },
         {
             'id': 8,
-            'title': 'Test image',
-            'name': 'Rita Book',
+            'name': 'William M. Lemay',
+            'msg': 'Yeah, sure',
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'time': '08:32'
         },
         {
             'id': 9,
-            'title': 'Test image',
-            'name': 'Anne Teak',
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'name': 'Edward M. Broom',
+            'msg': 'Can we connect',
+            'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
+            'time': '22:01'
         },
         {
             'id': 10,
-            'title': 'Test image',
-            'name': 'Anita Bath',
+            'name': 'Benjamin F. Hurst',
+            'msg': 'Not at moment',
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
+            'time': '22:01'
         },
+
     ]
     return (
         <View style={{ backgroundColor: Colors.white, height: height, width: width, }}>
@@ -125,11 +126,39 @@ export default function Message({ navigation }) {
                     </VStack>
                 </HStack>
             </View>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, }}>
+            {/* <ScrollView contentContainerStyle={{ flexGrow: 1, }}> */}
+            <FlatList
+                data={data}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => {
+                    return (
+                        <View style={{ padding: 8, }}>
+                            <Pressable onPress={() => navigation.navigate('ChatDetails', { title: item.name })}>
+                                <HStack style={{ justifyContent: 'space-between', alignContent: 'center', marginTop: '-2%' }}>
+                                    <HStack >
+                                        <Image style={{ height: 40, width: 40 }}
+                                            alt={"Alternate Text"}
+                                            rounded={'full'}
+                                            source={{ uri: item.image }} />
+                                        <VStack ml={'4'}>
+                                            <Text style={{ fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Bold, }}>{item.name}</Text>
+                                            <Text style={{ fontSize: 10, color: Colors.grey, fontFamily: fonts.Poppins_Bold, }}>{item.msg}</Text>
+                                        </VStack>
+                                    </HStack>
+                                    <VStack>
+                                        <Text numberOfLines={1} style={{ fontFamily: fonts.Poppins_Medium, fontSize: 10, color: Colors.grey, marginTop: '2%', alignSelf: 'flex-end' }}>{item.time}</Text>
+                                    </VStack>
+                                </HStack>
+                            </Pressable>
+                            <Divider mt={'2'} />
+                        </View>
+                    )
+                }}
+                keyExtractor={(item) => item.id.toString()}
+            />
 
 
-
-            </ScrollView>
+            {/* </ScrollView> */}
         </View>
     )
 }

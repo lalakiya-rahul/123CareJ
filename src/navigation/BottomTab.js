@@ -19,6 +19,8 @@ import Colors from '../constants/colors';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import Notification from '../screens/Notification';
+import ChatDetails from '../screens/ChatDetails';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,6 +44,7 @@ function HomeStack() {
             <HomeNavigationStack.Screen name="ProductDetails" component={ProductDetails} />
             <HomeNavigationStack.Screen name="HospitalDetails" component={HospitalDetails} />
             <HomeNavigationStack.Screen name="MyProfile" component={MyProfile} />
+            <HomeNavigationStack.Screen name="Notification" component={Notification} />
         </HomeNavigationStack.Navigator>
     );
 }
@@ -171,7 +174,7 @@ const Tabs = () => {
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name="More"
                 component={MoreStack}
                 options={{
                     tabBarIcon: ({ focused }) => (

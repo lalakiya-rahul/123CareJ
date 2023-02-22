@@ -30,9 +30,11 @@ export default function PageView({ navigation, route }) {
 
                 <HStack alignSelf={'center'} alignItems={'center'}>
                     <HStack >
-                        <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
-                            alt={"Alternate Text"}
-                            source={require('../assets/Images/notification.png')} />
+                        <Pressable onPress={() => navigation.navigate("Notification")}>
+                            <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
+                                alt={"Alternate Text"}
+                                source={require('../assets/Images/notification.png')} />
+                        </Pressable>
                     </HStack>
                 </HStack>
             </HStack>

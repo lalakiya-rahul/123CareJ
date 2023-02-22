@@ -17,33 +17,61 @@ import PageView from '../screens/PageView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../reducer/actions';
+import Notification from '../screens/Notification';
+import ChatDetails from '../screens/ChatDetails';
 
 
-const Stack = createNativeStackNavigator();
-const AppNavigator = () => {
-
+const LoginStack = createNativeStackNavigator()
+function LoginStackNavigation() {
     return (
         <NavigationContainer independent={true}>
-            <Stack.Navigator initialRouteName={"Login"}
+            <LoginStack.Navigator
+                initialRouteName='Login'
                 screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="OTP" component={OTP} />
-                <Stack.Screen name="Signup" component={Signup} />
-                <Stack.Screen name="BottomTab" component={BottomTab} />
-                <Stack.Screen name="Product" component={Product} />
-                <Stack.Screen name="ProductDetails" component={ProductDetails} />
-                <Stack.Screen name="HospitalDetails" component={HospitalDetails} />
-                <Stack.Screen name="Message" component={Message} />
-                <Stack.Screen name="MyProfile" component={MyProfile} />
-                <Stack.Screen name="MyAds" component={MyAds} />
-                <Stack.Screen name="Fevorites" component={Fevorites} />
-                <Stack.Screen name="PageView" component={PageView} />
-            </Stack.Navigator>
+                <LoginStack.Screen name="Login" component={Login} />
+                <LoginStack.Screen name="OTP" component={OTP} />
+                <LoginStack.Screen name="Signup" component={Signup} />
+                <BottomStack.Screen name="BottomTab" component={BottomTab} />
+                <BottomStack.Screen name="ChatDetails" component={ChatDetails} />
+            </LoginStack.Navigator>
+        </NavigationContainer>
+    )
+}
+
+const BottomStack = createNativeStackNavigator()
+function BottomStackNavigation() {
+    return (
+        <NavigationContainer independent={true}>
+            <BottomStack.Navigator
+                initialRouteName='BottomTab'
+                screenOptions={{ headerShown: false }}>
+                <LoginStack.Screen name="Login" component={Login} />
+                <BottomStack.Screen name="BottomTab" component={BottomTab} />
+                <BottomStack.Screen name="Product" component={Product} />
+                <BottomStack.Screen name="Notification" component={Notification} />
+                <BottomStack.Screen name="ProductDetails" component={ProductDetails} />
+                <BottomStack.Screen name="HospitalDetails" component={HospitalDetails} />
+                <BottomStack.Screen name="Message" component={Message} />
+                <BottomStack.Screen name="ChatDetails" component={ChatDetails} />
+                <BottomStack.Screen name="MyProfile" component={MyProfile} />
+                <BottomStack.Screen name="MyAds" component={MyAds} />
+                <BottomStack.Screen name="Fevorites" component={Fevorites} />
+                <BottomStack.Screen name="PageView" component={PageView} />
+            </BottomStack.Navigator>
         </NavigationContainer>
     )
 }
 
 
+const AppNavigator = () => {
+    const { userDetail } = useSelector((state) => state.reducerDetail);
+    console.log(userDetail, 'user detilesss---123');
+    return (
+        <NavigationContainer independent={true}>
+            {userDetail.token ? <BottomStackNavigation /> : <LoginStackNavigation />}
+        </NavigationContainer>
+    )
+}
 
 export default AppNavigator;
 

@@ -216,17 +216,19 @@ export default function ProductDetails({ navigation, route }) {
                             alt={"Alternate Text"}
                             source={require('../assets/Images/arrow_back.png')} />
                     </Pressable>
-                    <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>Test images</Text>
+                    <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>{route.params ? route.params.title : ""}</Text>
                 </HStack>
                 <HStack alignSelf={'center'} alignItems={'center'}>
                     <HStack >
 
-                        <Image style={{ height: 22, width: 22 }} mr={'2'} ml={'2'}
+                        {/* <Image style={{ height: 22, width: 22 }} mr={'2'} ml={'2'}
                             alt={"Alternate Text"}
-                            source={require('../assets/Images/share1.png')} />
-                        <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
-                            alt={"Alternate Text"}
-                            source={require('../assets/Images/notification.png')} />
+                            source={require('../assets/Images/share1.png')} /> */}
+                        <Pressable onPress={() => navigation.navigate("Notification")}>
+                            <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
+                                alt={"Alternate Text"}
+                                source={require('../assets/Images/notification.png')} />
+                        </Pressable>
                     </HStack>
                 </HStack>
             </HStack>

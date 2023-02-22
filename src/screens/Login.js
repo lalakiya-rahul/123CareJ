@@ -24,17 +24,7 @@ const height = Dimensions.get("window").height
 export default function Login({ navigation }) {
 
     const [formattedValue, setFormattedValue] = React.useState("");
-    const [country, setCountry] = React.useState('1');
     const phoneInput = React.useRef(null);
-
-
-
-    useEffect(() => {
-        // const { userDetail } = useSelector((state) => state.reducerDetail);
-        // if (userDetail.token) {
-        //     navigation.navigate("BottomTab")
-        // }
-    }, []);
 
     const initState = {
         name: '',
@@ -94,8 +84,6 @@ export default function Login({ navigation }) {
             }
         }
     };
-
-
 
     return (
         <ScrollView>

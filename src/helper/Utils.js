@@ -9,6 +9,7 @@ import Colors from '../constants/colors';
 import { LocalData } from './Urls';
 import { validationempty } from './Validations';
 import NetInfo from '@react-native-community/netinfo';
+import moment from 'moment';
 
 var Id, Name, Token;
 
@@ -83,6 +84,10 @@ export const Indicator = () => {
         </View>
     );
 };
+
+export const displayFromNow = (date) => {
+    return moment(date).fromNow();
+}
 
 export const Indicator1 = () => {
     return <ActivityIndicator size="small" color={Colors.primaryColor} />;

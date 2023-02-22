@@ -50,7 +50,8 @@ export default function MyProfile({ navigation }) {
 
     useEffect(() => {
         getData();
-        getCountry();
+        getCountry(countryId);
+        getState();
         return () => {
             console.log('This will be logged on unmount');
         };
@@ -93,7 +94,6 @@ export default function MyProfile({ navigation }) {
     const getData = async () => {
         setLoding(true);
         const userData = await AsyncStorage.getItem('userData');
-        console.log(userData, 'userdata----get srate');
         setState({
             ...state,
             name: JSON.parse(userData).name,
@@ -112,11 +112,9 @@ export default function MyProfile({ navigation }) {
     const getCountry = async () => {
         if (checkInternet()) {
             setLoding(true);
-
             var response = await Helper.GET(Urls.getCountry);
             if (response.error === '0') {
                 setCountry(response.data);
-                getState()
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -181,10 +179,11 @@ export default function MyProfile({ navigation }) {
 
                 <HStack alignSelf={'center'} alignItems={'center'}>
                     <HStack >
-
-                        <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
-                            alt={"Alternate Text"}
-                            source={require('../assets/Images/notification.png')} />
+                        <Pressable onPress={() => navigation.navigate("Notification")}>
+                            <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
+                                alt={"Alternate Text"}
+                                source={require('../assets/Images/notification.png')} />
+                        </Pressable>
                     </HStack>
                 </HStack>
             </HStack>

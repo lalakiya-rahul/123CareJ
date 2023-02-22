@@ -18,18 +18,27 @@ export const Urls = {
 
     //dashborad 
     homePage: '/home',
+    advertise: '/advertise',
 
     //proudct
     //view all
     productListViewAll: '/products',
     productDetail: '/productDetail',
 
+    categoryViewAll: '/hospitals',
+
     myAds: '/member/product',
 
     // profile
     updateProfile: '/member/profile/update',
+    notificationList: '/notification-list',
 
     //pages
     pages: '/page',
+
+    //offers
+    offerList: '/offer-list',
+    favouriteList: '/member/favourite/favourite-list'
+
 
 }

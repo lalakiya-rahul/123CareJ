@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, Dimensions, Pressable, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -15,16 +15,21 @@ import { checkInternet } from '../helper/Utils';
 import { Helper } from '../helper/Helper';
 import { Urls } from '../helper/Urls';
 import Loader from '../components/Loader';
+import { ActivityIndicator } from '@react-native-material/core';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function Product({ navigation, route }) {
-    console.log(route.params, 'params data');
     const countries = ["Egypt", "Canada", "Australia", "Ireland"]
-    const [isModalVisible, setModalVisible] = React.useState(false);
-    const [productViewAll, setGetProductViewAll] = React.useState([]);
-    const [loading, setLoding] = React.useState(false);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [productViewAll, setGetProductViewAll] = useState([]);
+    const [categoryViewAll, setGetCategoryViewAll] = useState([]);
+
+    const [loading, setLoding] = useState(false);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(1);
+    const [isListEnd, setIsListEnd] = useState(false);
     const data = [
         {
             'id': 1,
@@ -190,28 +195,71 @@ export default function Product({ navigation, route }) {
         },
     ]
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (route.params.viewAll) {
-            getProductViewAll()
+            getProductViewAll();
+        } else {
+            getCategoryViewAll();
         }
     }, []);
+    console.log(route.params, 'route.params');
+    const getCategoryViewAll = async () => {
+        if (!loading && !isListEnd) {
+            console.log('getData12');
+            if (checkInternet()) {
+                setLoding(true);
+                const apiData = {
+                    lang_id: 1,
+                    category_id: route.params.category_id
+                }
+                var response = await Helper.POST(Urls.categoryViewAll, apiData);
+                if (response.error === '0') {
+                    console.log(response, 'response---');
+                    if (response.data.length > 0) {
+                        setPage(page + 1);
+                        console.log(page, 'pagee');
+                        // After the response increasing the offset
+                        setGetCategoryViewAll([...categoryViewAll, ...response.data]);
+                        setLoding(false);
+                    } else {
+                        setIsListEnd(true);
+                        ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                        setLoding(false);
+                    }
+                } else {
+                    ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+                }
+            }
+        }
+    }
 
     const getProductViewAll = async () => {
-        if (checkInternet()) {
-            setLoding(true);
-            const apiData = {
-                lang_id: 1
+        if (!loading && !isListEnd) {
+            console.log('getData');
+            if (checkInternet()) {
+                setLoding(true);
+                const apiData = {
+                    lang_id: 1,
+                    page: page
+                }
+                var response = await Helper.POST(Urls.productListViewAll, apiData);
+                if (response.error === '0') {
+                    console.log(response, 'response---');
+                    if (response.data.length > 0) {
+                        setPage(page + 1);
+                        console.log(page, 'pagee');
+                        // After the response increasing the offset
+                        setGetProductViewAll([...productViewAll, ...response.data]);
+                        setLoding(false);
+                    } else {
+                        setIsListEnd(true);
+                        ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                        setLoding(false);
+                    }
+                } else {
+                    ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+                }
             }
-            var response = await Helper.POST(Urls.productListViewAll, apiData);
-            if (response.error === '0') {
-                setGetProductViewAll(response.data)
-                setLoding(false);
-            } else {
-                ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                setLoding(false);
-            }
-        } else {
-            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     }
 
@@ -224,7 +272,7 @@ export default function Product({ navigation, route }) {
                             alt={"Alternate Text"}
                             source={require('../assets/Images/arrow_back.png')} />
                     </Pressable>
-                    <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>Interior decorators</Text>
+                    <Text numberOfLines={1} style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>{route.params ? route.params.title : ""}</Text>
                 </HStack>
 
                 <HStack alignSelf={'center'} alignItems={'center'}>
@@ -271,11 +319,13 @@ export default function Product({ navigation, route }) {
 
                 <FlatList
                     contentContainerStyle={{ paddingBottom: '50%', }}
-                    data={route.params.viewAll ? productViewAll : data2}
+                    data={route.params.viewAll ? productViewAll : categoryViewAll}
+                    onEndReached={getProductViewAll}
+                    onEndReachedThreshold={0.5}
                     renderItem={({ item }) => {
                         return (
                             <View style={{ backgroundColor: Colors.white, padding: 5, }}>
-                                <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
+                                <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
                                     <HStack style={[styles.card,
                                     {
                                         backgroundColor: Colors.white,

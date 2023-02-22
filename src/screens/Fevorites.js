@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
 import { AlertDialog, Avatar, Box, Button, Checkbox, Divider, HStack, Image, Input, Select, Text, VStack } from 'native-base';
@@ -7,12 +7,21 @@ import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
 import CommonButton from '../components/Button';
 import CommonHeader from '../components/Header';
+import { Helper } from '../helper/Helper';
+import { Urls } from '../helper/Urls';
+import { checkInternet } from '../helper/Utils';
+import { useSelector } from 'react-redux';
+import Loader from '../components/Loader';
 
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function Fevorites({ navigation }) {
+    const { userDetail } = useSelector((state) => state.reducerDetail);
+
+    console.log(userDetail, 'user detilesss');
+
     const data = [
         {
             'id': 1,
@@ -64,6 +73,37 @@ export default function Fevorites({ navigation }) {
 
     const onClose = () => setIsOpen(false);
     const cancelRef = React.useRef(null);
+
+    const [getFevorites, setFevorites] = useState([])
+    const [loading, setLoding] = useState(false);
+
+    useEffect(() => {
+        getFavoritesList();
+    }, [])
+
+    const getFavoritesList = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+
+            const apiData = {
+                user_id: userDetail.user_id,
+                token: userDetail.token
+            }
+            var response = await Helper.POST(Urls.favouriteList, apiData);
+            if (response.error === '0') {
+                setFevorites(response.data)
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    }
+
+    console.log(getFevorites, 'getFevorites---');
+
     return (
         <View>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '5%', }} >
@@ -78,7 +118,6 @@ export default function Fevorites({ navigation }) {
 
                 <HStack alignSelf={'center'} alignItems={'center'}>
                     <HStack >
-
                         <Image style={{ height: 22, width: 18 }} mr={'2'} ml={'2'}
                             alt={"Alternate Text"}
                             source={require('../assets/Images/notification.png')} />
@@ -104,77 +143,79 @@ export default function Fevorites({ navigation }) {
                         <Text style={[Styles.titleText, { fontSize: 12, }]}>Select All</Text>
                     </Checkbox>
                     <HStack style={[styles.boxStyle, { alignItems: 'center', justifyContent: 'space-between' }]} >
-                        <Image source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
+                        <Image source={(require('../assets/Images/delete.png'))} alt={"Alternate Text"} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
                         <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Delete</Text>
                     </HStack>
                 </HStack>
+                <Loader loading={loading} />
                 <FlatList
                     contentContainerStyle={{ paddingBottom: '20%' }}
-                    data={data}
+                    data={getFevorites}
                     renderItem={({ item }) => {
                         return (
-                            <HStack style={[styles.card,
-                            {
-                                backgroundColor: Colors.white,
-                                borderRadius: 10, borderWidth: 1,
-                                justifyContent: 'space-between', padding: 10,
-                                marginTop: 10, width: '100%'
-                            }]}>
-                                <HStack space={4}  >
-                                    <HStack justifyContent={'center'} alignItems={'center'}>
-                                        <Checkbox mr={'2.5'} value="test" accessibilityLabel="checkbox" />
-                                        <Image style={{
-                                            width: 80,
-                                            height: 80,
-                                            resizeMode: 'cover'
-                                        }} borderRadius={'2xl'} source={{
-                                            uri: item.image
-                                        }} alt="Alternate Text" size="md" />
-                                    </HStack>
-
-                                    <VStack width={'72'} >
-                                        <Text style={Styles.titleText}>{item.title}</Text>
-                                        <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', }}>
-                                            <Image tintColor={Colors.grey}
-                                                alt={"Alternate Text"}
-                                                style={{ height: 10, width: 10 }}
-                                                source={require('../assets/Images/time.png')} />
-                                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>Nov 5th, 2022 at 13:48</Text>
-
-                                            <Image tintColor={Colors.grey}
-                                                alt={"Alternate Text"}
-                                                style={{ height: 10, width: 10 }}
-                                                source={require('../assets/Images/pin1.png')} />
-                                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>Ahmedabad</Text>
+                            <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
+                                <HStack style={[styles.card,
+                                {
+                                    backgroundColor: Colors.white,
+                                    borderRadius: 10, borderWidth: 1,
+                                    justifyContent: 'space-between', padding: 10,
+                                    marginTop: 10, width: '100%'
+                                }]}>
+                                    <HStack space={4}  >
+                                        <HStack justifyContent={'center'} alignItems={'center'}>
+                                            <Checkbox mr={'2.5'} value="test" accessibilityLabel="checkbox" />
+                                            <Image style={{
+                                                width: 80,
+                                                height: 80,
+                                                resizeMode: 'cover'
+                                            }} borderRadius={'2xl'} source={{
+                                                uri: item.image
+                                            }} alt="Alternate Text" size="md" />
                                         </HStack>
 
-                                        <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', marginTop: -8 }}>
-                                            <Image style={{ height: 9, width: 12, tintColor: Colors.grey }}
-                                                alt={"Alternate Text"}
-                                                source={require('../assets/Images/eye.png')} />
-                                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>42</Text>
+                                        <VStack width={'72'} >
+                                            <Text style={Styles.titleText}>{item.title}</Text>
+                                            <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', }}>
+                                                <Image tintColor={Colors.grey}
+                                                    alt={"Alternate Text"}
+                                                    style={{ height: 10, width: 10 }}
+                                                    source={require('../assets/Images/time.png')} />
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.created_at}</Text>
+
+                                                <Image tintColor={Colors.grey}
+                                                    alt={"Alternate Text"}
+                                                    style={{ height: 10, width: 10 }}
+                                                    source={require('../assets/Images/pin1.png')} />
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>Ahmedabad</Text>
+                                            </HStack>
+
+                                            <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', marginTop: -8 }}>
+                                                <Image style={{ height: 9, width: 12, tintColor: Colors.grey }}
+                                                    alt={"Alternate Text"}
+                                                    source={require('../assets/Images/eye.png')} />
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>42</Text>
 
 
-                                            {/* <Text style={{ fontFamily: fonts.Poppins_Bold, fontSize: 8, color: Colors.grey, marginLeft: '40%' }}>₹</Text>
+                                                {/* <Text style={{ fontFamily: fonts.Poppins_Bold, fontSize: 8, color: Colors.grey, marginLeft: '40%' }}>₹</Text>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>--</Text> */}
-                                        </HStack>
-                                        <HStack space={2}>
-                                            <View style={styles.boxStyle}>
-                                                <Pressable onPress={() => navigation.navigate('AddListing')}>
+                                            </HStack>
+                                            <HStack space={2}>
+                                                <View style={styles.boxStyle}>
+                                                    <Pressable onPress={() => navigation.navigate('AddListing')}>
+                                                        <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                                                            <Image source={(require('../assets/Images/edit.png'))} alt={"Alternate Text"} style={{ height: 15, width: 15, marginRight: 5, tintColor: 'white' }} />
+                                                            <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Edit</Text>
+                                                        </HStack>
+                                                    </Pressable>
+                                                </View>
+                                                <View style={styles.boxStyle}>
                                                     <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                                                        <Image source={(require('../assets/Images/edit.png'))} style={{ height: 15, width: 15, marginRight: 5, tintColor: 'white' }} />
-                                                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Edit</Text>
+                                                        <Image source={(require('../assets/Images/eye.png'))} alt={"Alternate Text"} style={{ height: 12, width: 17, marginRight: 5, tintColor: 'white' }} />
+                                                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Offline</Text>
                                                     </HStack>
-                                                </Pressable>
-                                            </View>
-                                            <View style={styles.boxStyle}>
-                                                <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                                                    <Image source={(require('../assets/Images/eye.png'))} style={{ height: 12, width: 17, marginRight: 5, tintColor: 'white' }} />
-                                                    <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Offline</Text>
-                                                </HStack>
-                                            </View>
+                                                </View>
 
-                                            {/* <View style={styles.boxStyle}>
+                                                {/* <View style={styles.boxStyle}>
                                                 <Pressable onPress={() => setIsOpen(!isOpen)}>
                                                     <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                                                         <Image source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
@@ -203,13 +244,12 @@ export default function Fevorites({ navigation }) {
 
                                                 </Pressable>
                                             </View> */}
-                                        </HStack>
+                                            </HStack>
 
-                                    </VStack>
+                                        </VStack>
+                                    </HStack>
                                 </HStack>
-
-
-                            </HStack>
+                            </Pressable>
                         )
                     }} />
             </View>
@@ -232,7 +272,7 @@ const styles = StyleSheet.create({
         position: 'relative'
     },
     boxStyle: {
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.primaryColor,
         alignItems: 'center',
         borderRadius: 3,
         // borderColor: Colors.smallText,
