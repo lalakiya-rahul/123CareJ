@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, Linking, BackHandler, } from 'react-native';
+import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, Linking, BackHandler, ToastAndroid, } from 'react-native';
 
 import Colors from '../constants/colors';
 import { Avatar, Box, Button, HStack, Image, Input, Text, VStack, Modal, CheckBox, Checkbox, Radio, Stack } from 'native-base';
@@ -289,6 +289,7 @@ const images = [
 
 
 export default function Home({ navigation }) {
+    const { userDetail } = useSelector((state) => state.reducerDetail);
     const [isModalVisible, setModalVisible] = useState(false);
     const [getCategoryData, setCategoryData] = useState([]);
     const isFocused = useIsFocused();
@@ -306,13 +307,13 @@ export default function Home({ navigation }) {
     const getCategory = async () => {
         if (checkInternet()) {
             setLoding(true);
-
             const apiData = {
-                lang_id: 1
+                lang_id: 1,
+                user_id: userDetail.user_id,
             };
             var response = await Helper.POST(Urls.homePage, apiData);
             if (response.error === '0') {
-                setCategoryData(response.data)
+                setCategoryData(response.data);
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -339,9 +340,35 @@ export default function Home({ navigation }) {
         }
     };
 
+    const favoritesApi = async (product_id) => {
+        console.log(product_id, 'latest product_id');
+        console.log(userDetail.user_id, userDetail.token, 'latest product_id');
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                user_id: userDetail.user_id,
+                token: userDetail.token,
+                product_id: product_id
+            }
+            var response = await Helper.POST(Urls.favourite, apiData);
+            if (response.error === '0') {
+                console.log(response, 'response----');
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
 
+
+    // console.log(getCategoryData.latest, 'latest log');
     // console.log(advertiseData, 'advertiseData--');
     return (
+
         <View style={{ marginBottom: '20%', backgroundColor: Colors.white, }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
                 <HStack alignItems={'center'} >
@@ -369,9 +396,9 @@ export default function Home({ navigation }) {
                     </Pressable>
                 </HStack>
             </HStack>
+
             <Loader loading={loading} />
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
-
                 <View style={[Styles.container, { marginBottom: 610 }]}>
                     <VStack style={[styles.stepCard, { height: null }]}>
                         <HStack style={{ justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginBottom: '2%', marginTop: '2%' }}>
@@ -465,7 +492,8 @@ export default function Home({ navigation }) {
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
                                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
-                                                onPress={() => navigation.navigate('Product', { viewAll: false, category_id: item.category_id, title: item.title })} >
+                                                onPress={() => navigation.navigate('Category', { viewAll: false, category_id: item.category_id, title: item.title })} >
+
                                                 <Image
                                                     style={{ height: 30, width: 30, resizeMode: 'stretch' }}
                                                     borderColor={Colors.secondaryPrimaryColor}
@@ -518,6 +546,7 @@ export default function Home({ navigation }) {
                         <FlatList
                             contentContainerStyle={{ marginTop: '1%' }}
                             data={getCategoryData.latest && getCategoryData.latest.slice(0, 5)}
+
                             renderItem={({ item }) => {
                                 return (
                                     <View style={{ backgroundColor: Colors.white, marginTop: 2 }}>
@@ -551,16 +580,23 @@ export default function Home({ navigation }) {
                                                                 source={require('../assets/Images/pin1.png')} />
                                                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.city_name}</Text>
                                                         </HStack>
-
-
                                                     </VStack>
                                                 </HStack>
 
                                                 <HStack style={{ alignItems: 'center', justifyContent: 'space-evenly', width: '30%' }} >
-                                                    <VStack >
+                                                    <VStack>
+                                                        {/* <Pressable onPress={() => { favoritesApi(item.id) }}> */}
+                                                        {/* {item.is_favourite === "1" ?
+                                                                <Image size={8}
+                                                                    alt={"Alternate Text"}
+                                                                    source={require('../assets/Images/fevoritesRed.png')} />
+                                                                : */}
                                                         <Image size={7}
                                                             alt={"Alternate Text"}
                                                             source={require('../assets/Images/10.jpg')} />
+                                                        {/* } */}
+
+                                                        {/* </Pressable> */}
                                                     </VStack>
                                                     <VStack>
                                                         <Pressable onPress={() => Linking.openURL(`tel:${item.member.mobile_no}`)}>

@@ -1,6 +1,7 @@
 import { HStack, Image, Input, ScrollView, VStack } from 'native-base';
 import * as React from 'react';
 import { Dimensions, FlatList, Pressable, Text, View, StyleSheet } from 'react-native';
+import NoData from '../components/NoData';
 import Colors from '../constants/colors';
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
@@ -133,6 +134,7 @@ export default function Serach({ navigation }) {
                 <FlatList
                     contentContainerStyle={{ paddingBottom: '50%', }}
                     data={data}
+                    ListEmptyComponent={<NoData />}
                     renderItem={({ item }) => {
                         return (
                             <View style={{ backgroundColor: Colors.white, padding: 5, }}>

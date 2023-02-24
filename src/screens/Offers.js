@@ -2,6 +2,7 @@ import { HStack, Image, Input, ScrollView, VStack } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, FlatList, Pressable, Text, View, StyleSheet, ToastAndroid } from 'react-native';
 import { useSelector } from 'react-redux';
+import NoData from '../components/NoData';
 import Colors from '../constants/colors';
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
@@ -149,6 +150,7 @@ export default function Offers({ navigation }) {
                     <Text numberOfLines={1} style={{ fontFamily: fonts.Poppins_Regular, fontSize: 20, color: Colors.black, marginBottom: 5 }}>Popular offers for you</Text>
                     <FlatList
                         data={getOffers}
+                        ListEmptyComponent={<NoData />}
                         renderItem={({ item }) => {
                             return (
                                 <VStack style={styles.stepCard}>

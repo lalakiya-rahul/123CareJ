@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, PermissionsAndroid, Platform, Pressable, ScrollView, StyleSheet, Text, ToastAndroid, View, } from 'react-native';
+import { Dimensions, PermissionsAndroid, Platform, Pressable, FlatList, ScrollView, StyleSheet, Text, ToastAndroid, View, } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Box, Checkbox, CheckCircleIcon, Modal, FlatList, HStack, Icon, Image, Input, Select, TextArea, VStack } from 'native-base';
+import { Box, Checkbox, CheckCircleIcon, Modal, HStack, Icon, Image, Input, Select, TextArea, VStack } from 'native-base';
 import fonts from '../constants/fonts';
 import CommonInput from '../components/Inputs';
 import PhoneInput from 'react-native-phone-number-input';
@@ -15,8 +15,10 @@ import { Helper } from '../helper/Helper';
 import Loader from '../components/Loader';
 import { formateString } from '../helper/Validations'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -85,8 +87,9 @@ export default function AddListing({ navigation }) {
     ])
     const [storeAddtionalData, setStoreAdditoinalData] = useState([]);
     const phoneInput = useRef(null);
-    const [filePath, setFilePath] = useState({});
+    const [filePath, setFilePath] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
+    const isFocused = useIsFocused();
 
     const initState = {
         user_id: '',
@@ -124,19 +127,22 @@ export default function AddListing({ navigation }) {
         }
         getData();
         getCategory();
-    }, [])
+    }, [isFocused])
 
     const getData = async () => {
-
         const userData = await AsyncStorage.getItem('userData');
         setState({
             ...state,
             user_id: JSON.parse(userData).user_id,
             lang_id: JSON.parse(userData).lang_id,
-            token: JSON.parse(userData).token
+            token: JSON.parse(userData).token,
+            email: JSON.parse(userData).email,
+            name: JSON.parse(userData).username,
+            phone: JSON.parse(userData).mobile_no
         });
 
     }
+
 
     const getCategory = async () => {
         if (checkInternet()) {
@@ -157,6 +163,7 @@ export default function AddListing({ navigation }) {
     }
 
     const getState = async () => {
+
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
@@ -165,14 +172,15 @@ export default function AddListing({ navigation }) {
             var response = await Helper.POST(Urls.getState, apiData);
             if (response.error === '0') {
                 setStates(response.data)
-                setLoding(false);
+
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                setLoding(false);
+
             }
         } else {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
+
     }
 
     const getCity = async (statesId) => {
@@ -194,121 +202,131 @@ export default function AddListing({ navigation }) {
         }
     }
 
-    const requestCameraPermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.CAMERA,
-                    {
-                        title: 'Camera Permission',
-                        message: 'App needs camera permission',
-                    },
-                );
-                // If CAMERA Permission is granted
-                return granted === PermissionsAndroid.RESULTS.GRANTED;
-            } catch (err) {
-                console.warn(err);
-                return false;
-            }
-        } else return true;
+    // const requestCameraPermission = async () => {
+    //     if (Platform.OS === 'android') {
+    //         try {
+    //             const granted = await PermissionsAndroid.request(
+    //                 PermissionsAndroid.PERMISSIONS.CAMERA,
+    //                 {
+    //                     title: 'Camera Permission',
+    //                     message: 'App needs camera permission',
+    //                 },
+    //             );
+    //             // If CAMERA Permission is granted
+    //             return granted === PermissionsAndroid.RESULTS.GRANTED;
+    //         } catch (err) {
+    //             console.warn(err);
+    //             return false;
+    //         }
+    //     } else return true;
+    // };
+
+    // const requestExternalWritePermission = async () => {
+    //     if (Platform.OS === 'android') {
+    //         try {
+    //             const granted = await PermissionsAndroid.request(
+    //                 PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+    //                 {
+    //                     title: 'External Storage Write Permission',
+    //                     message: 'App needs write permission',
+    //                 },
+    //             );
+    //             // If WRITE_EXTERNAL_STORAGE Permission is granted
+    //             return granted === PermissionsAndroid.RESULTS.GRANTED;
+    //         } catch (err) {
+    //             console.warn(err);
+    //             alert('Write permission err', err);
+    //         }
+    //         return false;
+    //     } else return true;
+    // };
+
+    const captureImage = async () => {
+        ImagePicker.openCamera({
+            width: 300,
+            height: 400,
+            cropping: true,
+        }).then(image => {
+
+        })
+        // let options = {
+        //     mediaType: type,
+        //     maxWidth: 300,
+        //     maxHeight: 550,
+        //     quality: 1,
+        //     videoQuality: 'low',
+        //     durationLimit: 30, //Video max duration in seconds
+        //     saveToPhotos: true,
+        // };
+        // let isCameraPermitted = await requestCameraPermission();
+        // let isStoragePermitted = await requestExternalWritePermission();
+        // if (isCameraPermitted && isStoragePermitted) {
+        //     launchCamera(options, (response) => {
+
+        //         if (response.didCancel) {
+        //             alert('User cancelled camera picker');
+        //             return;
+        //         } else if (response.errorCode == 'camera_unavailable') {
+        //             alert('Camera not available on device');
+        //             return;
+        //         } else if (response.errorCode == 'permission') {
+        //             alert('Permission not satisfied');
+        //             return;
+        //         } else if (response.errorCode == 'others') {
+        //             alert(response.errorMessage);
+        //             return;
+        //         }
+        //         console.log('base64 -> ', response.base64);
+        //         console.log('uri -> ', response.uri);
+        //         console.log('width -> ', response.width);
+        //         console.log('height -> ', response.height);
+        //         console.log('fileSize -> ', response.fileSize);
+        //         console.log('type -> ', response.type);
+        //         console.log('fileName -> ', response.fileName);
+        //         setFilePath(response.assets[0].uri);
+        //         setState({
+        //             ...state,
+        //             imageName: response.assets[0].fileName
+        //         })
+        //     });
+        // }
     };
+    const chooseFile = () => {
 
-    const requestExternalWritePermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                    {
-                        title: 'External Storage Write Permission',
-                        message: 'App needs write permission',
-                    },
-                );
-                // If WRITE_EXTERNAL_STORAGE Permission is granted
-                return granted === PermissionsAndroid.RESULTS.GRANTED;
-            } catch (err) {
-                console.warn(err);
-                alert('Write permission err', err);
+        ImagePicker.openPicker({
+            width: 300,
+            height: 400,
+            cropping: true,
+            multiple: true,
+            compressImageQuality: 0.8,
+            includeExif: true,
+            forceJpg: true,
+            maxFiles: 2,
+            mediaType: 'photo',
+            includeBase64: true
+        }).then(selImages => {
+            if (selImages && selImages.length == 1) {
+                let output = selImages.slice();
+                output[index] = {
+                    uri: selImages[0].path, // for FormData to upload
+                    type: selImages[0].mime,
+                    name: selImages[0].filename || `${Date.now()}.jpg`,
+                };
+                console.log('ImagePicker.openPicker: output', output);
+                console.log(output, 'output---');
+            } else {
+                const output = selImages.map((image) => ({
+                    uri: image.path,
+                    type: image.mime,
+                    name: image.filename || `${Date.now()}.jpg`,
+                }));
+                console.log(output, 'output---22');
+                setFilePath(output);
+                console.log('ImagePicker.openPicker: output', output);
             }
-            return false;
-        } else return true;
-    };
 
-    const captureImage = async (type) => {
-        let options = {
-            mediaType: type,
-            maxWidth: 300,
-            maxHeight: 550,
-            quality: 1,
-            videoQuality: 'low',
-            durationLimit: 30, //Video max duration in seconds
-            saveToPhotos: true,
-        };
-        let isCameraPermitted = await requestCameraPermission();
-        let isStoragePermitted = await requestExternalWritePermission();
-        if (isCameraPermitted && isStoragePermitted) {
-            launchCamera(options, (response) => {
 
-                if (response.didCancel) {
-                    alert('User cancelled camera picker');
-                    return;
-                } else if (response.errorCode == 'camera_unavailable') {
-                    alert('Camera not available on device');
-                    return;
-                } else if (response.errorCode == 'permission') {
-                    alert('Permission not satisfied');
-                    return;
-                } else if (response.errorCode == 'others') {
-                    alert(response.errorMessage);
-                    return;
-                }
-                console.log('base64 -> ', response.base64);
-                console.log('uri -> ', response.uri);
-                console.log('width -> ', response.width);
-                console.log('height -> ', response.height);
-                console.log('fileSize -> ', response.fileSize);
-                console.log('type -> ', response.type);
-                console.log('fileName -> ', response.fileName);
-                setFilePath(response);
-            });
-        }
-    };
-    const chooseFile = (type) => {
-        let options = {
-            mediaType: type,
-            maxWidth: 300,
-            maxHeight: 550,
-            quality: 1,
-            selectionLimit: 2
-        };
-        launchImageLibrary(options, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                alert('User cancelled camera picker');
-                return;
-            } else if (response.errorCode == 'camera_unavailable') {
-                alert('Camera not available on device');
-                return;
-            } else if (response.errorCode == 'permission') {
-                alert('Permission not satisfied');
-                return;
-            } else if (response.errorCode == 'others') {
-                alert(response.errorMessage);
-                return;
-            }
-            console.log('base64 -> ', response.base64);
-            console.log('uri -> ', response.uri);
-            console.log('width -> ', response.width);
-            console.log('height -> ', response.height);
-            console.log('fileSize -> ', response.fileSize);
-            console.log('type -> ', response.type);
-            console.log('fileName -> ', response.fileName);
-            setFilePath(response.assets[0].uri);
-            setState({
-                ...state,
-                imageName: response.assets[0].fileName
-            })
-        });
+        }).catch(e => console.log('error', e.message));
     };
 
     const postAds = async () => {
@@ -330,24 +348,29 @@ export default function AddListing({ navigation }) {
             formdata.append('name', state.name);
             formdata.append('tags', state.tags);
             formdata.append('feature_id[]', [1]);
-            var postImage = filePath;
-            var uri = '' + postImage;
-            var arr = uri.split('/');
-            var name = arr[arr.length - 1];
+            // var postImage = filePath;
+            // var uri = '' + postImage;
+            // var arr = uri.split('/');
+            // var name = arr[arr.length - 1];
 
             formdata.append(
-                'image[]', filePath ? {
-                    uri: Platform.OS === 'android' ? postImage : postImage.replace('file://', ''),
-                    name: name,
-                    type: 'image/jpeg',
-                }
-                : '',
+                'image[]', filePath
+                // ? {
+                //     uri: Platform.OS === 'android' ? postImage : postImage.replace('file://', ''),
+                //     name: filePath.filename || `${Date.now()}.jpg`,
+                //     type: 'image/jpeg',
+                // }
+                // : '',
             );
+
+
+            console.log(formdata, 'formdata--');
             var response = await Helper.POST(Urls.postAds, formdata);
+            console.log(response, 'response post api na data');
             if (response.error === '0') {
                 console.log(response, 'responce');
                 setLoding(false);
-                navigation.navigate("Home")
+                navigation.navigate("Home");
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -474,26 +497,35 @@ export default function AddListing({ navigation }) {
                                         minWidth="250" placeholder="Upload Pictures" />
                                 </Box>
                             </HStack>
-                            {/* <HStack alignSelf={'flex-end'} w={'56'} mt={'1'} mb={'1'}>
-                                <HStack style={{ backgroundColor: Colors.grey, borderRadius: 5, padding: 5 }}>
-                                    <Image style={{ height: 35, width: 35 }}
-                                        alt={"Alternate Text"}
-                                        source={{ uri: filePath && filePath ? filePath : 'https://parshwatechnologies.info/website/image/image-gallery%201.png' }} />
-                                </HStack>
-                                <HStack style={{ backgroundColor: Colors.grey, borderRadius: 5, padding: 5, marginLeft: 5 }}>
-                                    <Image style={{ height: 35, width: 35 }}
-                                        alt={"Alternate Text"}
-                                        source={{ uri: 'https://parshwatechnologies.info/website/image/image-gallery%201.png' }} />
-                                </HStack>
-                            </HStack> */}
-                            <HStack alignSelf={'flex-end'} w={'56'}>
-                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.smallText }}>
-                                    Add up to 2 pictures. Use real pictures of your product, not catalogs.
-                                </Text>
-                            </HStack>
 
+                            {
+                                filePath?.length > 0 ?
+                                    <>
 
-
+                                        <HStack alignSelf={'flex-end'} w={'56'} >
+                                            <FlatList
+                                                data={filePath}
+                                                horizontal
+                                                renderItem={({ item }) => {
+                                                    return (
+                                                        <HStack alignSelf={'flex-end'} mt={'1'} mb={'1'}>
+                                                            <HStack style={{ borderRadius: 5, padding: 2, borderWidth: 1, marginLeft: 5 }}>
+                                                                <Image style={{ height: 35, width: 35 }}
+                                                                    alt={"Alternate Text"}
+                                                                    source={{ uri: item.path && item.path ? item.path : 'https://parshwatechnologies.info/website/image/image-gallery%201.png' }} />
+                                                            </HStack>
+                                                        </HStack>
+                                                    )
+                                                }} />
+                                        </HStack>
+                                    </>
+                                    :
+                                    <HStack alignSelf={'flex-end'} w={'56'}>
+                                        <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.smallText }}>
+                                            Add up to 2 pictures. Use real pictures of your product, not catalogs.
+                                        </Text>
+                                    </HStack>
+                            }
                             <HStack alignSelf={'flex-start'} w={'56'} style={{ marginLeft: width / 4 }}>
                                 {/* <Image style={{ height: 50, width: 50, borderRadius: 5, marginRight: '3%' }}
                                     alt={"Alternate Text"}
@@ -633,6 +665,8 @@ export default function AddListing({ navigation }) {
                                         borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor}
                                         rounded={'full'} placeholder="Enter your mobile no"
                                         maxLength={10}
+                                        value={state.phone}
+                                        keyboardType={'number-pad'}
                                         onChangeText={(value) => { onInputChange('phone', value) }}
                                         InputLeftElement={<HStack w={'16'} >
                                             <PhoneInput
@@ -666,6 +700,7 @@ export default function AddListing({ navigation }) {
                                     <Input fontFamily={fonts.Poppins_SemiBold} borderWidth={'2'}
                                         borderColor={Colors.secondaryPrimaryColor} rounded={'full'}
                                         value={state.email}
+                                        keyboardType={'email-address'}
                                         onChangeText={(value) => { onInputChange('email', value) }}
                                         minWidth="250" placeholder="Enter your mail address" />
                                 </Box>
@@ -704,14 +739,14 @@ export default function AddListing({ navigation }) {
                                 <Modal.Header>Select Image</Modal.Header>
                                 <Modal.Body>
                                     <Box w={'full'}>
-                                        <Pressable onPress={() => { captureImage('photo'), setModalVisible(false) }}>
+                                        <Pressable onPress={() => { captureImage(), setModalVisible(false) }}>
                                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                                 Take Photo...
                                             </Text>
                                         </Pressable>
                                     </Box>
                                     <Box mt={'2.5'}>
-                                        <Pressable onPress={() => { chooseFile('photo'), setModalVisible(false) }}>
+                                        <Pressable onPress={() => { chooseFile(), setModalVisible(false) }}>
                                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                                 Choose from library...
                                             </Text>
@@ -724,7 +759,6 @@ export default function AddListing({ navigation }) {
                         null
                 }
             </ScrollView >
-
         </View>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Pressable, Dimensions, ToastAndroid, Linking } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -6,7 +6,7 @@ import { HStack, Image, Text, VStack, FlatList, Input, Divider, Stack } from 'na
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
 import Share from 'react-native-share';
-import { map } from 'lodash'
+import { map, isEmpty } from 'lodash'
 import { SliderBox } from "react-native-image-slider-box";
 import Loader from '../components/Loader';
 import { checkInternet } from '../helper/Utils';
@@ -20,7 +20,7 @@ const height = Dimensions.get("window").height
 
 export default function ProductDetails({ navigation, route }) {
     const { userDetail } = useSelector((state) => state.reducerDetail);
-    const [productDetail, setGetProductDetail] = React.useState([])
+    const [productDetail, setGetProductDetail] = useState([]);
     const [textShown, setTextShown] = useState(false); //To show ur remaining Text
     const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
     const toggleNumberOfLines = () => { //To toggle the show text or hide it
@@ -35,16 +35,16 @@ export default function ProductDetails({ navigation, route }) {
         setLengthMore(e.nativeEvent.lines.length >= 3);
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         getProductDetail();
     }, []);
 
-    const getProductDetail = async () => {
+    const getProductDetail = async (product) => {
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
                 lang_id: 1,
-                product_id: route.params.product_id,
+                product_id: product ? product : route.params.product_id,
                 user_id: userDetail.user_id
             }
             var response = await Helper.POST(Urls.productDetail, apiData);
@@ -60,11 +60,10 @@ export default function ProductDetails({ navigation, route }) {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     }
+
     const images = [
         "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        "https://source.unsplash.com/1024x768/?water",
-        "https://source.unsplash.com/1024x768/?girl",
-        "https://source.unsplash.com/1024x768/?tree",
+
     ]
 
     const images1 = [
@@ -166,8 +165,6 @@ export default function ProductDetails({ navigation, route }) {
         },
     ]
 
-    console.log(like, 'likee');
-
     const share = () => {
         Share.open({
             title: '123 Care',
@@ -207,6 +204,8 @@ export default function ProductDetails({ navigation, route }) {
             ]
         },
     ]
+
+
     return (
         <View backgroundColor={Colors.white} style={{ height: height, width: width }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '5%', }} >
@@ -216,7 +215,7 @@ export default function ProductDetails({ navigation, route }) {
                             alt={"Alternate Text"}
                             source={require('../assets/Images/arrow_back.png')} />
                     </Pressable>
-                    <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>{route.params ? route.params.title : ""}</Text>
+                    <Text style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>Product Details</Text>
                 </HStack>
                 <HStack alignSelf={'center'} alignItems={'center'}>
                     <HStack >
@@ -239,7 +238,7 @@ export default function ProductDetails({ navigation, route }) {
                         <HStack >
                             <SliderBox
                                 resizeMode={'cover'}
-                                images={images}
+                                images={productDetail.image ? productDetail.image : images}
                                 autoplay={false}
                                 disableOnPress={false}
                                 dotColor={Colors.secondaryPrimaryColor}
@@ -253,10 +252,11 @@ export default function ProductDetails({ navigation, route }) {
                             />
 
                             {/* <HStack justifyContent={'center'} alignContent={'center'} borderRadius={'2xl'}  >
-                                <Image resizeMode="contain" borderRadius={'xl'} height={'40'}
-                                    alt={"Alternate Text"} width={width / 1.7} alignSelf={'center'} style={{ marginLeft: '20%' }}
-                                    source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
-                            </HStack> */}
+                                    <Image resizeMode="contain" borderRadius={'xl'} height={'40'}
+                                        alt={"Alternate Text"} width={width / 1.1} alignSelf={'center'}
+                                        source={{ uri: "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg" }} />
+                                </HStack>
+                            */}
                         </HStack>
 
                         <VStack mt={'2'} >
@@ -294,7 +294,7 @@ export default function ProductDetails({ navigation, route }) {
                             </HStack>
 
                             <HStack lineHeight={'2.5'} h={'6'} style={{ alignItems: 'center', }}>
-                                <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>4.7</Text>
+                                <Text style={[Styles.titleText, { fontSize: 14, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>{productDetail.average_ratting}</Text>
                                 <Image style={{ height: 10, width: 50, marginLeft: '2%', }}
                                     alt={"Alternate Text"}
                                     source={require('../assets/Images/rating.png')} />
@@ -321,7 +321,7 @@ export default function ProductDetails({ navigation, route }) {
 
                                 <VStack alignItems={'center'}>
                                     <Pressable onPress={() => Linking.openURL('mailto:' + productDetail.member.email)}>
-                                        <Image style={{ height: 45, width: 45, }}
+                                        <Image style={{ height: 40, width: 40, }}
                                             alt={"Alternate Text"}
                                             source={require('../assets/Images/gmail.png')} />
                                     </Pressable>
@@ -364,27 +364,28 @@ export default function ProductDetails({ navigation, route }) {
                         </VStack>
                     </View>
 
-
-                    <Stack p={'3'} style={{ marginTop: '-4%' }}>
+                    {/* addtionalDetaile */}
+                    {/* <Stack p={'3'} style={{ marginTop: '-4%' }}>
                         <HStack>
                             <FlatList
                                 contentContainerStyle={{ width: '100%', }}
-                                data={additionalData}
-                                renderItem={({ item }) => {
+                                data={productDetail.additional_detail}
+                                renderItem={({ item, index }) => {
                                     return (
                                         <HStack style={{ justifyContent: 'flex-start', marginBottom: 5 }}>
                                             <VStack style={{ justifyContent: 'flex-start', width: '30%' }}>
-                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.primaryColor, }}>{item.title}</Text>
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.primaryColor, }}>{item.featured_name}</Text>
                                             </VStack>
                                             <VStack style={{ justifyContent: "flex-end", }}>
                                                 <HStack style={{ alignItems: "flex-start", }}>
-                                                    {map(item.innerData, i => {
+                                                    {map((item.value && item.value), i => {
+                                                        console.log(i.value, 'indexx---');
                                                         return (
                                                             <HStack style={{ width: '35%' }}>
                                                                 <Image mr={2} style={{ height: 10, width: 15, alignSelf: 'center', tintColor: Colors.secondaryPrimaryColor }}
                                                                     alt={"Alternate Text"}
                                                                     source={require('../assets/Images/true.png')} />
-                                                                <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.black, }}>{i.type}</Text>
+                                                                <Text textAlign={'center'} style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 10, color: Colors.black, }}>{i.value}</Text>
                                                             </HStack>)
                                                     })}
                                                 </HStack>
@@ -393,7 +394,7 @@ export default function ProductDetails({ navigation, route }) {
                                     )
                                 }} />
                         </HStack>
-                    </Stack>
+                    </Stack> */}
 
                     <View style={{ padding: 10, marginTop: '-6%' }}>
                         <Divider mt={'1'} />
@@ -415,6 +416,8 @@ export default function ProductDetails({ navigation, route }) {
                         <HStack style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: 5, marginBottom: 5 }} >
                             <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>Rate this</Text>
                             <HStack justifyContent={'space-between'} w={'72'} alignSelf={'center'} mt={'2'}>
+
+
                                 <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
                                     <HStack style={{ alignItems: 'center', }}>
                                         <Image style={{ height: 15, width: 15, marginRight: 5 }}
@@ -424,41 +427,6 @@ export default function ProductDetails({ navigation, route }) {
                                     </HStack>
                                 </View>
 
-                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
-                                    <HStack style={{ alignItems: 'center', }}>
-                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>2</Text>
-                                    </HStack>
-                                </View>
-
-                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
-                                    <HStack style={{ alignItems: 'center', }}>
-                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>3</Text>
-                                    </HStack>
-                                </View>
-
-                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
-                                    <HStack style={{ alignItems: 'center', }}>
-                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>4</Text>
-                                    </HStack>
-                                </View>
-
-                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
-                                    <HStack style={{ alignItems: 'center', }}>
-                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>5</Text>
-                                    </HStack>
-                                </View>
                             </HStack>
                         </HStack>
 
@@ -496,17 +464,19 @@ export default function ProductDetails({ navigation, route }) {
                             showsHorizontalScrollIndicator={false}>
                             {productDetail.similar && productDetail.similar.map((item, key) => (
                                 <View>
-                                    <Image style={{
-                                        width: 50 * 2,
-                                        height: 70,
-                                        margin: 5,
-                                        marginHorizontal: 13,
-                                        resizeMode: 'cover'
-                                    }} borderRadius={'md'} source={{
-                                        uri: item.image_url
-                                    }} alt="Alternate Text" size="md" />
+                                    <Pressable onPress={() => getProductDetail(item.id)}>
+                                        <Image style={{
+                                            width: 50 * 2,
+                                            height: 70,
+                                            margin: 5,
+                                            marginHorizontal: 13,
+                                            resizeMode: 'cover'
+                                        }} borderRadius={'md'} source={{
+                                            uri: item.image_url
+                                        }} alt="Alternate Text" size="md" />
 
-                                    <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
+                                        <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
+                                    </Pressable>
                                 </View>
                             ))}
                         </ScrollView>

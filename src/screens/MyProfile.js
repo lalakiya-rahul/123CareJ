@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Avatar, Box, Checkbox, CheckCircleIcon, Divider, HStack, Image, Input, Select, Text, VStack } from 'native-base';
+import { Avatar, Box, Checkbox, CheckCircleIcon, Modal, HStack, Image, Input, Select, Text, VStack } from 'native-base';
 import fonts from '../constants/fonts';
 import Styles from '../constants/styles';
 import PhoneInput from 'react-native-phone-number-input';
@@ -15,6 +15,7 @@ import { Urls } from '../helper/Urls';
 import { map, isEmpty } from 'lodash'
 import { checkInternet } from '../helper/Utils';
 import { useSelector } from 'react-redux';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 
 const width = Dimensions.get("window").width
@@ -22,13 +23,15 @@ const height = Dimensions.get("window").height
 
 export default function MyProfile({ navigation }) {
     const { userDetail } = useSelector((state) => state.reducerDetail);
-    const [phoneNumber, setPhoneNumber] = React.useState('');
-    const [countryId, setCountryId] = React.useState("");
-    const [statesId, setStatesId] = React.useState("");
-    const [cityId, setCityId] = React.useState("");
-    const [country, setCountry] = React.useState([]);
-    const [states, setStates] = React.useState([]);
-    const [city, setCity] = React.useState([]);
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [countryId, setCountryId] = useState("");
+    const [statesId, setStatesId] = useState("");
+    const [cityId, setCityId] = useState("");
+    const [country, setCountry] = useState([]);
+    const [states, setStates] = useState([]);
+    const [city, setCity] = useState([]);
+    const [filePath, setFilePath] = useState([]);
+    const [isModalVisible, setModalVisible] = useState(false);
     const phoneInput = React.useRef(null);
 
     const initState = {
@@ -36,10 +39,11 @@ export default function MyProfile({ navigation }) {
         username: '',
         email: '',
         mobile_no: '',
-        profile: ''
+        profile: '',
+        imageName: ''
     }
-    const [state, setState] = React.useState(initState);
-    const [loading, setLoding] = React.useState(false);
+    const [state, setState] = useState(initState);
+    const [loading, setLoding] = useState(false);
 
     const onInputChange = (field, value) => {
         setState({
@@ -53,34 +57,60 @@ export default function MyProfile({ navigation }) {
             navigation.navigate('Login')
         }
         getData();
-        getCountry(countryId);
-        getState();
-        return () => {
-            console.log('This will be logged on unmount');
-        };
+        getCountry();
+        setTimeout(() => {
+            getState(countryId);
+        }, 1000);
     }, [])
+
+    useEffect(() => {
+        setTimeout(() => {
+            getState(countryId);
+        }, 1000);
+    }, [countryId])
+
+    useEffect(() => {
+        setTimeout(() => {
+            getCity(statesId);
+        }, 1000);
+    }, [statesId])
+
+
 
     const updateProfile = async () => {
         if (checkInternet()) {
             setLoding(true);
             const userData = await AsyncStorage.getItem('userData');
-            console.log(userData, 'profile page');
-            const apiData = {
-                user_id: userData.user_id,
-                token: JSON.parse(userData).token,
-                profile: JSON.parse(userData).profile,
-                username: state.username,
-                name: state.name,
-                email: state.email,
-                mobile_no: state.mobile_no,
-                country: countryId,
-                state: statesId,
-                city: cityId,
-            }
-            var response = await Helper.POST(Urls.updateProfile, apiData);
-            console.log(response, 'profile save');
+
+            var formdata = new FormData();
+            formdata.append('user_id', JSON.parse(userData).user_id);
+            formdata.append('token', JSON.parse(userData).token);
+            formdata.append('lang_id', 1);
+            formdata.append('mobile_country_code', 91);
+            formdata.append('username', state.username);
+            formdata.append('email', state.email);
+            formdata.append('name', state.name);
+            formdata.append('mobile_no', state.mobile_no);
+            formdata.append('country', countryId);
+            formdata.append('state', statesId);
+            formdata.append('city', cityId);
+            var postImage = filePath;
+            var uri = '' + postImage;
+            var arr = uri.split('/');
+            var name = arr[arr.length - 1];
+
+            formdata.append(
+                'profile', filePath ? {
+                    uri: Platform.OS === 'android' ? postImage : postImage.replace('file://', ''),
+                    name: name,
+                    type: 'image/jpeg',
+                }
+                : '',
+            );
+            console.log(formdata, 'data--');
+            var response = await Helper.POST(Urls.updateProfile, formdata);
+            console.log(response.data, 'update data');
             if (response.error === '0') {
-                console.log(response, 'profile save pchi');
                 await AsyncStorage.setItem('userData', JSON.stringify(response.data));
                 setLoding(false);
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -92,11 +122,10 @@ export default function MyProfile({ navigation }) {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     }
-
-    console.log(state);
     const getData = async () => {
         setLoding(true);
         const userData = await AsyncStorage.getItem('userData');
+        console.log(userData, 'userData--');
         setState({
             ...state,
             name: JSON.parse(userData).name,
@@ -108,16 +137,20 @@ export default function MyProfile({ navigation }) {
         setCountryId(JSON.parse(userData).country)
         setStatesId(JSON.parse(userData).state)
         setCityId(JSON.parse(userData).city)
+        setFilePath(JSON.parse(userData).profile)
         setLoding(false);
 
+        if (JSON.parse(userData).country) {
+            getState(countryId);
+        }
     }
-
     const getCountry = async () => {
         if (checkInternet()) {
             setLoding(true);
             var response = await Helper.GET(Urls.getCountry);
             if (response.error === '0') {
                 setCountry(response.data);
+                getState(countryId);
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -129,19 +162,16 @@ export default function MyProfile({ navigation }) {
     }
 
     const getState = async (itemValue) => {
+        console.log(itemValue, 'itemValue-1-2');
         if (checkInternet()) {
-            setLoding(true);
             const apiData = {
                 country_id: itemValue,
             }
             var response = await Helper.POST(Urls.getState, apiData);
             if (response.error === '0') {
                 setStates(response.data)
-                getCity();
-                setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                setLoding(false);
             }
         } else {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
@@ -150,22 +180,140 @@ export default function MyProfile({ navigation }) {
 
     const getCity = async (itemValue) => {
         if (checkInternet()) {
-            setLoding(true);
+
             const apiData = {
                 state_id: itemValue,
             }
             var response = await Helper.POST(Urls.getCity, apiData);
             if (response.error === '0') {
                 setCity(response.data)
-                setLoding(false);
+
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                setLoding(false);
+
             }
         } else {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     }
+
+    const requestCameraPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message: 'App needs camera permission',
+                    },
+                );
+                // If CAMERA Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                return false;
+            }
+        } else return true;
+    };
+
+    const requestExternalWritePermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'External Storage Write Permission',
+                        message: 'App needs write permission',
+                    },
+                );
+                // If WRITE_EXTERNAL_STORAGE Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                alert('Write permission err', err);
+            }
+            return false;
+        } else return true;
+    };
+
+    const captureImage = async (type) => {
+        let options = {
+            mediaType: type,
+            maxWidth: 300,
+            maxHeight: 550,
+            quality: 1,
+            videoQuality: 'low',
+            durationLimit: 30, //Video max duration in seconds
+            saveToPhotos: true,
+        };
+        let isCameraPermitted = await requestCameraPermission();
+        let isStoragePermitted = await requestExternalWritePermission();
+        if (isCameraPermitted && isStoragePermitted) {
+            launchCamera(options, (response) => {
+                if (response.didCancel) {
+                    alert('User cancelled camera picker');
+                    return;
+                } else if (response.errorCode == 'camera_unavailable') {
+                    alert('Camera not available on device');
+                    return;
+                } else if (response.errorCode == 'permission') {
+                    alert('Permission not satisfied');
+                    return;
+                } else if (response.errorCode == 'others') {
+                    alert(response.errorMessage);
+                    return;
+                }
+                console.log('base64 -> ', response.base64);
+                console.log('uri -> ', response.uri);
+                console.log('width -> ', response.width);
+                console.log('height -> ', response.height);
+                console.log('fileSize -> ', response.fileSize);
+                console.log('type -> ', response.type);
+                console.log('fileName -> ', response.fileName);
+                setFilePath(response.assets[0].uri);
+                setState({
+                    ...state,
+                    imageName: response.assets[0].fileName
+                })
+            });
+        }
+    };
+    const chooseFile = (type) => {
+        let options = {
+            mediaType: type,
+            maxWidth: 300,
+            maxHeight: 550,
+            quality: 1,
+        };
+        launchImageLibrary(options, (response) => {
+            if (response.didCancel) {
+                alert('User cancelled camera picker');
+                return;
+            } else if (response.errorCode == 'camera_unavailable') {
+                alert('Camera not available on device');
+                return;
+            } else if (response.errorCode == 'permission') {
+                alert('Permission not satisfied');
+                return;
+            } else if (response.errorCode == 'others') {
+                alert(response.errorMessage);
+                return;
+            }
+            // console.log('base64 -> ', response.base64);
+            // console.log('uri -> ', response.uri);
+            // console.log('width -> ', response.width);
+            // console.log('height -> ', response.height);
+            // console.log('fileSize -> ', response.fileSize);
+            // console.log('type -> ', response.type);
+            // console.log('fileName -> ', response.fileName);
+            setFilePath(response.assets[0].uri);
+            setState({
+                ...state,
+                imageName: response.assets[0].fileName
+            })
+        });
+    };
+
 
     return (
         <View>
@@ -198,15 +346,17 @@ export default function MyProfile({ navigation }) {
                             <Image
                                 size={110} borderRadius={100}
                                 alt="Alternate Text"
-                                source={{ uri: 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg' }} />
+                                source={{ uri: state.profile && state.profile ? state.profile : 'https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg' }} />
                             <VStack style={{
                                 height: 35, width: 35, borderRadius: 33 / 1, bottom: 2, right: 0, justifyContent: 'center',
                                 backgroundColor: Colors.primaryColor, alignItems: 'center', position: 'absolute',
                             }}>
-                                <Image
-                                    style={{ height: 22, width: 22, alignSelf: 'center', tintColor: Colors.white }}
-                                    alt="Alternate Text"
-                                    source={require('../assets/Images/camera.png')} />
+                                <Pressable onPress={() => setModalVisible(true)}>
+                                    <Image
+                                        style={{ height: 22, width: 22, alignSelf: 'center', tintColor: Colors.white }}
+                                        alt="Alternate Text"
+                                        source={require('../assets/Images/camera.png')} />
+                                </Pressable>
 
                             </VStack>
 
@@ -301,7 +451,7 @@ export default function MyProfile({ navigation }) {
 
                         <HStack mt={'2'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                             <Box maxW="full">
-                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={countryId}
+                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={countryId & countryId}
                                     minWidth="full" accessibilityLabel="Select Country" placeholder="Select Country" _selectedItem={{
                                         bg: "teal.600",
                                         endIcon: <CheckCircleIcon size="5" />
@@ -317,7 +467,7 @@ export default function MyProfile({ navigation }) {
 
                         <HStack mt={'2'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                             <Box maxW="full">
-                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={statesId}
+                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={statesId && statesId}
                                     minWidth="full" accessibilityLabel="Select State" placeholder="Select State" _selectedItem={{
                                         bg: "teal.600",
                                         endIcon: <CheckCircleIcon size="5" />
@@ -333,7 +483,7 @@ export default function MyProfile({ navigation }) {
 
                         <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                             <Box maxW="full">
-                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={cityId}
+                                <Select fontFamily={fonts.Poppins_SemiBold} rounded={'full'} borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor} selectedValue={cityId & cityId}
                                     minWidth="full" accessibilityLabel="Select City" placeholder="Select City" _selectedItem={{
                                         bg: "teal.600",
                                         endIcon: <CheckCircleIcon size="5" />
@@ -355,7 +505,33 @@ export default function MyProfile({ navigation }) {
                         />
 
                     </VStack>
-
+                    {
+                        isModalVisible ?
+                            <Modal isOpen={isModalVisible} onClose={() => setModalVisible(false)} avoidKeyboard justifyContent="center" size="lg">
+                                <Modal.Content>
+                                    <Modal.CloseButton />
+                                    <Modal.Header>Select Image</Modal.Header>
+                                    <Modal.Body>
+                                        <Box w={'full'}>
+                                            <Pressable onPress={() => { captureImage('photo'), setModalVisible(false) }}>
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
+                                                    Take Photo...
+                                                </Text>
+                                            </Pressable>
+                                        </Box>
+                                        <Box mt={'2.5'}>
+                                            <Pressable onPress={() => { chooseFile('photo'), setModalVisible(false) }}>
+                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
+                                                    Choose from library...
+                                                </Text>
+                                            </Pressable>
+                                        </Box>
+                                    </Modal.Body>
+                                </Modal.Content>
+                            </Modal>
+                            :
+                            null
+                    }
                     {/* <Text style={[Styles.titleText, { marginTop: '2%' }]}>Settings</Text>
                     <VStack mt={'4'} style={{ alignItems: 'center' }}>
                        

@@ -66,39 +66,57 @@ export default function MyAds({ navigation }) {
             'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
         },
     ]
-    const [isOpen, setIsOpen] = React.useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     const onClose = () => setIsOpen(false);
-    const cancelRef = React.useRef(null);
+    const cancelRef = useRef(null);
 
-    const [getMyAds, setGetMyAds] = React.useState([])
-    const [loading, setLoding] = React.useState(false);
+    const [getMyAds, setGetMyAds] = useState([])
+    const [loading, setLoding] = useState(false);
+    const [page, setPage] = useState(1);
+    const [isListEnd, setIsListEnd] = useState(false);
+
+
 
     useEffect(() => {
-        (async () => getMyAdsData())();
+        // (async () => getMyAdsData())();
+        getMyAdsData()
     }, [])
 
 
-    const getMyAdsData = async () => {
-        if (checkInternet()) {
-            setLoding(true);
+    const onChangeValue = (item, index, newValue) => {
+        setDalete("")
+    }
 
-            const apiData = {
-                user_id: userDetail.user_id,
-                token: userDetail.token
-            }
-            var response = await Helper.POST(Urls.myAds, apiData);
-            if (response.error === '0') {
-                setGetMyAds(response.data)
-                setLoding(false);
+
+    console.log(getMyAds, 'getMyAds--');
+
+    const getMyAdsData = async () => {
+        if (!loading && !isListEnd) {
+            if (checkInternet()) {
+                setLoding(true);
+                const apiData = {
+                    lang_id: 1,
+                    user_id: userDetail.user_id,
+                    page: page,
+                    token: userDetail.token
+                }
+                var response = await Helper.POST(Urls.myAds, apiData);
+                if (response.error === '0') {
+                    setPage(page + 1);
+                    setGetMyAds([...getMyAds, ...response.data])
+                    setLoding(false);
+                } else {
+                    setIsListEnd(true);
+                    ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                    setLoding(false);
+                }
             } else {
-                ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                setLoding(false);
+                ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
             }
-        } else {
-            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
     }
+
     return (
         <View>
             {/* <CommonHeader LeftText={'Welcome, Richa'} backIcon={true} titleText={'My Ads'} onPress={() => navigation.goBack()} /> */}
@@ -157,10 +175,9 @@ export default function MyAds({ navigation }) {
                 </HStack>
                 <Loader loading={loading} />
                 <FlatList
-                    contentContainerStyle={{ paddingBottom: '20%' }}
+                    contentContainerStyle={{ paddingBottom: '30%' }}
                     data={getMyAds}
-                    renderItem={({ item }) => {
-                        console.log(item.image_url, 'item.image_url');
+                    renderItem={({ item, index }) => {
                         return (
                             <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
                                 <HStack style={[styles.card,
@@ -173,7 +190,7 @@ export default function MyAds({ navigation }) {
                                     <HStack space={4}  >
 
                                         <HStack justifyContent={'center'} alignItems={'center'}>
-                                            <Checkbox mr={'2.5'} value="test" accessibilityLabel="checkbox" />
+                                            <Checkbox mr={'2.5'} value={[item.id]} onChange={newValue => onChangeValue(item.id, index, newValue)} accessibilityLabel="checkbox" />
                                             <Image style={{
                                                 width: 80,
                                                 height: 80,
@@ -199,30 +216,15 @@ export default function MyAds({ navigation }) {
                                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.city_name}</Text>
                                             </HStack>
 
-                                            <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', marginTop: -8 }}>
-                                                <Image style={{ height: 9, width: 12, tintColor: Colors.grey }}
-                                                    alt={"Alternate Text"}
-                                                    source={require('../assets/Images/eye.png')} />
-                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>42</Text>
 
-
-                                                {/* <Text style={{ fontFamily: fonts.Poppins_Bold, fontSize: 8, color: Colors.grey, marginLeft: '40%' }}>₹</Text>
-                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>--</Text> */}
-                                            </HStack>
                                             <HStack space={2}>
                                                 <View style={styles.boxStyle}>
                                                     <Pressable onPress={() => navigation.navigate('AddListing')}>
-                                                        <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                                                        <HStack style={{ alignItems: 'center', justifyContent: 'space-between', }}>
                                                             <Image alt='edit' source={(require('../assets/Images/edit.png'))} style={{ height: 15, width: 15, marginRight: 5, tintColor: 'white' }} />
-                                                            <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Edit</Text>
+                                                            <Text style={[Styles.titleText, { fontSize: 12, color: 'white', }]}>Edit</Text>
                                                         </HStack>
                                                     </Pressable>
-                                                </View>
-                                                <View style={styles.boxStyle}>
-                                                    <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                                                        <Image alt='eye' source={(require('../assets/Images/eye.png'))} style={{ height: 12, width: 17, marginRight: 5, tintColor: 'white' }} />
-                                                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Offline</Text>
-                                                    </HStack>
                                                 </View>
 
                                                 {/* <View style={styles.boxStyle}>
@@ -286,9 +288,10 @@ const styles = StyleSheet.create({
     boxStyle: {
         backgroundColor: Colors.primaryColor,
         alignItems: 'center',
-        borderRadius: 3,
+        borderRadius: 15,
         // borderColor: Colors.smallText,
-        paddingHorizontal: 10,
+        paddingHorizontal: 14,
+        paddingVertical: 2
 
     }
 });

@@ -12,6 +12,7 @@ import { Urls } from '../helper/Urls';
 
 import { checkInternet, displayFromNow } from '../helper/Utils';
 import moment from 'moment';
+import NoData from '../components/NoData';
 
 export default function Notification({ navigation }) {
     const { userDetail } = useSelector((state) => state.reducerDetail);
@@ -75,6 +76,7 @@ export default function Notification({ navigation }) {
                     <FlatList
                         data={getNotificationData}
                         showsVerticalScrollIndicator={false}
+                        ListEmptyComponent={<NoData />}
                         renderItem={({ item }) => {
                             return (
                                 <VStack style={styles.stepCard}>

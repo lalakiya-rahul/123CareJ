@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, Dimensions, Pressable, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Button, HStack, Image, Input, Text, VStack } from 'native-base';
+import { Box, Button, CheckIcon, HStack, Icon, Image, Input, Select, Text, VStack } from 'native-base';
 import fonts from '../constants/fonts';
 import CommonHeader from '../components/Header';
 import CommonChip from '../components/Chip';
@@ -11,259 +11,180 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Styles from '../constants/styles';
 import Modal from "react-native-modal";
 import CommonButton from '../components/Button';
+import { map } from 'lodash'
 import { checkInternet } from '../helper/Utils';
 import { Helper } from '../helper/Helper';
 import { Urls } from '../helper/Urls';
 import Loader from '../components/Loader';
 import { ActivityIndicator } from '@react-native-material/core';
+import { useSelector } from 'react-redux';
+import NoData from '../components/NoData';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 export default function Product({ navigation, route }) {
-    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
-    const [isModalVisible, setModalVisible] = useState(false);
+    const { userDetail } = useSelector((state) => state.reducerDetail);
     const [productViewAll, setGetProductViewAll] = useState([]);
-    const [categoryViewAll, setGetCategoryViewAll] = useState([]);
 
     const [loading, setLoding] = useState(false);
     const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(1);
     const [isListEnd, setIsListEnd] = useState(false);
-    const data = [
-        {
-            'id': 1,
-            'title': 'Test image',
-            'name': 'John O’Furniture',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023"
-        },
-        {
-            'id': 2,
-            'title': 'Test image',
-            'name': 'Olive Yew',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 3,
-            'title': 'Test image',
-            'name': 'Aida Bugg',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 4,
-            'title': 'Test image',
-            'name': 'Peg Legge',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 5,
-            'title': 'Test image',
-            'name': 'Liz Erd',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 6,
-            'title': 'Test image',
-            'name': 'A. Mused',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 7,
-            'title': 'Test image',
-            'name': 'Ray O’Sun',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 8,
-            'title': 'Test image',
-            'name': 'Rita Book',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 9,
-            'title': 'Test image',
-            'name': 'Anne Teak',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 10,
-            'title': 'Test image',
-            'name': 'Anita Bath',
-            'city_name': "Ahmedabad",
-            'created_at': "02 01st, 2023",
-            'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-    ]
-    const data2 = [
-        {
-            'id': 1,
-            'title': 'Narayana Hospital',
-            'name': 'John O’Furniture',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 2,
-            'title': 'SVP Hospital',
-            'name': 'Olive Yew',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 3,
-            'title': 'Sterling Hospital',
-            'name': 'Aida Bugg',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 4,
-            'title': 'Karnavati Hospital',
-            'name': 'Peg Legge',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 5,
-            'title': 'Long Life Hospital',
-            'name': 'Liz Erd',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 6,
-            'title': 'Zydus Hospitals',
-            'name': 'A. Mused',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 7,
-            'title': 'Saviour Hospital',
-            'name': 'Ray O’Sun',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 8,
-            'title': 'VS Hospital',
-            'name': 'Rita Book',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 9,
-            'title': 'Mansi Hospital',
-            'name': 'Anne Teak',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-        {
-            'id': 10,
-            'title': 'Nidhi  Hospital',
-            'name': 'Anita Bath',
-            'image_url': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-            'dummyText': 'An oxygen cylinder is a storage container which supplies oxygen to a patient through a surgical mask over the nasal cannula.'
-        },
-    ]
+    const [sorting, setSorting] = React.useState("");
+    const [getCategoryData, setCategoryData] = useState([]);
+    const [CategorieId, setCategorieId] = useState([]);
+
 
     useEffect(() => {
-        if (route.params.viewAll) {
-            getProductViewAll();
-        } else {
-            getCategoryViewAll();
-        }
+        getCategory()
+        getProductViewAll(page, sorting, CategorieId, state.search);
+
     }, []);
-    console.log(route.params, 'route.params');
-    const getCategoryViewAll = async () => {
-        if (!loading && !isListEnd) {
-            console.log('getData12');
-            if (checkInternet()) {
-                setLoding(true);
-                const apiData = {
-                    lang_id: 1,
-                    category_id: route.params.category_id
-                }
-                var response = await Helper.POST(Urls.categoryViewAll, apiData);
-                if (response.error === '0') {
-                    console.log(response, 'response---');
-                    if (response.data.length > 0) {
-                        setPage(page + 1);
-                        console.log(page, 'pagee');
-                        // After the response increasing the offset
-                        setGetCategoryViewAll([...categoryViewAll, ...response.data]);
-                        setLoding(false);
-                    } else {
-                        setIsListEnd(true);
-                        ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                        setLoding(false);
-                    }
-                } else {
-                    ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
-                }
+
+    const initState = {
+        search: '',
+    }
+    const [state, setState] = React.useState(initState);
+
+    const onInputChange = (field, value) => {
+        setState({
+            ...state,
+            [field]: value,
+        })
+    }
+
+    const getCategory = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                lang_id: 1,
+                user_id: userDetail.user_id,
+            };
+            var response = await Helper.POST(Urls.homePage, apiData);
+            if (response.error === '0') {
+                setCategoryData(response.data);
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
             }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
+
+    const getProductViewAll = async (page, sorting, CategorieId, search) => {
+        // if (!loading && !isListEnd) {
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                page: page ?? 1,
+                sort: sorting,
+                category_id: CategorieId,
+                search: search,
+                lang_id: 1,
+                user_id: userDetail.user_id,
+                token: userDetail.token,
+
+            }
+            console.log(apiData, 'paiDaya');
+            var response = await Helper.POST(Urls.productListViewAll, apiData);
+            console.log(response, 'response---getProductViewAll');
+            if (response.error === '0') {
+                // if (response.data.length > 0) {
+                //     setPage(page + 1);
+                //     console.log(page, 'pagee');
+                // After the response increasing the offset
+                setPage(page + 1);
+                setGetProductViewAll(response.data);
+                setLoding(false);
+
+            } else {
+                // setIsListEnd(true);
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+
+        } else {
+            // ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+            setLoding(false);
         }
     }
 
-    const getProductViewAll = async () => {
+
+
+    const loadMore = async () => {
         if (!loading && !isListEnd) {
-            console.log('getData');
             if (checkInternet()) {
                 setLoding(true);
                 const apiData = {
                     lang_id: 1,
-                    page: page
+                    user_id: userDetail.user_id,
+                    token: userDetail.token,
+                    page: page,
+                    sort: sorting,
+                    category_id: CategorieId,
+                    search: state.search
                 }
+                console.log(apiData, 'paiDaya');
                 var response = await Helper.POST(Urls.productListViewAll, apiData);
+                console.log(response, 'response---getProductViewAll');
                 if (response.error === '0') {
-                    console.log(response, 'response---');
                     if (response.data.length > 0) {
                         setPage(page + 1);
                         console.log(page, 'pagee');
                         // After the response increasing the offset
                         setGetProductViewAll([...productViewAll, ...response.data]);
                         setLoding(false);
+
                     } else {
                         setIsListEnd(true);
                         ToastAndroid.show(response.message, ToastAndroid.SHORT);
                         setLoding(false);
                     }
+
                 } else {
-                    ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+                    // ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+                    setLoding(false);
                 }
+
+            } else {
+                // ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+                setLoding(false);
             }
+        } else {
+            setLoding(false);
         }
     }
 
+
+    const favoritesApi = async (product_id) => {
+        console.log(product_id, 'latest product_id');
+        console.log(userDetail.user_id, userDetail.token, 'latest product_id');
+        if (checkInternet()) {
+            // setLoding(true);
+            const apiData = {
+                user_id: userDetail.user_id,
+                token: userDetail.token,
+                product_id: product_id
+            }
+            var response = await Helper.POST(Urls.favourite, apiData);
+            if (response.error === '0') {
+                console.log(response, 'response----favoritesApi');
+                // getCategoryViewAll()
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                // setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                // setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
+
     return (
+
         <View backgroundColor={Colors.white} style={{ height: height, width: width, }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '5%', }} >
                 <HStack alignItems={'center'} >
@@ -272,7 +193,7 @@ export default function Product({ navigation, route }) {
                             alt={"Alternate Text"}
                             source={require('../assets/Images/arrow_back.png')} />
                     </Pressable>
-                    <Text numberOfLines={1} style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>{route.params ? route.params.title : ""}</Text>
+                    <Text numberOfLines={1} style={[Styles.titleText, { color: Colors.black, marginLeft: '4%', fontFamily: fonts.Poppins_SemiBold, fontSize: 18 }]}>Product</Text>
                 </HStack>
 
                 <HStack alignSelf={'center'} alignItems={'center'}>
@@ -291,7 +212,10 @@ export default function Product({ navigation, route }) {
                 <HStack style={[styles.titleHeaderView, { marginBottom: 8, }]}>
 
                     <VStack w={'100%'} space={2} alignSelf="center" >
-                        <Input h={'10'} placeholder="Search " fontFamily={fonts.Poppins_Medium}
+                        <Input h={'10'} placeholder="Search "
+                            onChangeText={(value) => { onInputChange('search', value), getProductViewAll(1, sorting, CategorieId, value) }}
+                            value={state.search}
+                            fontFamily={fonts.Poppins_Medium}
                             variant="rounded" fontSize="12" rounded={'full'} borderColor={Colors.primaryColor}
                             InputLeftElement={<Image ml={'4'}
                                 alt={"Alternate Text"} size={"4"}
@@ -303,13 +227,72 @@ export default function Product({ navigation, route }) {
                 </HStack>
                 <View style={{ marginTop: '1%', marginBottom: '2%' }}>
                     <HStack alignItems={'center'} justifyContent={'space-between'} >
-                        <CommonChip
+                        {/* <CommonChip
                             label={"Sort: Newest"}
-                            source={require('../assets/Images/sort.png')} />
+                            source={require('../assets/Images/sort.png')} /> */}
 
-                        <CommonChip
+                        {/* <CommonChip
+                            label={"Sort: Newest"}
+                            source={require('../assets/Images/sort.png')} /> */}
+
+                        <Box  >
+                            <Select fontFamily={fonts.Poppins_SemiBold}
+                                style={{ alignItems: 'center', marginLeft: 12, }}
+                                selectedValue={sorting}
+                                minWidth="100"
+                                maxHeight={"10"}
+                                rounded={'full'}
+                                borderColor={Colors.chipColor}
+                                borderWidth={'1'}
+                                textAlign={'center'}
+                                justifyItems={'center'}
+                                dropdownIcon={<Icon
+                                    ios="home"
+                                    android="home"
+                                    style={{ fontSize: 5, color: 'red' }}
+                                />}
+                                placeholderTextColor={Colors.black}
+
+                                accessibilityLabel="Sort 🝖" placeholder="Sort 🝖" _selectedItem={{
+                                    bg: Colors.primaryColor
+                                }} onValueChange={(itemValue) => { setSorting(itemValue), getProductViewAll(1, itemValue, CategorieId, state.search) }}>
+                                <Select.Item label="Latest" value="1" />
+                                <Select.Item label="15 day" value="2" />
+                                <Select.Item label="More than 30 days" value="3" />
+                            </Select>
+                        </Box>
+
+                        <Box  >
+                            <Select fontFamily={fonts.Poppins_SemiBold}
+                                style={{ alignItems: 'center', marginLeft: 12, }}
+                                minWidth="100"
+                                maxHeight={"10"}
+                                rounded={'full'}
+                                borderColor={Colors.chipColor}
+                                borderWidth={'1'}
+                                textAlign={'center'}
+                                justifyItems={'center'}
+                                dropdownIcon={<Icon
+                                    ios="filter"
+                                    android="filter"
+                                    style={{ fontSize: 5, color: 'red' }}
+                                />}
+                                placeholderTextColor={Colors.black}
+                                selectedValue={CategorieId}
+                                accessibilityLabel="Filter" placeholder="Filter" _selectedItem={{
+                                    bg: Colors.primaryColor
+                                }} onValueChange={itemValue => { setCategorieId(itemValue), getProductViewAll(1, sorting, itemValue, state.search) }}>
+                                {map(getCategoryData.category && getCategoryData.category, i => {
+                                    return (
+                                        <Select.Item key={i.category_id} label={i.title} value={i.category_id} />
+                                    )
+                                })}
+                            </Select>
+                        </Box>
+
+                        {/* <CommonChip
                             label={"Filter(3)"}
-                            source={require('../assets/Images/filter.png')} />
+                            source={require('../assets/Images/filter.png')} /> */}
 
                         <CommonChip
                             label={"Near Me"}
@@ -319,9 +302,10 @@ export default function Product({ navigation, route }) {
 
                 <FlatList
                     contentContainerStyle={{ paddingBottom: '50%', }}
-                    data={route.params.viewAll ? productViewAll : categoryViewAll}
-                    onEndReached={getProductViewAll}
+                    data={productViewAll}
+                    onEndReached={loadMore}
                     onEndReachedThreshold={0.5}
+                    ListEmptyComponent={<NoData />}
                     renderItem={({ item }) => {
                         return (
                             <View style={{ backgroundColor: Colors.white, padding: 5, }}>
@@ -346,21 +330,27 @@ export default function Product({ navigation, route }) {
 
                                             <VStack style={{ width: '68%' }}>
                                                 <HStack justifyContent={'space-between'} >
-                                                    <Text numberOfLines={2} style={[Styles.titleText, { color: Colors.black, width: '80%', }]}>{item.title}</Text>
-                                                    <Image style={{
-                                                        width: 25,
-                                                        height: 25,
-                                                        resizeMode: 'cover',
-                                                    }} source={item.id === 2 ? require('../assets/Images/fevoritesRed.png') : require('../assets/Images/10.jpg')} alt="Alternate Text" ></Image>
+                                                    <Text numberOfLines={1} style={[Styles.titleText, { color: Colors.black, width: '80%', }]}>{item.title}</Text>
+
+                                                    {/* <Pressable onPress={() => { favoritesApi(item.id) }}>
+                                                            {item.is_favourite === "1" ?
+                                                                <Image style={{ width: 25, height: 25, resizeMode: 'cover', }}
+                                                                    source={require('../assets/Images/fevoritesRed.png')} alt="Alternate Text" />
+                                                                : */}
+                                                    <Image style={{ width: 25, height: 25, resizeMode: 'cover', }}
+                                                        source={require('../assets/Images/10.jpg')} alt="Alternate Text" />
+                                                    {/* }
+
+                                                        </Pressable> */}
 
                                                 </HStack>
-                                                <HStack h={'5'} alignItems={'center'}  >
+                                                <HStack h={'5'} alignItems={'center'} style={{ marginTop: '-1%' }}>
                                                     <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/pin1.png')} />
                                                     <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>{item.city_name}</Text>
                                                 </HStack>
-                                                <HStack style={{ justifyContent: 'flex-start', alignItems: 'center', }}>
+                                                <HStack style={{ justifyContent: 'flex-start', alignItems: 'center', marginTop: '-1%' }}>
                                                     <Image style={{ height: 8, width: 40, marginLeft: '2%', tintColor: Colors.primaryColor }}
                                                         alt={"Alternate Text"}
                                                         source={require('../assets/Images/rating.png')} />
@@ -369,15 +359,21 @@ export default function Product({ navigation, route }) {
 
 
                                                 <HStack alignItems={'flex-end'} justifyContent={'flex-end'} space={1} mt={'3'}>
-                                                    <Image style={styles.imageIconSize}
-                                                        alt={"Alternate Text"}
-                                                        source={require('../assets/Images/call.png')} />
-                                                    <Image ml={'4'} style={styles.imageIconSize}
-                                                        alt={"Alternate Text"}
-                                                        source={require('../assets/Images/gmail.png')} />
-                                                    <Image ml={'4'} style={styles.imageIconSize}
-                                                        alt={"Alternate Text"}
-                                                        source={require('../assets/Images/greenWp.png')} />
+                                                    <Pressable onPress={() => Linking.openURL(`tel:${item.member.mobile_no}`)}>
+                                                        <Image style={styles.imageIconSize}
+                                                            alt={"Alternate Text"}
+                                                            source={require('../assets/Images/call.png')} />
+                                                    </Pressable>
+                                                    <Pressable onPress={() => Linking.openURL('mailto:' + item.member.email)}>
+                                                        <Image ml={'4'} style={styles.imageIconSize}
+                                                            alt={"Alternate Text"}
+                                                            source={require('../assets/Images/gmail.png')} />
+                                                    </Pressable>
+                                                    <Pressable onPress={() => Linking.openURL('whatsapp://send?text=' + "Hello " + '&phone=91' + item.member.mobile_no)}>
+                                                        <Image ml={'4'} style={styles.imageIconSize}
+                                                            alt={"Alternate Text"}
+                                                            source={require('../assets/Images/greenWp.png')} />
+                                                    </Pressable>
                                                 </HStack>
                                             </VStack>
                                         </HStack>

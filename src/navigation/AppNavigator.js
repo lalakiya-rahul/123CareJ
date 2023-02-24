@@ -9,7 +9,7 @@ import BottomTab from '../navigation/BottomTab';
 import Product from '../screens/Product';
 import Message from '../screens/Message';
 import ProductDetails from '../screens/ProductDetails';
-import HospitalDetails from '../screens/HospitalDetails';
+import CategoryDetails from '../screens/CategoryDetails';
 import MyProfile from '../screens/MyProfile';
 import MyAds from '../screens/MyAds';
 import Fevorites from '../screens/Fevorites';
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../reducer/actions';
 import Notification from '../screens/Notification';
 import ChatDetails from '../screens/ChatDetails';
+import Category from '../screens/Category';
 
 
 const LoginStack = createNativeStackNavigator()
@@ -50,9 +51,10 @@ function BottomStackNavigation() {
                 <LoginStack.Screen name="Login" component={Login} />
                 <BottomStack.Screen name="BottomTab" component={BottomTab} />
                 <BottomStack.Screen name="Product" component={Product} />
-                <BottomStack.Screen name="Notification" component={Notification} />
+                <BottomStack.Screen name="Category" component={Category} />
                 <BottomStack.Screen name="ProductDetails" component={ProductDetails} />
-                <BottomStack.Screen name="HospitalDetails" component={HospitalDetails} />
+                <BottomStack.Screen name="CategoryDetails" component={CategoryDetails} />
+                <BottomStack.Screen name="Notification" component={Notification} />
                 <BottomStack.Screen name="Message" component={Message} />
                 <BottomStack.Screen name="ChatDetails" component={ChatDetails} />
                 <BottomStack.Screen name="MyProfile" component={MyProfile} />

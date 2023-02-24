@@ -26,8 +26,10 @@ export const Urls = {
     productDetail: '/productDetail',
 
     categoryViewAll: '/hospitals',
+    categoryDetail: '/hospitalDetails',
 
     myAds: '/member/product',
+    myAdsEdit: '/member/product/edit',
 
     // profile
     updateProfile: '/member/profile/update',
@@ -38,7 +40,8 @@ export const Urls = {
 
     //offers
     offerList: '/offer-list',
-    favouriteList: '/member/favourite/favourite-list'
+    favouriteList: '/member/favourite/favourite-list',
+    favourite: '/member/favourite/add',
 
 
 }

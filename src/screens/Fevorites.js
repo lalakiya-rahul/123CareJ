@@ -12,6 +12,7 @@ import { Urls } from '../helper/Urls';
 import { checkInternet } from '../helper/Utils';
 import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
+import NoData from '../components/NoData';
 
 
 const width = Dimensions.get("window").width
@@ -151,6 +152,7 @@ export default function Fevorites({ navigation }) {
                 <FlatList
                     contentContainerStyle={{ paddingBottom: '20%' }}
                     data={getFevorites}
+                    ListEmptyComponent={<NoData />}
                     renderItem={({ item }) => {
                         return (
                             <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
