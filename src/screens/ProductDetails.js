@@ -13,6 +13,7 @@ import { checkInternet } from '../helper/Utils';
 import { Helper } from '../helper/Helper';
 import { Urls } from '../helper/Urls';
 import { useSelector } from 'react-redux';
+import { ActivityIndicator } from '@react-native-material/core';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -26,8 +27,11 @@ export default function ProductDetails({ navigation, route }) {
     const toggleNumberOfLines = () => { //To toggle the show text or hide it
         setTextShown(!textShown);
     }
+    // const like = require('../assets/Images/fevoritesRed.png');
+    // const deslike = require('../assets/Images/10.png')
 
-    const [like, setLike] = useState(true);
+    const like = { uri: 'https://parshwatechnologies.info/website/image/fevoritesRed.png' };
+    const deslike = { uri: 'https://parshwatechnologies.info/website/image/fav.png' }
 
     const [loading, setLoding] = React.useState(false);
 
@@ -65,6 +69,28 @@ export default function ProductDetails({ navigation, route }) {
         "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
 
     ]
+
+    const favoritesApi = async (product_id) => {
+        console.log(userDetail.user_id, userDetail.token, 'latest product_id');
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                user_id: userDetail.user_id,
+                token: userDetail.token,
+                product_id: product_id
+            }
+            var response = await Helper.POST(Urls.favourite, apiData);
+            if (response.error === '0') {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
 
     const images1 = [
         require('../assets/Images/ads2.png'),
@@ -205,7 +231,50 @@ export default function ProductDetails({ navigation, route }) {
         },
     ]
 
+    const ratingPart = () => {
+        let user_rate = 2
+        if (user_rate === 0) {
+            alert("0")
+            return;
+        } else if (user_rate == 1) {
+            return (
+                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                    <HStack style={{ alignItems: 'center', }}>
+                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
+                            alt={"Alternate Text"}
+                            source={require('../assets/Images/star1.png')} />
+                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>1</Text>
+                    </HStack>
+                </View>
+            )
+        } else if (user_rate == 2) {
+            return (
+                <HStack >
+                    <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                        <HStack style={{ alignItems: 'center', }}>
+                            <Image style={{ height: 15, width: 15, marginRight: 5 }}
+                                alt={"Alternate Text"}
+                                source={require('../assets/Images/star1.png')} />
+                            <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>1</Text>
+                        </HStack>
+                    </View>
 
+                    <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
+                        <HStack style={{ alignItems: 'center', }}>
+                            <Image style={{ height: 15, width: 15, marginRight: 5 }}
+                                alt={"Alternate Text"}
+                                source={require('../assets/Images/star1.png')} />
+                            <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>2</Text>
+                        </HStack>
+                    </View>
+                </HStack>
+            )
+        }
+    }
+
+    let icon = productDetail.is_favourite === "1" ? like : deslike;
+    let hi = productDetail.is_favourite === "1" ? 40 : 35;
+    let wi = productDetail.is_favourite === "1" ? 40 : 35;
     return (
         <View backgroundColor={Colors.white} style={{ height: height, width: width }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '5%', }} >
@@ -260,12 +329,18 @@ export default function ProductDetails({ navigation, route }) {
                         </HStack>
 
                         <VStack mt={'2'} >
+
                             <HStack justifyContent={'space-between'}>
                                 <Text lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 20, }]}>{productDetail.title}</Text>
                                 <HStack style={{ justifyContent: 'center', alignItems: 'center', }}>
-                                    <Pressable onPress={() => setLike(true)}>
-                                        <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={like ? require('../assets/Images/10.jpg') : require('../assets/Images/fevoritesRed.png')} alt="Alternate Text" />
-                                    </Pressable>
+                                    {loading ? <ActivityIndicator /> :
+                                        <Pressable onPress={() => { favoritesApi(productDetail.id), getProductDetail(productDetail.id) }}>
+                                            <Image style={{ height: hi, width: wi, resizeMode: 'center' }}
+                                                alt={"Alternate Text"}
+                                                source={icon && icon} />
+
+                                        </Pressable>
+                                    }
                                     <Pressable onPress={() => share()}>
                                         <Image style={[styles.imageStyle, { height: 35, width: 35, marginLeft: 20 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
                                     </Pressable>
@@ -417,15 +492,7 @@ export default function ProductDetails({ navigation, route }) {
                             <Text style={[Styles.titleText, { fontSize: 15, color: Colors.black, fontFamily: fonts.Poppins_Medium, }]}>Rate this</Text>
                             <HStack justifyContent={'space-between'} w={'72'} alignSelf={'center'} mt={'2'}>
 
-
-                                <View style={{ height: 35, width: 45, alignItems: 'center', borderRadius: 2, borderColor: Colors.lightSkyBlue, borderWidth: 1 }}>
-                                    <HStack style={{ alignItems: 'center', }}>
-                                        <Image style={{ height: 15, width: 15, marginRight: 5 }}
-                                            alt={"Alternate Text"}
-                                            source={require('../assets/Images/star1.png')} />
-                                        <Text style={{ fontSize: 12, color: Colors.reviewText, fontFamily: fonts.Poppins_Bold, textAlign: 'center', paddingVertical: 8, }}>1</Text>
-                                    </HStack>
-                                </View>
+                                {ratingPart}
 
                             </HStack>
                         </HStack>

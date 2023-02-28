@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, Linking, BackHandler, ToastAndroid, } from 'react-native';
+import { ScrollView, StyleSheet, View, FlatList, Pressable, Dimensions, Linking, BackHandler, ToastAndroid, ActivityIndicator, } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Avatar, Box, Button, HStack, Image, Input, Text, VStack, Modal, CheckBox, Checkbox, Radio, Stack } from 'native-base';
+import { Avatar, Box, Button, HStack, Image, Input, Text, VStack, Modal, CheckBox, Checkbox, Radio, Stack, Icon } from 'native-base';
 import fonts from '../constants/fonts';
 import CommonHeader from '../components/Header';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -21,6 +21,9 @@ import { ImageSlider } from "react-native-image-slider-banner";
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
+
+const like = require('../assets/Images/fevoritesRed.png');
+const deslike = { uri: 'https://parshwatechnologies.info/website/image/fav.png' }
 
 const data = [
     {
@@ -312,6 +315,7 @@ export default function Home({ navigation }) {
                 user_id: userDetail.user_id,
             };
             var response = await Helper.POST(Urls.homePage, apiData);
+            console.log("category tyu");
             if (response.error === '0') {
                 setCategoryData(response.data);
                 setLoding(false);
@@ -341,7 +345,6 @@ export default function Home({ navigation }) {
     };
 
     const favoritesApi = async (product_id) => {
-        console.log(product_id, 'latest product_id');
         console.log(userDetail.user_id, userDetail.token, 'latest product_id');
         if (checkInternet()) {
             setLoding(true);
@@ -350,9 +353,11 @@ export default function Home({ navigation }) {
                 token: userDetail.token,
                 product_id: product_id
             }
+            console.log(product_id, 'product_id--');
             var response = await Helper.POST(Urls.favourite, apiData);
             if (response.error === '0') {
                 console.log(response, 'response----');
+
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
                 setLoding(false);
             } else {
@@ -364,11 +369,7 @@ export default function Home({ navigation }) {
         }
     };
 
-
-    // console.log(getCategoryData.latest, 'latest log');
-    // console.log(advertiseData, 'advertiseData--');
     return (
-
         <View style={{ marginBottom: '20%', backgroundColor: Colors.white, }}>
             <HStack bg={Colors.white} p={2} alignItems={'center'} justifyContent={'space-between'} style={{ height: '6%', }} >
                 <HStack alignItems={'center'} >
@@ -476,7 +477,7 @@ export default function Home({ navigation }) {
                     <View >
                         <HStack mt={'1'}>
                             {/* <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 12, color: Colors.smallText }}>Browse by </Text>
-                            <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}>Category</Text> */}
+                        <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 12, color: Colors.black }}>Category</Text> */}
                         </HStack>
                         <ScrollView
                             horizontal
@@ -487,6 +488,7 @@ export default function Home({ navigation }) {
                             <FlatList
                                 data={getCategoryData.category}
                                 contentContainerStyle={{ alignSelf: 'center', }}
+
                                 numColumns={6}
                                 renderItem={({ item }) => {
                                     return (
@@ -543,11 +545,14 @@ export default function Home({ navigation }) {
                                 </HStack>
                             </Pressable>
                         </HStack>
+                        {/* {loading ? <ActivityIndicator />
+                            : */}
                         <FlatList
                             contentContainerStyle={{ marginTop: '1%' }}
+                            extraData={getCategoryData.latest}
                             data={getCategoryData.latest && getCategoryData.latest.slice(0, 5)}
-
                             renderItem={({ item }) => {
+                                let icon = item.is_favourite === "1" ? like : deslike;
                                 return (
                                     <View style={{ backgroundColor: Colors.white, marginTop: 2 }}>
                                         <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
@@ -583,31 +588,26 @@ export default function Home({ navigation }) {
                                                     </VStack>
                                                 </HStack>
 
-                                                <HStack style={{ alignItems: 'center', justifyContent: 'space-evenly', width: '30%' }} >
+                                                <HStack style={{ alignItems: 'center', justifyContent: 'space-evenly', width: '35%' }} >
                                                     <VStack>
-                                                        {/* <Pressable onPress={() => { favoritesApi(item.id) }}> */}
-                                                        {/* {item.is_favourite === "1" ?
-                                                                <Image size={8}
-                                                                    alt={"Alternate Text"}
-                                                                    source={require('../assets/Images/fevoritesRed.png')} />
-                                                                : */}
-                                                        <Image size={7}
-                                                            alt={"Alternate Text"}
-                                                            source={require('../assets/Images/10.jpg')} />
-                                                        {/* } */}
+                                                        <Pressable onPress={() => { favoritesApi(item.id), getCategory() }}>
 
-                                                        {/* </Pressable> */}
+                                                            <Image style={{ height: item.is_favourite === "1" ? 38 : 38, width: item.is_favourite === "1" ? 38 : 38, resizeMode: 'contain' }}
+                                                                alt={"Alternate Text"}
+                                                                source={icon && icon} />
+
+                                                        </Pressable>
                                                     </VStack>
                                                     <VStack>
                                                         <Pressable onPress={() => Linking.openURL(`tel:${item.member.mobile_no}`)}>
-                                                            <Image size={7}
+                                                            <Image size={9}
                                                                 alt={"Alternate Text"}
                                                                 source={require('../assets/Images/call.png')} />
                                                         </Pressable>
                                                     </VStack>
                                                     <VStack>
                                                         <Pressable onPress={() => Linking.openURL('whatsapp://send?text=' + "Hello " + '&phone=91' + item.member.mobile_no)}>
-                                                            <Image size={7}
+                                                            <Image size={9}
                                                                 alt={"Alternate Text"}
                                                                 source={require('../assets/Images/greenWp.png')} />
                                                         </Pressable>
@@ -617,10 +617,12 @@ export default function Home({ navigation }) {
                                         </Pressable>
                                     </View>
                                 );
+
                             }
                             }
                             keyExtractor={(item) => item.id.toString()}
                         />
+                        {/* } */}
                     </View>
                     <View >
                         <VStack style={[styles.card, { borderColor: Colors.skyBlue }]} justifyContent={'center'} >
@@ -712,7 +714,6 @@ export default function Home({ navigation }) {
                                         buttonTextStyle={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.smallText }}
                                         data={countries}
                                         onSelect={(selectedItem, index) => {
-                                            console.log(selectedItem, index)
                                         }}
                                         buttonTextAfterSelection={(selectedItem, index) => {
                                             return selectedItem
@@ -733,7 +734,6 @@ export default function Home({ navigation }) {
                                         buttonTextStyle={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.smallText }}
                                         data={countries}
                                         onSelect={(selectedItem, index) => {
-                                            console.log(selectedItem, index)
                                         }}
                                         buttonTextAfterSelection={(selectedItem, index) => {
                                             return selectedItem
@@ -754,7 +754,6 @@ export default function Home({ navigation }) {
                                         buttonTextStyle={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.smallText }}
                                         data={countries}
                                         onSelect={(selectedItem, index) => {
-                                            console.log(selectedItem, index)
                                         }}
                                         buttonTextAfterSelection={(selectedItem, index) => {
                                             return selectedItem
@@ -795,8 +794,8 @@ export default function Home({ navigation }) {
 
                             </Modal.Body>
                             {/* <Modal.Footer justifyContent={'center'}>
-                                
-                            </Modal.Footer> */}
+                            
+                        </Modal.Footer> */}
                         </Modal.Content>
                     </Modal>
                     :
@@ -804,6 +803,9 @@ export default function Home({ navigation }) {
             }
         </View >
     )
+    // }
+
+
 }
 
 const styles = StyleSheet.create({

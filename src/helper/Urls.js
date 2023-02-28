@@ -30,6 +30,7 @@ export const Urls = {
 
     myAds: '/member/product',
     myAdsEdit: '/member/product/edit',
+    myAdsDelete: '/member/product/delete',
 
     // profile
     updateProfile: '/member/profile/update',

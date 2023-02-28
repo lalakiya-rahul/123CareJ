@@ -23,6 +23,9 @@ import NoData from '../components/NoData';
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
+const like = { uri: 'https://parshwatechnologies.info/website/image/fevoritesRed.png' };
+const deslike = { uri: 'https://parshwatechnologies.info/website/image/fav.png' }
+
 export default function Product({ navigation, route }) {
     const { userDetail } = useSelector((state) => state.reducerDetail);
     const [productViewAll, setGetProductViewAll] = useState([]);
@@ -74,7 +77,6 @@ export default function Product({ navigation, route }) {
     };
 
     const getProductViewAll = async (page, sorting, CategorieId, search) => {
-        // if (!loading && !isListEnd) {
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
@@ -91,10 +93,6 @@ export default function Product({ navigation, route }) {
             var response = await Helper.POST(Urls.productListViewAll, apiData);
             console.log(response, 'response---getProductViewAll');
             if (response.error === '0') {
-                // if (response.data.length > 0) {
-                //     setPage(page + 1);
-                //     console.log(page, 'pagee');
-                // After the response increasing the offset
                 setPage(page + 1);
                 setGetProductViewAll(response.data);
                 setLoding(false);
@@ -110,8 +108,6 @@ export default function Product({ navigation, route }) {
             setLoding(false);
         }
     }
-
-
 
     const loadMore = async () => {
         if (!loading && !isListEnd) {
@@ -171,7 +167,7 @@ export default function Product({ navigation, route }) {
             var response = await Helper.POST(Urls.favourite, apiData);
             if (response.error === '0') {
                 console.log(response, 'response----favoritesApi');
-                // getCategoryViewAll()
+                getProductViewAll(page - 1, sorting, CategorieId, state.search);
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
                 // setLoding(false);
             } else {
@@ -299,92 +295,91 @@ export default function Product({ navigation, route }) {
                             source={require('../assets/Images/pin1.png')} />
                     </HStack>
                 </View>
+                {loading ? <ActivityIndicator /> :
+                    <FlatList
+                        contentContainerStyle={{ paddingBottom: '50%', }}
+                        data={productViewAll}
+                        onEndReached={loadMore}
+                        onEndReachedThreshold={0.5}
+                        ListEmptyComponent={<NoData />}
+                        renderItem={({ item }) => {
+                            let icon = item.is_favourite === "1" ? like : deslike;
+                            return (
+                                <View style={{ backgroundColor: Colors.white, padding: 5, }}>
+                                    <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
+                                        <HStack style={[styles.card,
+                                        {
+                                            backgroundColor: Colors.white,
+                                            borderRadius: 10,
+                                            justifyContent: 'space-between', padding: 5,
+                                        }]}>
+                                            <HStack space={3} justifyContent={'space-around'} style={{ width: '100%' }}>
+                                                <VStack justifyContent={'center'} alignItems={'center'} style={{ width: '30%' }}>
+                                                    <Image style={{
+                                                        width: 115,
+                                                        height: 115,
+                                                        resizeMode: 'contain'
+                                                    }} borderRadius={'md'} source={{
+                                                        uri: item.image_url
+                                                    }} alt="Alternate Text" />
 
-                <FlatList
-                    contentContainerStyle={{ paddingBottom: '50%', }}
-                    data={productViewAll}
-                    onEndReached={loadMore}
-                    onEndReachedThreshold={0.5}
-                    ListEmptyComponent={<NoData />}
-                    renderItem={({ item }) => {
-                        return (
-                            <View style={{ backgroundColor: Colors.white, padding: 5, }}>
-                                <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id, title: item.title })}>
-                                    <HStack style={[styles.card,
-                                    {
-                                        backgroundColor: Colors.white,
-                                        borderRadius: 10,
-                                        justifyContent: 'space-between', padding: 5,
-                                    }]}>
-                                        <HStack space={3} justifyContent={'space-around'} style={{ width: '100%' }}>
-                                            <VStack justifyContent={'center'} alignItems={'center'} style={{ width: '30%' }}>
-                                                <Image style={{
-                                                    width: 115,
-                                                    height: 115,
-                                                    resizeMode: 'contain'
-                                                }} borderRadius={'md'} source={{
-                                                    uri: item.image_url
-                                                }} alt="Alternate Text" />
+                                                </VStack>
 
-                                            </VStack>
+                                                <VStack style={{ width: '68%' }}>
+                                                    <HStack justifyContent={'space-between'} >
+                                                        <Text numberOfLines={1} style={[Styles.titleText, { color: Colors.black, width: '80%', }]}>{item.title}</Text>
 
-                                            <VStack style={{ width: '68%' }}>
-                                                <HStack justifyContent={'space-between'} >
-                                                    <Text numberOfLines={1} style={[Styles.titleText, { color: Colors.black, width: '80%', }]}>{item.title}</Text>
+                                                        <Pressable onPress={() => { favoritesApi(item.id) }}>
 
-                                                    {/* <Pressable onPress={() => { favoritesApi(item.id) }}>
-                                                            {item.is_favourite === "1" ?
-                                                                <Image style={{ width: 25, height: 25, resizeMode: 'cover', }}
-                                                                    source={require('../assets/Images/fevoritesRed.png')} alt="Alternate Text" />
-                                                                : */}
-                                                    <Image style={{ width: 25, height: 25, resizeMode: 'cover', }}
-                                                        source={require('../assets/Images/10.jpg')} alt="Alternate Text" />
-                                                    {/* }
-
-                                                        </Pressable> */}
-
-                                                </HStack>
-                                                <HStack h={'5'} alignItems={'center'} style={{ marginTop: '-1%' }}>
-                                                    <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
-                                                        alt={"Alternate Text"}
-                                                        source={require('../assets/Images/pin1.png')} />
-                                                    <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>{item.city_name}</Text>
-                                                </HStack>
-                                                <HStack style={{ justifyContent: 'flex-start', alignItems: 'center', marginTop: '-1%' }}>
-                                                    <Image style={{ height: 8, width: 40, marginLeft: '2%', tintColor: Colors.primaryColor }}
-                                                        alt={"Alternate Text"}
-                                                        source={require('../assets/Images/rating.png')} />
-                                                    <Text style={[Styles.titleText, { fontSize: 7, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>
-                                                </HStack>
+                                                            <Image style={{ width: 25, height: 25, resizeMode: 'contain', }}
+                                                                source={icon && icon} alt="Alternate Text" />
 
 
-                                                <HStack alignItems={'flex-end'} justifyContent={'flex-end'} space={1} mt={'3'}>
-                                                    <Pressable onPress={() => Linking.openURL(`tel:${item.member.mobile_no}`)}>
-                                                        <Image style={styles.imageIconSize}
+                                                        </Pressable>
+
+                                                    </HStack>
+                                                    <HStack h={'5'} alignItems={'center'} style={{ marginTop: '-1%' }}>
+                                                        <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
                                                             alt={"Alternate Text"}
-                                                            source={require('../assets/Images/call.png')} />
-                                                    </Pressable>
-                                                    <Pressable onPress={() => Linking.openURL('mailto:' + item.member.email)}>
-                                                        <Image ml={'4'} style={styles.imageIconSize}
+                                                            source={require('../assets/Images/pin1.png')} />
+                                                        <Text style={[Styles.titleText, { fontSize: 9, color: Colors.grey }]}>{item.city_name}</Text>
+                                                    </HStack>
+                                                    <HStack style={{ justifyContent: 'flex-start', alignItems: 'center', marginTop: '-1%' }}>
+                                                        <Image style={{ height: 8, width: 40, marginLeft: '2%', tintColor: Colors.primaryColor }}
                                                             alt={"Alternate Text"}
-                                                            source={require('../assets/Images/gmail.png')} />
-                                                    </Pressable>
-                                                    <Pressable onPress={() => Linking.openURL('whatsapp://send?text=' + "Hello " + '&phone=91' + item.member.mobile_no)}>
-                                                        <Image ml={'4'} style={styles.imageIconSize}
-                                                            alt={"Alternate Text"}
-                                                            source={require('../assets/Images/greenWp.png')} />
-                                                    </Pressable>
-                                                </HStack>
-                                            </VStack>
+                                                            source={require('../assets/Images/rating.png')} />
+                                                        <Text style={[Styles.titleText, { fontSize: 7, color: Colors.ratingColor, fontFamily: fonts.Poppins_Medium, marginLeft: '2%', }]}>16 Ratings</Text>
+                                                    </HStack>
+
+
+                                                    <HStack alignItems={'flex-end'} justifyContent={'flex-end'} space={1} mt={'3'}>
+                                                        <Pressable onPress={() => Linking.openURL(`tel:${item.member.mobile_no}`)}>
+                                                            <Image style={styles.imageIconSize}
+                                                                alt={"Alternate Text"}
+                                                                source={require('../assets/Images/call.png')} />
+                                                        </Pressable>
+                                                        <Pressable onPress={() => Linking.openURL('mailto:' + item.member.email)}>
+                                                            <Image ml={'4'} style={styles.imageIconSize}
+                                                                alt={"Alternate Text"}
+                                                                source={require('../assets/Images/gmail.png')} />
+                                                        </Pressable>
+                                                        <Pressable onPress={() => Linking.openURL('whatsapp://send?text=' + "Hello " + '&phone=91' + item.member.mobile_no)}>
+                                                            <Image ml={'4'} style={styles.imageIconSize}
+                                                                alt={"Alternate Text"}
+                                                                source={require('../assets/Images/greenWp.png')} />
+                                                        </Pressable>
+                                                    </HStack>
+                                                </VStack>
+                                            </HStack>
                                         </HStack>
-                                    </HStack>
-                                </Pressable>
-                            </View>
-                        );
-                    }
-                    }
-                    keyExtractor={(item, index) => index.toString()}
-                />
+                                    </Pressable>
+                                </View>
+                            );
+                        }
+                        }
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                }
             </View >
         </View >
     )

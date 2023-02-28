@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, PermissionsAndroid, Platform, Pressable, FlatList, ScrollView, StyleSheet, Text, ToastAndroid, View, } from 'react-native';
 
 import Colors from '../constants/colors';
-import { Box, Checkbox, CheckCircleIcon, Modal, HStack, Icon, Image, Input, Select, TextArea, VStack } from 'native-base';
+import { Box, Checkbox, CheckCircleIcon, Modal, HStack, Icon, Image, Input, Select, TextArea, VStack, AlertDialog, Button } from 'native-base';
 import fonts from '../constants/fonts';
 import CommonInput from '../components/Inputs';
 import PhoneInput from 'react-native-phone-number-input';
@@ -19,6 +19,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
+import { omitUndefined } from 'native-base/lib/typescript/theme/tools';
+import FromErrorText from '../components/FormErrorText';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -90,6 +92,9 @@ export default function AddListing({ navigation }) {
     const [filePath, setFilePath] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
     const isFocused = useIsFocused();
+    const onClose = () => setIsOpen(false);
+    const cancelRef = useRef(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     const initState = {
         user_id: '',
@@ -106,6 +111,14 @@ export default function AddListing({ navigation }) {
     }
     const [state, setState] = useState(initState);
 
+    const initMsg = {
+        title: '',
+        category: '',
+        state: '',
+        city: '',
+    }
+    const [errorsMsg, setErrorsMsg] = useState(initMsg);
+
     const handleChange = (featured_id, id, fieldItem) => {
         console.log(featured_id, id, fieldItem);
         // const data1 = map(additionalData, i => {
@@ -113,6 +126,20 @@ export default function AddListing({ navigation }) {
         // })
         // console.log(data1, 'data12');
     };
+
+    const errorsMessages = () => {
+        if (isEmpty(state.title)) {
+            setErrorsMsg({ ...errorsMsg, title: 'Title is required' })
+        } else if (CategoriesId === "") {
+            setErrorsMsg({ ...errorsMsg, category: 'Category Name is required' })
+        } else if (statesId === "") {
+            setErrorsMsg({ ...errorsMsg, state: 'State is required' })
+        } else if (cityId === "") {
+            setErrorsMsg({ ...errorsMsg, city: 'City is required' })
+        } else {
+            setIsOpen(!isOpen)
+        }
+    }
 
     const onInputChange = (field, value) => {
         setState({
@@ -143,7 +170,6 @@ export default function AddListing({ navigation }) {
 
     }
 
-
     const getCategory = async () => {
         if (checkInternet()) {
             setLoding(true);
@@ -163,7 +189,6 @@ export default function AddListing({ navigation }) {
     }
 
     const getState = async () => {
-
         if (checkInternet()) {
             setLoding(true);
             const apiData = {
@@ -172,10 +197,10 @@ export default function AddListing({ navigation }) {
             var response = await Helper.POST(Urls.getState, apiData);
             if (response.error === '0') {
                 setStates(response.data)
-
+                setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
-
+                setLoding(false);
             }
         } else {
             ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
@@ -241,93 +266,93 @@ export default function AddListing({ navigation }) {
     //     } else return true;
     // };
 
-    const captureImage = async () => {
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: true,
-        }).then(image => {
+    // const captureImage = async () => {
+    //     ImagePicker.openCamera({
+    //         width: 300,
+    //         height: 400,
+    //         cropping: true,
+    //     }).then(image => {
 
-        })
-        // let options = {
-        //     mediaType: type,
-        //     maxWidth: 300,
-        //     maxHeight: 550,
-        //     quality: 1,
-        //     videoQuality: 'low',
-        //     durationLimit: 30, //Video max duration in seconds
-        //     saveToPhotos: true,
-        // };
-        // let isCameraPermitted = await requestCameraPermission();
-        // let isStoragePermitted = await requestExternalWritePermission();
-        // if (isCameraPermitted && isStoragePermitted) {
-        //     launchCamera(options, (response) => {
+    //     })
+    //     // let options = {
+    //     //     mediaType: type,
+    //     //     maxWidth: 300,
+    //     //     maxHeight: 550,
+    //     //     quality: 1,
+    //     //     videoQuality: 'low',
+    //     //     durationLimit: 30, //Video max duration in seconds
+    //     //     saveToPhotos: true,
+    //     // };
+    //     // let isCameraPermitted = await requestCameraPermission();
+    //     // let isStoragePermitted = await requestExternalWritePermission();
+    //     // if (isCameraPermitted && isStoragePermitted) {
+    //     //     launchCamera(options, (response) => {
 
-        //         if (response.didCancel) {
-        //             alert('User cancelled camera picker');
-        //             return;
-        //         } else if (response.errorCode == 'camera_unavailable') {
-        //             alert('Camera not available on device');
-        //             return;
-        //         } else if (response.errorCode == 'permission') {
-        //             alert('Permission not satisfied');
-        //             return;
-        //         } else if (response.errorCode == 'others') {
-        //             alert(response.errorMessage);
-        //             return;
-        //         }
-        //         console.log('base64 -> ', response.base64);
-        //         console.log('uri -> ', response.uri);
-        //         console.log('width -> ', response.width);
-        //         console.log('height -> ', response.height);
-        //         console.log('fileSize -> ', response.fileSize);
-        //         console.log('type -> ', response.type);
-        //         console.log('fileName -> ', response.fileName);
-        //         setFilePath(response.assets[0].uri);
-        //         setState({
-        //             ...state,
-        //             imageName: response.assets[0].fileName
-        //         })
-        //     });
-        // }
-    };
-    const chooseFile = () => {
+    //     //         if (response.didCancel) {
+    //     //             alert('User cancelled camera picker');
+    //     //             return;
+    //     //         } else if (response.errorCode == 'camera_unavailable') {
+    //     //             alert('Camera not available on device');
+    //     //             return;
+    //     //         } else if (response.errorCode == 'permission') {
+    //     //             alert('Permission not satisfied');
+    //     //             return;
+    //     //         } else if (response.errorCode == 'others') {
+    //     //             alert(response.errorMessage);
+    //     //             return;
+    //     //         }
+    //     //         console.log('base64 -> ', response.base64);
+    //     //         console.log('uri -> ', response.uri);
+    //     //         console.log('width -> ', response.width);
+    //     //         console.log('height -> ', response.height);
+    //     //         console.log('fileSize -> ', response.fileSize);
+    //     //         console.log('type -> ', response.type);
+    //     //         console.log('fileName -> ', response.fileName);
+    //     //         setFilePath(response.assets[0].uri);
+    //     //         setState({
+    //     //             ...state,
+    //     //             imageName: response.assets[0].fileName
+    //     //         })
+    //     //     });
+    //     // }
+    // };
+    // const chooseFile = () => {
 
-        ImagePicker.openPicker({
-            width: 300,
-            height: 400,
-            cropping: true,
-            multiple: true,
-            compressImageQuality: 0.8,
-            includeExif: true,
-            forceJpg: true,
-            maxFiles: 2,
-            mediaType: 'photo',
-            includeBase64: true
-        }).then(selImages => {
-            if (selImages && selImages.length == 1) {
-                let output = selImages.slice();
-                output[index] = {
-                    uri: selImages[0].path, // for FormData to upload
-                    type: selImages[0].mime,
-                    name: selImages[0].filename || `${Date.now()}.jpg`,
-                };
-                console.log('ImagePicker.openPicker: output', output);
-                console.log(output, 'output---');
-            } else {
-                const output = selImages.map((image) => ({
-                    uri: image.path,
-                    type: image.mime,
-                    name: image.filename || `${Date.now()}.jpg`,
-                }));
-                console.log(output, 'output---22');
-                setFilePath(output);
-                console.log('ImagePicker.openPicker: output', output);
-            }
+    //     ImagePicker.openPicker({
+    //         width: 300,
+    //         height: 400,
+    //         cropping: true,
+    //         multiple: true,
+    //         compressImageQuality: 0.8,
+    //         includeExif: true,
+    //         forceJpg: true,
+    //         maxFiles: 2,
+    //         mediaType: 'photo',
+    //         includeBase64: true
+    //     }).then(selImages => {
+    //         if (selImages && selImages.length == 1) {
+    //             let output = selImages.slice();
+    //             output[index] = {
+    //                 uri: selImages[0].path, // for FormData to upload
+    //                 type: selImages[0].mime,
+    //                 name: selImages[0].filename || `${Date.now()}.jpg`,
+    //             };
+    //             console.log('ImagePicker.openPicker: output', output);
+    //             console.log(output, 'output---');
+    //         } else {
+    //             const output = selImages.map((image) => ({
+    //                 uri: image.path,
+    //                 type: image.mime,
+    //                 name: image.filename || `${Date.now()}.jpg`,
+    //             }));
+    //             console.log(output, 'output---22');
+    //             setFilePath(output);
+    //             console.log('ImagePicker.openPicker: output', output);
+    //         }
 
 
-        }).catch(e => console.log('error', e.message));
-    };
+    //     }).catch(e => console.log('error', e.message));
+    // };
 
     const postAds = async () => {
         if (checkInternet()) {
@@ -348,19 +373,19 @@ export default function AddListing({ navigation }) {
             formdata.append('name', state.name);
             formdata.append('tags', state.tags);
             formdata.append('feature_id[]', [1]);
-            // var postImage = filePath;
-            // var uri = '' + postImage;
-            // var arr = uri.split('/');
-            // var name = arr[arr.length - 1];
+            var postImage = filePath;
+            var uri = '' + postImage;
+            var arr = uri.split('/');
+            var name = arr[arr.length - 1];
 
             formdata.append(
                 'image[]', filePath
-                // ? {
-                //     uri: Platform.OS === 'android' ? postImage : postImage.replace('file://', ''),
-                //     name: filePath.filename || `${Date.now()}.jpg`,
-                //     type: 'image/jpeg',
-                // }
-                // : '',
+                ? {
+                    uri: Platform.OS === 'android' ? postImage : postImage.replace('file://', ''),
+                    name: `${Date.now()}.jpg`,
+                    type: 'image/jpeg',
+                }
+                : '',
             );
 
 
@@ -382,6 +407,122 @@ export default function AddListing({ navigation }) {
         }
     };
 
+    const requestCameraPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message: 'App needs camera permission',
+                    },
+                );
+                // If CAMERA Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                return false;
+            }
+        } else return true;
+    };
+
+    const requestExternalWritePermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'External Storage Write Permission',
+                        message: 'App needs write permission',
+                    },
+                );
+                // If WRITE_EXTERNAL_STORAGE Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                alert('Write permission err', err);
+            }
+            return false;
+        } else return true;
+    };
+
+    const captureImage = async (type) => {
+        let options = {
+            mediaType: type,
+            maxWidth: 300,
+            maxHeight: 550,
+            quality: 1,
+            videoQuality: 'low',
+            durationLimit: 30, //Video max duration in seconds
+            saveToPhotos: true,
+        };
+        let isCameraPermitted = await requestCameraPermission();
+        let isStoragePermitted = await requestExternalWritePermission();
+        if (isCameraPermitted && isStoragePermitted) {
+            launchCamera(options, (response) => {
+                if (response.didCancel) {
+                    alert('User cancelled camera picker');
+                    return;
+                } else if (response.errorCode == 'camera_unavailable') {
+                    alert('Camera not available on device');
+                    return;
+                } else if (response.errorCode == 'permission') {
+                    alert('Permission not satisfied');
+                    return;
+                } else if (response.errorCode == 'others') {
+                    alert(response.errorMessage);
+                    return;
+                }
+                console.log('base64 -> ', response.base64);
+                console.log('uri -> ', response.uri);
+                console.log('width -> ', response.width);
+                console.log('height -> ', response.height);
+                console.log('fileSize -> ', response.fileSize);
+                console.log('type -> ', response.type);
+                console.log('fileName -> ', response.fileName);
+                setFilePath(response.assets[0].uri);
+                setState({
+                    ...state,
+                    imageName: response.assets[0].fileName
+                })
+            });
+        }
+    };
+    const chooseFile = (type) => {
+        let options = {
+            mediaType: type,
+            maxWidth: 300,
+            maxHeight: 550,
+            quality: 1,
+        };
+        launchImageLibrary(options, (response) => {
+            if (response.didCancel) {
+                alert('User cancelled camera picker');
+                return;
+            } else if (response.errorCode == 'camera_unavailable') {
+                alert('Camera not available on device');
+                return;
+            } else if (response.errorCode == 'permission') {
+                alert('Permission not satisfied');
+                return;
+            } else if (response.errorCode == 'others') {
+                alert(response.errorMessage);
+                return;
+            }
+            // console.log('base64 -> ', response.base64);
+            // console.log('uri -> ', response.uri);
+            // console.log('width -> ', response.width);
+            // console.log('height -> ', response.height);
+            // console.log('fileSize -> ', response.fileSize);
+            // console.log('type -> ', response.type);
+            // console.log('fileName -> ', response.fileName);
+            setFilePath(response.assets[0].uri);
+            setState({
+                ...state,
+                imageName: response.assets[0].fileName
+            })
+        });
+    };
 
     return (
         <View>
@@ -421,7 +562,22 @@ export default function AddListing({ navigation }) {
                             </Text>
                         </HStack>
                         <VStack p={'3'} h={'80'} borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'} style={{ backgroundColor: '#FFF' }}>
-                            <HStack style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+
+                            <HStack space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
+                                    Title
+                                    <Text style={{ color: Colors.error }}>⁕</Text>
+                                </Text>
+                                <Box maxW="300" >
+                                    <Input fontFamily={fonts.Poppins_SemiBold}
+                                        value={state.title}
+                                        onChangeText={(value) => { onInputChange('title', value) }}
+                                        borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor}
+                                        rounded={'full'} minWidth="250" placeholder="Add Title" />
+                                </Box>
+                            </HStack>
+                            <FromErrorText optionalStyle={{ marginLeft: '30%' }} errorText={errorsMsg.title} />
+                            <HStack mt={'1'} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black, }}>
                                     Category
                                     <Text style={{ color: Colors.error }}>⁕</Text>
@@ -441,20 +597,7 @@ export default function AddListing({ navigation }) {
                                     </Select>
                                 </Box>
                             </HStack>
-
-                            <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
-                                    Title
-                                    <Text style={{ color: Colors.error }}>⁕</Text>
-                                </Text>
-                                <Box maxW="300" >
-                                    <Input fontFamily={fonts.Poppins_SemiBold}
-                                        value={state.title}
-                                        onChangeText={(value) => { onInputChange('title', value) }}
-                                        borderWidth={'2'} borderColor={Colors.secondaryPrimaryColor}
-                                        rounded={'full'} minWidth="250" placeholder="Add Title" />
-                                </Box>
-                            </HStack>
+                            <FromErrorText optionalStyle={{ marginLeft: '30%' }} errorText={errorsMsg.category} />
 
                             <VStack mt={'1'}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
@@ -498,7 +641,7 @@ export default function AddListing({ navigation }) {
                                 </Box>
                             </HStack>
 
-                            {
+                            {/* {
                                 filePath?.length > 0 ?
                                     <>
 
@@ -519,13 +662,13 @@ export default function AddListing({ navigation }) {
                                                 }} />
                                         </HStack>
                                     </>
-                                    :
-                                    <HStack alignSelf={'flex-end'} w={'56'}>
-                                        <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.smallText }}>
-                                            Add up to 2 pictures. Use real pictures of your product, not catalogs.
-                                        </Text>
-                                    </HStack>
-                            }
+                                    : */}
+                            <HStack alignSelf={'flex-end'} w={'56'}>
+                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.smallText }}>
+                                    Add up to 2 pictures. Use real pictures of your product, not catalogs.
+                                </Text>
+                            </HStack>
+                            {/* } */}
                             <HStack alignSelf={'flex-start'} w={'56'} style={{ marginLeft: width / 4 }}>
                                 {/* <Image style={{ height: 50, width: 50, borderRadius: 5, marginRight: '3%' }}
                                     alt={"Alternate Text"}
@@ -552,6 +695,7 @@ export default function AddListing({ navigation }) {
                                     </Select>
                                 </Box>
                             </HStack>
+                            <FromErrorText optionalStyle={{ marginLeft: '30%' }} errorText={errorsMsg.state} />
 
                             <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
@@ -573,6 +717,7 @@ export default function AddListing({ navigation }) {
                                     </Select>
                                 </Box>
                             </HStack>
+                            <FromErrorText optionalStyle={{ marginLeft: '30%' }} errorText={errorsMsg.state} />
                             <HStack mt={'4'} space={2} style={{ justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                     Area
@@ -725,7 +870,7 @@ export default function AddListing({ navigation }) {
                                     optionalStyle={{ backgroundColor: Colors.primaryColor }}
                                     mt={'5'}
                                     label={"Submit"}
-                                    onPress={() => postAds()}
+                                    onPress={() => errorsMessages()}
                                 />
                             </VStack>
                         </VStack>
@@ -739,14 +884,14 @@ export default function AddListing({ navigation }) {
                                 <Modal.Header>Select Image</Modal.Header>
                                 <Modal.Body>
                                     <Box w={'full'}>
-                                        <Pressable onPress={() => { captureImage(), setModalVisible(false) }}>
+                                        <Pressable onPress={() => { captureImage('photo'), setModalVisible(false) }}>
                                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                                 Take Photo...
                                             </Text>
                                         </Pressable>
                                     </Box>
                                     <Box mt={'2.5'}>
-                                        <Pressable onPress={() => { chooseFile(), setModalVisible(false) }}>
+                                        <Pressable onPress={() => { chooseFile('photo'), setModalVisible(false) }}>
                                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 14, color: Colors.black }}>
                                                 Choose from library...
                                             </Text>
@@ -758,6 +903,25 @@ export default function AddListing({ navigation }) {
                         :
                         null
                 }
+                <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
+                    <AlertDialog.Content>
+                        <AlertDialog.CloseButton />
+                        <AlertDialog.Header>Post Ads</AlertDialog.Header>
+                        <AlertDialog.Body>
+                            You are sure you want to Ad Post?
+                        </AlertDialog.Body>
+                        <AlertDialog.Footer justifyContent={'center'}>
+                            <Button.Group space={2} >
+                                <Button variant="unstyled" colorScheme="coolGray" onPress={onClose} ref={cancelRef}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme={'darkBlue'} onPress={() => postAds()}>
+                                    OK
+                                </Button>
+                            </Button.Group>
+                        </AlertDialog.Footer>
+                    </AlertDialog.Content>
+                </AlertDialog>
             </ScrollView >
         </View>
     )

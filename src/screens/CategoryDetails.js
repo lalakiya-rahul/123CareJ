@@ -258,7 +258,7 @@ export default function CategoryDetails({ navigation, route }) {
                             <HStack justifyContent={'space-between'} >
                                 <Text numberOfLines={2} lineHeight={'30'} style={[Styles.titleText, { color: Colors.black, fontSize: 20, width: '70%' }]}>{categoryDetail.title}</Text>
                                 <HStack style={{ justifyContent: 'center', }}>
-                                    <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={require('../assets/Images/10.jpg')} alt="Alternate Text" />
+                                    <Image style={[styles.imageStyle, { height: 35, width: 35, }]} source={require('../assets/Images/10.png')} alt="Alternate Text" />
                                     <Image style={[styles.imageStyle, { height: 35, width: 35, marginLeft: 20 }]} source={require('../assets/Images/blackShare.png')} alt="Alternate Text" />
                                 </HStack>
                             </HStack>

@@ -90,9 +90,10 @@ export default function Fevorites({ navigation }) {
                 user_id: userDetail.user_id,
                 token: userDetail.token
             }
+            console.log(apiData, 'apidata');
             var response = await Helper.POST(Urls.favouriteList, apiData);
             if (response.error === '0') {
-                setFevorites(response.data)
+                setFevorites(response.data);
                 setLoding(false);
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
@@ -103,7 +104,30 @@ export default function Fevorites({ navigation }) {
         }
     }
 
-    console.log(getFevorites, 'getFevorites---');
+    const favoritesApi = async (product_id) => {
+        console.log(product_id, 'latest product_id');
+        console.log(userDetail.user_id, userDetail.token, 'latest product_id');
+        if (checkInternet()) {
+            // setLoding(true);
+            const apiData = {
+                user_id: userDetail.user_id,
+                token: userDetail.token,
+                product_id: product_id
+            }
+            var response = await Helper.POST(Urls.favourite, apiData);
+            if (response.error === '0') {
+                console.log(response, 'response----favoritesApi');
+                getFavoritesList()
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                // setLoding(false);
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                // setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
+    };
 
     return (
         <View>
@@ -139,18 +163,10 @@ export default function Fevorites({ navigation }) {
                                 source={require('../assets/Images/mic.png')} />} />
                     </VStack>
                 </HStack>
-                <HStack mt={'2.5'}>
-                    <Checkbox mr={'2.5'} value="test" accessibilityLabel="checkbox">
-                        <Text style={[Styles.titleText, { fontSize: 12, }]}>Select All</Text>
-                    </Checkbox>
-                    <HStack style={[styles.boxStyle, { alignItems: 'center', justifyContent: 'space-between' }]} >
-                        <Image source={(require('../assets/Images/delete.png'))} alt={"Alternate Text"} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
-                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Delete</Text>
-                    </HStack>
-                </HStack>
+
                 <Loader loading={loading} />
                 <FlatList
-                    contentContainerStyle={{ paddingBottom: '20%' }}
+                    contentContainerStyle={{ paddingBottom: '50%', }}
                     data={getFevorites}
                     ListEmptyComponent={<NoData />}
                     renderItem={({ item }) => {
@@ -165,7 +181,6 @@ export default function Fevorites({ navigation }) {
                                 }]}>
                                     <HStack space={4}  >
                                         <HStack justifyContent={'center'} alignItems={'center'}>
-                                            <Checkbox mr={'2.5'} value="test" accessibilityLabel="checkbox" />
                                             <Image style={{
                                                 width: 80,
                                                 height: 80,
@@ -173,10 +188,18 @@ export default function Fevorites({ navigation }) {
                                             }} borderRadius={'2xl'} source={{
                                                 uri: item.image
                                             }} alt="Alternate Text" size="md" />
+
                                         </HStack>
 
-                                        <VStack width={'72'} >
-                                            <Text style={Styles.titleText}>{item.title}</Text>
+                                        <VStack style={{ width: '75%' }} >
+                                            <HStack justifyContent={'space-between'}  >
+                                                <Text style={Styles.titleText}>{item.title}</Text>
+                                                <Pressable onPress={() => { favoritesApi(item.id) }}>
+
+                                                    <Image style={{ width: 35, height: 35, resizeMode: 'contain', position: 'absolute' }}
+                                                        source={{ uri: 'https://parshwatechnologies.info/website/image/fevoritesRed.png' }} alt="Alternate Text" />
+                                                </Pressable>
+                                            </HStack>
                                             <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', }}>
                                                 <Image tintColor={Colors.grey}
                                                     alt={"Alternate Text"}
@@ -201,52 +224,7 @@ export default function Fevorites({ navigation }) {
                                                 {/* <Text style={{ fontFamily: fonts.Poppins_Bold, fontSize: 8, color: Colors.grey, marginLeft: '40%' }}>₹</Text>
                                 <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>--</Text> */}
                                             </HStack>
-                                            <HStack space={2}>
-                                                <View style={styles.boxStyle}>
-                                                    <Pressable onPress={() => navigation.navigate('AddListing')}>
-                                                        <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                                                            <Image source={(require('../assets/Images/edit.png'))} alt={"Alternate Text"} style={{ height: 15, width: 15, marginRight: 5, tintColor: 'white' }} />
-                                                            <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Edit</Text>
-                                                        </HStack>
-                                                    </Pressable>
-                                                </View>
-                                                <View style={styles.boxStyle}>
-                                                    <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                                                        <Image source={(require('../assets/Images/eye.png'))} alt={"Alternate Text"} style={{ height: 12, width: 17, marginRight: 5, tintColor: 'white' }} />
-                                                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Offline</Text>
-                                                    </HStack>
-                                                </View>
 
-                                                {/* <View style={styles.boxStyle}>
-                                                <Pressable onPress={() => setIsOpen(!isOpen)}>
-                                                    <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                                                        <Image source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
-                                                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Delete</Text>
-                                                    </HStack>
-
-                                                    <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
-                                                        <AlertDialog.Content>
-                                                            <AlertDialog.CloseButton />
-                                                            <AlertDialog.Header>Delete Ads</AlertDialog.Header>
-                                                            <AlertDialog.Body>
-                                                                Are you sure you want to delete?
-                                                            </AlertDialog.Body>
-                                                            <AlertDialog.Footer>
-                                                                <Button.Group space={2}>
-                                                                    <Button variant="unstyled" colorScheme="coolGray" onPress={onClose} ref={cancelRef}>
-                                                                        Cancel
-                                                                    </Button>
-                                                                    <Button colorScheme="danger" onPress={onClose}>
-                                                                        Delete
-                                                                    </Button>
-                                                                </Button.Group>
-                                                            </AlertDialog.Footer>
-                                                        </AlertDialog.Content>
-                                                    </AlertDialog>
-
-                                                </Pressable>
-                                            </View> */}
-                                            </HStack>
 
                                         </VStack>
                                     </HStack>

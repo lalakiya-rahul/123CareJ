@@ -12,6 +12,7 @@ import { Helper } from '../helper/Helper';
 import { Urls } from '../helper/Urls';
 import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
+import { ActivityIndicator } from '@react-native-material/core';
 
 
 const width = Dimensions.get("window").width
@@ -75,46 +76,96 @@ export default function MyAds({ navigation }) {
     const [loading, setLoding] = useState(false);
     const [page, setPage] = useState(1);
     const [isListEnd, setIsListEnd] = useState(false);
-
-
+    const [selectedItem, setSelectedItem] = useState([]);
 
     useEffect(() => {
-        // (async () => getMyAdsData())();
         getMyAdsData()
     }, [])
 
-
-    const onChangeValue = (item, index, newValue) => {
-        setDalete("")
+    const getMyAdsData = async () => {
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                lang_id: 1,
+                user_id: userDetail.user_id,
+                page: page,
+                token: userDetail.token
+            }
+            var response = await Helper.POST(Urls.myAds, apiData);
+            if (response.error === '0') {
+                // setPage(page + 1);
+                setGetMyAds(response.data)
+                setLoding(false);
+            } else {
+                setIsListEnd(true);
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
+        }
     }
 
+    const selectAll = (id) => {
+        // const mail = getMyAds.forEach(i => console.log(i))
+        console.log(id);
+    }
 
-    console.log(getMyAds, 'getMyAds--');
-
-    const getMyAdsData = async () => {
-        if (!loading && !isListEnd) {
-            if (checkInternet()) {
-                setLoding(true);
-                const apiData = {
-                    lang_id: 1,
-                    user_id: userDetail.user_id,
-                    page: page,
-                    token: userDetail.token
+    const choosen = (hey) => {
+        getMyAds.map((item) => {
+            if (item.id === hey.id) {
+                item.check = !item.check
+                if (item.check === true) {
+                    setSelectedItem([item]);
+                    console.log('selected:' + item.id);
+                } else if (item.check === false) {
+                    const i = selectedItem.indexOf(item)
+                    if (1 != -1) {
+                        selectedItem.splice(i, 1)
+                        console.log('unselect:' + item.id)
+                        return selectedItem
+                    }
                 }
-                var response = await Helper.POST(Urls.myAds, apiData);
-                if (response.error === '0') {
-                    setPage(page + 1);
-                    setGetMyAds([...getMyAds, ...response.data])
-                    setLoding(false);
-                } else {
-                    setIsListEnd(true);
-                    ToastAndroid.show(response.message, ToastAndroid.SHORT);
-                    setLoding(false);
-                }
-            } else {
-                ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
             }
+        })
+        setGetMyAds(getMyAds)
+    }
+
+    const myDataDelete = async () => {
+        const productIds = getMyAds.filter((i) => i.check == true).map(({ id }) => ([id]));
+        const simplifyArray = (productIds = []) => {
+            const res = [];
+            productIds.forEach(element => {
+                element.forEach(el => {
+                    res.push(el);
+                });
+            });
+            return res;
+        };
+        console.log(simplifyArray(productIds).toString());
+        if (checkInternet()) {
+            setLoding(true);
+            const apiData = {
+                user_id: userDetail.user_id,
+                product_id: simplifyArray(productIds).toString(),
+                token: userDetail.token
+            }
+
+            console.log(apiData, 'api data--');
+            var response = await Helper.POST(Urls.myAdsDelete, apiData);
+            console.log(response, apiData, 'data');
+            if (response.error === '0') {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+                getMyAdsData()
+            } else {
+                ToastAndroid.show(response.message, ToastAndroid.SHORT);
+                setLoding(false);
+            }
+        } else {
+            ToastAndroid.show(Urls.nointernet, ToastAndroid.SHORT);
         }
+
     }
 
     return (
@@ -165,69 +216,73 @@ export default function MyAds({ navigation }) {
                     </VStack>
                 </HStack>
                 <HStack mt={'2.5'}>
-                    <Checkbox mr={'2.5'} value="test" accessibilityLabel="checkbox">
+                    {/* <Checkbox mr={'2.5'} value={item.check} onChange={() => selectAll(getMyAds.map(i.id))} accessibilityLabel="checkbox">
                         <Text style={[Styles.titleText, { fontSize: 12, }]}>Select All</Text>
-                    </Checkbox>
-                    <HStack style={[styles.boxStyle, { alignItems: 'center', justifyContent: 'space-between' }]} >
-                        <Image alt='delete' source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
-                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Delete</Text>
-                    </HStack>
+                    </Checkbox> */}
+                    <Pressable onPress={() => myDataDelete()}>
+                        <HStack style={[styles.boxStyle, { alignItems: 'center', justifyContent: 'space-between' }]} >
+                            <Image alt='delete' source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
+                            <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Delete</Text>
+                        </HStack>
+                    </Pressable>
                 </HStack>
                 <Loader loading={loading} />
-                <FlatList
-                    contentContainerStyle={{ paddingBottom: '30%' }}
-                    data={getMyAds}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
-                                <HStack style={[styles.card,
-                                {
-                                    backgroundColor: Colors.white,
-                                    borderRadius: 10, borderWidth: 1,
-                                    justifyContent: 'space-between', padding: 10,
-                                    marginTop: 10, width: '100%'
-                                }]}>
-                                    <HStack space={4}  >
+                {loading ? <ActivityIndicator /> :
+                    <FlatList
+                        contentContainerStyle={{ paddingBottom: '30%' }}
+                        data={getMyAds}
+                        extraData={getMyAds}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
+                                    <HStack style={[styles.card,
+                                    {
+                                        backgroundColor: Colors.white,
+                                        borderRadius: 10, borderWidth: 1,
+                                        justifyContent: 'space-between', padding: 10,
+                                        marginTop: 10, width: '100%'
+                                    }]}>
+                                        <HStack space={4}  >
 
-                                        <HStack justifyContent={'center'} alignItems={'center'}>
-                                            <Checkbox mr={'2.5'} value={[item.id]} onChange={newValue => onChangeValue(item.id, index, newValue)} accessibilityLabel="checkbox" />
-                                            <Image style={{
-                                                width: 80,
-                                                height: 80,
-                                                resizeMode: 'cover'
-                                            }} borderRadius={'2xl'} source={{
-                                                uri: item.image_url
-                                            }} alt="Alternate Text" size="md" />
-                                        </HStack>
-
-                                        <VStack width={'72'} >
-                                            <Text style={Styles.titleText}>{item.title}</Text>
-                                            <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', }}>
-                                                <Image tintColor={Colors.grey}
-                                                    style={{ height: 10, width: 10 }}
-                                                    alt={"Alternate Text"}
-                                                    source={require('../assets/Images/time.png')} />
-                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.created_at}</Text>
-
-                                                <Image tintColor={Colors.grey}
-                                                    alt={"Alternate Text"}
-                                                    style={{ height: 10, width: 10 }}
-                                                    source={require('../assets/Images/pin1.png')} />
-                                                <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.city_name}</Text>
+                                            <HStack justifyContent={'center'} alignItems={'center'}>
+                                                <Checkbox mr={'2.5'} value={item && item.check} onChange={() => choosen(item)} accessibilityLabel="checkbox" />
+                                                <Image style={{
+                                                    width: 80,
+                                                    height: 80,
+                                                    resizeMode: 'cover'
+                                                }} borderRadius={'2xl'} source={{
+                                                    uri: item.image_url
+                                                }} alt="Alternate Text" size="md" />
                                             </HStack>
 
+                                            <VStack width={'72'} >
+                                                <Text style={Styles.titleText}>{item.title}</Text>
+                                                <HStack space={1} style={{ alignItems: 'center', justifyContent: 'flex-start', }}>
+                                                    <Image tintColor={Colors.grey}
+                                                        style={{ height: 10, width: 10 }}
+                                                        alt={"Alternate Text"}
+                                                        source={require('../assets/Images/time.png')} />
+                                                    <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.created_at}</Text>
 
-                                            <HStack space={2}>
-                                                <View style={styles.boxStyle}>
-                                                    <Pressable onPress={() => navigation.navigate('AddListing')}>
-                                                        <HStack style={{ alignItems: 'center', justifyContent: 'space-between', }}>
-                                                            <Image alt='edit' source={(require('../assets/Images/edit.png'))} style={{ height: 15, width: 15, marginRight: 5, tintColor: 'white' }} />
-                                                            <Text style={[Styles.titleText, { fontSize: 12, color: 'white', }]}>Edit</Text>
-                                                        </HStack>
-                                                    </Pressable>
-                                                </View>
+                                                    <Image tintColor={Colors.grey}
+                                                        alt={"Alternate Text"}
+                                                        style={{ height: 10, width: 10 }}
+                                                        source={require('../assets/Images/pin1.png')} />
+                                                    <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 8, color: Colors.grey }}>{item.city_name}</Text>
+                                                </HStack>
 
-                                                {/* <View style={styles.boxStyle}>
+
+                                                <HStack space={2}>
+                                                    <View style={styles.boxStyle}>
+                                                        <Pressable onPress={() => navigation.navigate('AddListing')}>
+                                                            <HStack style={{ alignItems: 'center', justifyContent: 'space-between', }}>
+                                                                <Image alt='edit' source={(require('../assets/Images/edit.png'))} style={{ height: 15, width: 15, marginRight: 5, tintColor: 'white' }} />
+                                                                <Text style={[Styles.titleText, { fontSize: 12, color: 'white', }]}>Edit</Text>
+                                                            </HStack>
+                                                        </Pressable>
+                                                    </View>
+
+                                                    {/* <View style={styles.boxStyle}>
                                                 <Pressable onPress={() => setIsOpen(!isOpen)}>
                                                     <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                                                         <Image alt='delete' source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
@@ -256,16 +311,17 @@ export default function MyAds({ navigation }) {
 
                                                 </Pressable>
                                             </View> */}
-                                            </HStack>
+                                                </HStack>
 
-                                        </VStack>
+                                            </VStack>
+                                        </HStack>
+
+
                                     </HStack>
-
-
-                                </HStack>
-                            </Pressable>
-                        )
-                    }} />
+                                </Pressable>
+                            )
+                        }} />
+                }
             </View>
         </View>
     );

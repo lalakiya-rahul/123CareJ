@@ -166,7 +166,7 @@ export default function Serach({ navigation }) {
                                                         resizeMode: 'cover',
 
 
-                                                    }} source={require('../assets/Images/10.jpg')} alt="Alternate Text" size="md"></Image>
+                                                    }} source={require('../assets/Images/10.png')} alt="Alternate Text" size="md"></Image>
                                                 </HStack>
                                                 <HStack h={'5'} alignItems={'center'} >
                                                     <Image style={{ height: 14, width: 14, marginLeft: '-1%' }}
