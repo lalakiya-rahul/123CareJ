@@ -355,6 +355,7 @@ export default function AddListing({ navigation }) {
     // };
 
     const postAds = async () => {
+        onClose
         if (checkInternet()) {
             setLoding(true);
 

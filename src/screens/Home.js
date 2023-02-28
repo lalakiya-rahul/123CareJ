@@ -18,277 +18,13 @@ import { useIsFocused } from '@react-navigation/native';
 import Slider from '../components/SliderBox';
 import FastImage from 'react-native-fast-image';
 import { ImageSlider } from "react-native-image-slider-banner";
+import { setState } from 'expect';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
 
 const like = require('../assets/Images/fevoritesRed.png');
 const deslike = { uri: 'https://parshwatechnologies.info/website/image/fav.png' }
-
-const data = [
-    {
-        'id': 1,
-        'title': 'oxygen1',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-    },
-    {
-        'id': 2,
-        'title': 'oxygen2',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': ''
-    },
-    {
-        'id': 3,
-        'title': 'oxygen3',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-    },
-    {
-        'id': 4,
-        'title': 'oxygen4',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-    },
-    {
-        'id': 5,
-        'title': 'oxygen5',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-
-    },
-    {
-        'id': 6,
-        'title': 'oxygen6',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-    },
-    {
-        'id': 7,
-        'title': 'oxygen7',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-
-    },
-    {
-        'id': 8,
-        'title': 'oxygen8',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-
-    },
-    {
-        'id': 9,
-        'title': 'oxygen9',
-        'image': "https://www.123care.one/storage/files/in/3885/thumb-816x460-a3aae6e8ec147a3ddf2ed3679be05ca1.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-    },
-    {
-        'id': 10,
-        'title': 'oxygen10',
-        'image': "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-
-    },
-    {
-        'id': 11,
-        'title': 'oxygen11',
-        'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-
-    },
-    {
-        'id': 12,
-        'title': 'oxygen12',
-        'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-
-    },
-    {
-        'id': 13,
-        'title': 'oxygen13',
-        'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-        'dummyText': 'It is a long established fact in the set to set You can also customise it using the useAccessibleColors hook.'
-
-    },
-    {
-        'id': 14,
-        'title': 'oxygen14',
-        'image': "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-    },
-]
-
-const data2 = [
-    {
-        'id': 1,
-        'title': 'Interiors',
-        'image': require('../assets/Images/livingroom.png'),
-
-    },
-    {
-        'id': 2,
-        'title': 'Hospital',
-        'image': require('../assets/Images/medical-kit.png'),
-    },
-    {
-        'id': 3,
-        'title': 'clinic',
-        'image': require('../assets/Images/handshake.png'),
-    },
-    {
-        'id': 4,
-        'title': 'Travel',
-        'image': require('../assets/Images/plane.png'),
-    },
-    {
-        'id': 5,
-        'title': 'Beauty',
-        'image': require('../assets/Images/beauty.png'),
-    },
-    {
-        'id': 6,
-        'title': 'Education',
-        'image': require('../assets/Images/education.png'),
-    },
-    {
-        'id': 7,
-        'title': 'Consultants',
-        'image': require('../assets/Images/discussion.png'),
-    },
-    {
-        'id': 8,
-        'title': 'Jobs',
-        'image': require('../assets/Images/businessman.png'),
-    },
-    {
-        'id': 9,
-        'title': 'Wedding Requisites',
-        'image': require('../assets/Images/parents.png'),
-    },
-    {
-        'id': 10,
-        'title': 'Rent & Hire',
-        'image': require('../assets/Images/deal.png'),
-    },
-    {
-        'id': 11,
-        'title': 'Repairs & Services',
-        'image': require('../assets/Images/repair-tools.png'),
-    },
-    {
-        'id': 12,
-        'title': 'Loans',
-        'image': require('../assets/Images/personal.png'),
-    },
-    {
-        'id': 13,
-        'title': 'Contractors',
-        'image': require('../assets/Images/engineer.png'),
-    },
-    {
-        'id': 14,
-        'title': 'Real Estate',
-        'image': require('../assets/Images/real-estate.png'),
-    },
-    {
-        'id': 15,
-        'title': 'Home Services',
-        'image': require('../assets/Images/vacuum.png'),
-    },
-    {
-        'id': 16,
-        'title': 'Rent & Hire',
-        'image': require('../assets/Images/deal.png'),
-    },
-    {
-        'id': 17,
-        'title': 'Interiors',
-        'image': require('../assets/Images/livingroom.png'),
-
-    },
-    {
-        'id': 18,
-        'title': 'B2B',
-        'image': require('../assets/Images/handshake.png'),
-    },
-    {
-        'id': 19,
-        'title': 'Doctors',
-        'image': require('../assets/Images/medical-kit.png'),
-    },
-    {
-        'id': 20,
-        'title': 'Travel',
-        'image': require('../assets/Images/plane.png'),
-    },
-    {
-        'id': 21,
-        'title': 'Beauty',
-        'image': require('../assets/Images/beauty.png'),
-    },
-    {
-        'id': 22,
-        'title': 'Education',
-        'image': require('../assets/Images/education.png'),
-    },
-    {
-        'id': 23,
-        'title': 'Consultants',
-        'image': require('../assets/Images/discussion.png'),
-    },
-    {
-        'id': 24,
-        'title': 'Jobs',
-        'image': require('../assets/Images/businessman.png'),
-    },
-    {
-        'id': 25,
-        'title': 'Wedding Requisites',
-        'image': require('../assets/Images/parents.png'),
-    },
-    {
-        'id': 26,
-        'title': 'Rent & Hire',
-        'image': require('../assets/Images/deal.png'),
-    },
-    {
-        'id': 27,
-        'title': 'Repairs & Services',
-        'image': require('../assets/Images/repair-tools.png'),
-    },
-    {
-        'id': 28,
-        'title': 'Loans',
-        'image': require('../assets/Images/personal.png'),
-    },
-    {
-        'id': 29,
-        'title': 'Contractors',
-        'image': require('../assets/Images/engineer.png'),
-    },
-    {
-        'id': 30,
-        'title': 'Real Estate',
-        'image': require('../assets/Images/real-estate.png'),
-    },
-    {
-        'id': 31,
-        'title': 'Home Services',
-        'image': require('../assets/Images/vacuum.png'),
-    },
-    {
-        'id': 32,
-        'title': 'Rent & Hire',
-        'image': require('../assets/Images/deal.png'),
-    },
-
-]
-
-const images = [
-    require('../assets/Images/ads2.png'),
-    require('../assets/Images/ads3.png'),
-    require('../assets/Images/ads.png'),
-]
 
 
 export default function Home({ navigation }) {
@@ -298,6 +34,7 @@ export default function Home({ navigation }) {
     const isFocused = useIsFocused();
     const [loading, setLoding] = useState(false);
     const [advertiseData, setAdvertiseData] = useState(false);
+    const [dot, setDot] = useState(0);
 
     const countries = ['IND', 'U.K', 'A.E.D']
 
@@ -306,6 +43,21 @@ export default function Home({ navigation }) {
         getAdvertise();
     }, [isFocused]);
 
+    const finderPart = () => {
+        return (
+            <VStack style={{ width: width / 4, padding: 8 }}>
+                <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
+                    onPress={() => setModalVisible(true)} >
+
+                    <Image
+                        style={{ height: 30, width: 30, resizeMode: 'stretch' }}
+                        borderColor={Colors.secondaryPrimaryColor}
+                        source={{ uri: 'https://parshwatechnologies.info/website/image/finder.png' }} alt="Alternate Text" />
+                    <Text numberOfLines={2} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 10, }]}>Insurance Finder</Text>
+                </Pressable>
+            </VStack>
+        )
+    }
 
     const getCategory = async () => {
         if (checkInternet()) {
@@ -315,7 +67,6 @@ export default function Home({ navigation }) {
                 user_id: userDetail.user_id,
             };
             var response = await Helper.POST(Urls.homePage, apiData);
-            console.log("category tyu");
             if (response.error === '0') {
                 setCategoryData(response.data);
                 setLoding(false);
@@ -437,22 +188,14 @@ export default function Home({ navigation }) {
                         }}
                     />
 
-                    <View style={{ borderWidth: 1, borderRadius: 8, marginTop: '4%', borderColor: Colors.skyBlue }}>
+                    {/* <View style={{ borderWidth: 1, borderRadius: 8, marginTop: '4%', borderColor: Colors.skyBlue }}>
                         <HStack style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.white, width: '18%', height: '34%', alignSelf: 'center', position: 'absolute', marginTop: '-3%', }}>
                             <Text style={{ fontFamily: fonts.Poppins_SemiBold, fontSize: 15, color: Colors.primaryColor, }}>
                                 Finder
                             </Text>
                         </HStack>
                         <HStack style={{ justifyContent: 'space-around', alignItems: 'center', padding: 8, marginTop: 3 }} >
-                            <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
-                                onPress={() => setModalVisible(true)} >
-                                <VStack>
-                                    <Image
-                                        style={{ height: 30, width: 30, resizeMode: 'stretch', alignSelf: 'center', justifyContent: 'center', }}
-                                        source={{ uri: 'https://parshwatechnologies.info/website/image/finder.png' }} alt="Alternate Text" />
-                                    <Text numberOfLines={2} width={'16'} letterSpacing={'sm'} lineHeight={'sm'} textAlign={'center'} alignSelf={'center'} style={[Styles.titleText, { fontSize: 11 }]}>Insurance Finder</Text>
-                                </VStack>
-                            </Pressable>
+                            
                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
                                 onPress={() => setModalVisible(true)} >
                                 <VStack>
@@ -472,7 +215,7 @@ export default function Home({ navigation }) {
                                 </VStack>
                             </Pressable>
                         </HStack>
-                    </View>
+                    </View> */}
 
                     <View >
                         <HStack mt={'1'}>
@@ -484,13 +227,17 @@ export default function Home({ navigation }) {
                             showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}
                             key={getCategoryData.category}
+                            onScroll={(e) => { setDot(e.nativeEvent.contentOffset.x) }}
                         >
                             <FlatList
                                 data={getCategoryData.category}
                                 contentContainerStyle={{ alignSelf: 'center', }}
 
                                 numColumns={6}
-                                renderItem={({ item }) => {
+                                renderItem={({ item, index }) => {
+                                    if (index === 0) {
+                                        return finderPart()
+                                    }
                                     return (
                                         <VStack style={{ width: width / 4, padding: 8 }}>
                                             <Pressable style={{ alignItems: 'center', justifyContent: 'center', }}
@@ -510,9 +257,9 @@ export default function Home({ navigation }) {
                             />
                         </ScrollView>
                         <HStack style={{ justifyContent: 'center', alignItems: 'center', marginTop: '-2%' }}>
-                            <Text color={Colors.primaryColor}>{'\u2B24'}</Text>
-                            <Text pl={'2'} color={Colors.grey2}>{'\u2B24'}</Text>
-                            <Text pl={'2'} color={Colors.grey2}>{'\u2B24'}</Text>
+                            <Text color={dot < 1 ? Colors.skyBlue : Colors.grey2}>{'\u2B24'}</Text>
+                            <Text pl={'2'} color={dot < 1 ? Colors.grey2 : Colors.skyBlue}>{'\u2B24'}</Text>
+
                         </HStack>
                     </View>
 

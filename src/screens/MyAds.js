@@ -132,6 +132,7 @@ export default function MyAds({ navigation }) {
     }
 
     const myDataDelete = async () => {
+
         const productIds = getMyAds.filter((i) => i.check == true).map(({ id }) => ([id]));
         const simplifyArray = (productIds = []) => {
             const res = [];
@@ -158,6 +159,7 @@ export default function MyAds({ navigation }) {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
                 setLoding(false);
                 getMyAdsData()
+
             } else {
                 ToastAndroid.show(response.message, ToastAndroid.SHORT);
                 setLoding(false);
@@ -216,22 +218,20 @@ export default function MyAds({ navigation }) {
                     </VStack>
                 </HStack>
                 <HStack mt={'2.5'}>
-                    {/* <Checkbox mr={'2.5'} value={item.check} onChange={() => selectAll(getMyAds.map(i.id))} accessibilityLabel="checkbox">
+                    {/* <Checkbox mr={'2.5'} value={ieck} onChange={() => selectAll(getMyAds.map(i.id))} accessibilityLabel="checkbox">
                         <Text style={[Styles.titleText, { fontSize: 12, }]}>Select All</Text>
                     </Checkbox> */}
-                    <Pressable onPress={() => myDataDelete()}>
+                    <Pressable onPress={() => setIsOpen(!isOpen)}>
                         <HStack style={[styles.boxStyle, { alignItems: 'center', justifyContent: 'space-between' }]} >
                             <Image alt='delete' source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
                             <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Delete</Text>
                         </HStack>
                     </Pressable>
                 </HStack>
-                <Loader loading={loading} />
                 {loading ? <ActivityIndicator /> :
                     <FlatList
                         contentContainerStyle={{ paddingBottom: '30%' }}
                         data={getMyAds}
-                        extraData={getMyAds}
                         renderItem={({ item, index }) => {
                             return (
                                 <Pressable onPress={() => navigation.navigate("ProductDetails", { product_id: item.id })}>
@@ -282,35 +282,7 @@ export default function MyAds({ navigation }) {
                                                         </Pressable>
                                                     </View>
 
-                                                    {/* <View style={styles.boxStyle}>
-                                                <Pressable onPress={() => setIsOpen(!isOpen)}>
-                                                    <HStack style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                                                        <Image alt='delete' source={(require('../assets/Images/delete.png'))} style={{ height: 16, width: 16, marginRight: 5, tintColor: 'white' }} />
-                                                        <Text style={[Styles.titleText, { fontSize: 12, color: 'white' }]}>Delete</Text>
-                                                    </HStack>
 
-                                                    <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
-                                                        <AlertDialog.Content>
-                                                            <AlertDialog.CloseButton />
-                                                            <AlertDialog.Header>Delete Ads</AlertDialog.Header>
-                                                            <AlertDialog.Body>
-                                                                Are you sure you want to delete?
-                                                            </AlertDialog.Body>
-                                                            <AlertDialog.Footer>
-                                                                <Button.Group space={2}>
-                                                                    <Button variant="unstyled" colorScheme="coolGray" onPress={onClose} ref={cancelRef}>
-                                                                        Cancel
-                                                                    </Button>
-                                                                    <Button colorScheme="danger" onPress={onClose}>
-                                                                        Delete
-                                                                    </Button>
-                                                                </Button.Group>
-                                                            </AlertDialog.Footer>
-                                                        </AlertDialog.Content>
-                                                    </AlertDialog>
-
-                                                </Pressable>
-                                            </View> */}
                                                 </HStack>
 
                                             </VStack>
@@ -321,7 +293,27 @@ export default function MyAds({ navigation }) {
                                 </Pressable>
                             )
                         }} />
+
                 }
+                <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
+                    <AlertDialog.Content>
+                        <AlertDialog.CloseButton />
+                        <AlertDialog.Header>Delete Ads</AlertDialog.Header>
+                        <AlertDialog.Body>
+                            Are you sure you want to delete?
+                        </AlertDialog.Body>
+                        <AlertDialog.Footer justifyContent={'center'} >
+                            <Button.Group space={2}>
+                                <Button variant="unstyled" colorScheme="coolGray" onPress={onClose} ref={cancelRef}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme={'darkBlue'} onPress={() => myDataDelete()}>
+                                    Delete
+                                </Button>
+                            </Button.Group>
+                        </AlertDialog.Footer>
+                    </AlertDialog.Content>
+                </AlertDialog>
             </View>
         </View>
     );
