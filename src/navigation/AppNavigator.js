@@ -20,12 +20,29 @@ import { login } from '../reducer/actions';
 import Notification from '../screens/Notification';
 import ChatDetails from '../screens/ChatDetails';
 import Category from '../screens/Category';
+import { Linking } from 'react-native';
 
 
 const LoginStack = createNativeStackNavigator()
 function LoginStackNavigation() {
+
+
+    const linking = {
+        prefixes: ['123care://', 'https://care123.page.link'],
+        config: {
+            initialRouteName: 'BottomTab',
+            screens: {
+                ProductDetails: {
+                    path: 'ProductDetails/:product_id?',
+                    parse: {
+                        product_id: (product_id) => `${product_id}`,
+                    },
+                }
+            }
+        }
+    };
     return (
-        <NavigationContainer independent={true}>
+        <NavigationContainer independent={true} linking={linking}>
             <LoginStack.Navigator
                 initialRouteName='Login'
                 screenOptions={{ headerShown: false }}>
@@ -43,8 +60,11 @@ function LoginStackNavigation() {
 
 const BottomStack = createNativeStackNavigator()
 function BottomStackNavigation() {
+    const linking = {
+        prefixes: ['123care://', 'https://care123.page.link'],
+    };
     return (
-        <NavigationContainer independent={true}>
+        <NavigationContainer independent={true} linking={linking}>
             <BottomStack.Navigator
                 initialRouteName='BottomTab'
                 screenOptions={{ headerShown: false }}>
@@ -69,7 +89,12 @@ function BottomStackNavigation() {
 
 const AppNavigator = () => {
     const { userDetail } = useSelector((state) => state.reducerDetail);
-    console.log(userDetail, 'user detilesss---123');
+    // console.log(userDetail, 'user detilesss---123');
+
+
+
+
+
     return (
         <NavigationContainer independent={true}>
             {userDetail.token ? <BottomStackNavigation /> : <LoginStackNavigation />}

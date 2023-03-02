@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "374365398163-uh8ij9c3o8areefcc0kdfso2c716n53g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.care123j",
+            "certificate_hash": "8114f8645d160c99c86eab1a8fb1129f59c59aad"
+          }
+        },
+        {
           "client_id": "374365398163-jnt69bl4hqgoo80hi1r5fr6ptcpp1aka.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -19,6 +19,8 @@ import Slider from '../components/SliderBox';
 import FastImage from 'react-native-fast-image';
 import { ImageSlider } from "react-native-image-slider-banner";
 import { setState } from 'expect';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -42,6 +44,32 @@ export default function Home({ navigation }) {
         getCategory();
         getAdvertise();
     }, [isFocused]);
+
+    useEffect(() => {
+        const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
+        // When the component is unmounted, remove the listener
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        dynamicLinks()
+            .getInitialLink()
+            .then(link => {
+                if (link.url === 'https://invertase.io/ProductDetails') {
+                    console.log(link, 'url');
+                    // navigation.navigate('ProductDetails')
+                }
+            });
+    }, []);
+    const handleDynamicLink = link => {
+        console.log(link, 'link');
+        // Handle dynamic link inside your own application
+        if (link.url === 'https://invertase.io/ProductDetails') {
+            navigation.navigate('ProductDetails')
+        } else {
+            alert("hello")
+        }
+    };
 
     const finderPart = () => {
         return (
@@ -399,7 +427,7 @@ export default function Home({ navigation }) {
                                             }} borderRadius={'md'} source={{
                                                 uri: item.image_url
                                             }} alt="Alternate Text" size="md" />
-                                            <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
+                                            <Text numberOfLines={1} style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5, width: '80%' }}>{item.title}</Text>
                                         </Pressable>
                                     </View>
                                 ))}
@@ -434,7 +462,7 @@ export default function Home({ navigation }) {
                                             }} borderRadius={'md'} source={{
                                                 uri: item.image_url
                                             }} alt="Alternate Text" size="md" />
-                                            <Text style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5 }}>{item.title}</Text>
+                                            <Text numberOfLines={1} style={{ fontFamily: fonts.Poppins_Medium, fontSize: 11, color: Colors.black, textAlign: 'center', marginBottom: 5, width: '80%' }}>{item.title}</Text>
                                         </Pressable>
                                     </View>
                                 ))}

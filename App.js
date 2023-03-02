@@ -4,14 +4,15 @@ import AppNavigator from './src/navigation/AppNavigator';
 import Colors from './src/constants/colors';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { Linking, SafeAreaView, StatusBar } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login } from './src/reducer/actions';
 import PushNotification from "react-native-push-notification";
 
-function App() {
+
+function App(navigation) {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide()
@@ -48,7 +49,15 @@ function App() {
       popInitialNotification: true,
       requestPermissions: true
     });
-  },);
+  }, []);
+
+
+
+  useEffect(() => {
+    Linking.getInitialURL().then((url) => {
+      console.log("====>", url);
+    })
+  }, [])
 
 
   const getData = async () => {

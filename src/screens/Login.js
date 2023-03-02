@@ -16,6 +16,7 @@ import { TextInput } from "@react-native-material/core";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../reducer/actions';
+
 // import { validatePhone } from '../helper/Validations';
 
 const width = Dimensions.get("window").width
@@ -84,6 +85,8 @@ export default function Login({ navigation }) {
             }
         }
     };
+
+
 
     return (
         <ScrollView>

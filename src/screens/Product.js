@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, FlatList, Dimensions, Pressable, ToastAndroid } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -19,6 +19,11 @@ import Loader from '../components/Loader';
 import { ActivityIndicator } from '@react-native-material/core';
 import { useSelector } from 'react-redux';
 import NoData from '../components/NoData';
+import Voice, {
+    SpeechRecognizedEvent,
+    SpeechResultsEvent,
+    SpeechErrorEvent,
+} from '@react-native-voice/voice';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -37,12 +42,64 @@ export default function Product({ navigation, route }) {
     const [getCategoryData, setCategoryData] = useState([]);
     const [CategorieId, setCategorieId] = useState([]);
 
+    const [result, setResult] = useState('')
+
 
     useEffect(() => {
         getCategory()
         getProductViewAll(page, sorting, CategorieId, state.search);
-
+        //Setting callbacks for the process status
     }, []);
+
+    useEffect(() => {
+        Voice.onSpeechStart = onSpeechStartHandler;
+        Voice.onSpeechEnd = onSpeechEndHandler;
+        Voice.onSpeechResults = onSpeechResultsHandler;
+
+        return () => {
+            Voice.destroy().then(Voice.removeAllListeners);
+        }
+    }, []);
+
+    const onSpeechStartHandler = (e) => {
+        console.log('startRecording');
+        console.log("start handler==>>>", e)
+    }
+    const onSpeechEndHandler = (e) => {
+
+        console.log("stop handler", e)
+    }
+
+    let silenceTimer = useRef(null);
+
+
+    const onSpeechResultsHandler = (e) => {
+        let text = e.value[0]
+        setResult(text)
+        clearTimeout(silenceTimer.current);
+        silenceTimer.current = setTimeout(async () => {
+            Voice.stop();
+        }, 2000);
+        console.log("speech result handler", e)
+    }
+
+    const startRecording = async () => {
+        try {
+            await Voice.start('en-Us');
+            console.log("hello");
+
+        } catch (error) {
+            console.log("error raised", error)
+        }
+    }
+
+    const stopRecording = async () => {
+        try {
+            await Voice.stop()
+        } catch (error) {
+            console.log("error raised", error)
+        }
+    }
 
     const initState = {
         search: '',
@@ -216,9 +273,11 @@ export default function Product({ navigation, route }) {
                             InputLeftElement={<Image ml={'4'}
                                 alt={"Alternate Text"} size={"4"}
                                 source={require('../assets/Images/search.png')} />}
-                            InputRightElement={<Image mr={'4'}
-                                alt={"Alternate Text"} h={'5'} w={'4'}
-                                source={require('../assets/Images/mic.png')} />} />
+                            InputRightElement={<Pressable onPress={startRecording}>
+                                <Image mr={'4'}
+                                    alt={"Alternate Text"} style={{ height: 19, width: 14 }}
+                                    source={require('../assets/Images/mic.png')} />
+                            </Pressable>} />
                     </VStack>
                 </HStack>
                 <View style={{ marginTop: '1%', marginBottom: '2%' }}>

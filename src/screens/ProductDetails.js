@@ -14,6 +14,7 @@ import { Helper } from '../helper/Helper';
 import { Urls } from '../helper/Urls';
 import { useSelector } from 'react-redux';
 import { ActivityIndicator } from '@react-native-material/core';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
 
 const width = Dimensions.get("window").width
 const height = Dimensions.get("window").height
@@ -22,6 +23,7 @@ const height = Dimensions.get("window").height
 export default function ProductDetails({ navigation, route }) {
     const { userDetail } = useSelector((state) => state.reducerDetail);
     const [productDetail, setGetProductDetail] = useState([]);
+    const [shareLink, setShareLink] = useState('');
     const [textShown, setTextShown] = useState(false); //To show ur remaining Text
     const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
     const toggleNumberOfLines = () => { //To toggle the show text or hide it
@@ -41,7 +43,26 @@ export default function ProductDetails({ navigation, route }) {
 
     useEffect(() => {
         getProductDetail();
+        buildLink();
     }, []);
+
+    const buildLink = async () => {
+        const link = await dynamicLinks().buildLink({
+            link: `https://invertase.io/ProductDetails/${route.params.product_id}`,
+            // domainUriPrefix is created in your Firebase console
+            domainUriPrefix: 'https://care123.page.link',
+            // optional setup which updates Firebase analytics campaign
+            // "banner". This also needs setting up before hand
+            analytics: {
+                campaign: 'banner',
+            },
+        });
+
+        setShareLink(link)
+    }
+
+    // console.log(shareLink, 'sharelink');
+
 
     const getProductDetail = async (product) => {
         if (checkInternet()) {
@@ -193,9 +214,7 @@ export default function ProductDetails({ navigation, route }) {
 
     const share = () => {
         Share.open({
-            title: '123 Care',
-            message: '123 Care',
-            url: 'https://play.google.com/store/apps/details?id=com.wditechy.ottcare'
+            url: shareLink
         })
     }
 
